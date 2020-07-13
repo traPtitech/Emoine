@@ -1,0 +1,6 @@
+openapi: 3.0.3
+info:
+  title: Emoine
+  version: '1.0'
+  description: Emoine API
+paths:
