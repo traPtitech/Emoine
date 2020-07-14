@@ -67,7 +67,7 @@ paths:
         '400':
           description: Bad Request
 
-  '/presentation':
+  '/presentations':
     get:
       summary: プレゼンテーション一覧とその詳細情報を取得
       tags:
@@ -86,7 +86,7 @@ paths:
         '409':
           description: Conflict
 
-  '/presentation/{presentationId}':
+  '/presentations/{presentationId}':
     parameters:
       - $ref: '#/components/parameters/presentationId'
 
@@ -124,7 +124,7 @@ paths:
         '404':
           description: Not Found
 
-  '/presentation/{presentationId}/reaction':
+  '/presentations/{presentationId}/reaction':
     parameters:
       - $ref: '#/components/parameters/presentationId'
 
@@ -138,7 +138,7 @@ paths:
         '404':
           description: Not Found
 
-  '/presentation/{presentationId}/review':
+  '/presentations/{presentationId}/review':
     parameters:
       - $ref: '#/components/parameters/presentationId'
 
@@ -174,7 +174,7 @@ paths:
         '404':
           description: Not Found
 
-  '/presentation/{presentationId}/comments':
+  '/presentations/{presentationId}/comments':
     parameters:
       - $ref: '#/components/parameters/presentationId'
 
