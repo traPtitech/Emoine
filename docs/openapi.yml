@@ -90,6 +90,17 @@ paths:
         '409':
           description: Conflict
 
+    patch:
+      operationId: editPresentations
+      summary: プレゼンテーションを編集
+      tags:
+        - presentation
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+
   '/presentations/{presentationId}':
     parameters:
       - $ref: '#/components/parameters/presentationId'
