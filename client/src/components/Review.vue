@@ -1,8 +1,11 @@
 <template>
   <div>
-    <router-link :to="{ name: 'index' }">Index</router-link>
-    <span>|</span>
-    <router-link :to="{ name: 'admin' }">Admin</router-link>
+    <h3>Review</h3>
+    <!--
+      - レビュー
+        - する
+        - 編集できるように
+    -->
   </div>
 </template>
 
@@ -10,7 +13,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'Routes',
+  name: 'Review',
   setup() {
     return {}
   }

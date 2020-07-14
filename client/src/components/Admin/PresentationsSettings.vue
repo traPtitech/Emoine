@@ -1,8 +1,6 @@
 <template>
   <div>
-    <router-link :to="{ name: 'index' }">Index</router-link>
-    <span>|</span>
-    <router-link :to="{ name: 'admin' }">Admin</router-link>
+    進行設定
   </div>
 </template>
 
@@ -10,7 +8,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'Routes',
+  name: 'PresentationsSettings',
   setup() {
     return {}
   }

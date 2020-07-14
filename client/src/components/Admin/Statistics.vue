@@ -1,8 +1,7 @@
 <template>
   <div>
-    <router-link :to="{ name: 'index' }">Index</router-link>
-    <span>|</span>
-    <router-link :to="{ name: 'admin' }">Admin</router-link>
+    <h3>統計情報</h3>
+    <p>すべての発表の統計が見れる(リアクションもレビューも)</p>
   </div>
 </template>
 
@@ -10,7 +9,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'Routes',
+  name: 'Statistics',
   setup() {
     return {}
   }
