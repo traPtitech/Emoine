@@ -3,4 +3,204 @@ info:
   title: Emoine
   version: '1.0'
   description: Emoine API
+
 paths:
+  '/oauth2/callback':
+    parameters:
+      - name: code
+        in: query
+        required: true
+        description: OAuth2.0のcode
+        schema:
+          type: string
+      - $ref: '#/components/parameters/sessions'
+
+    get:
+      tags:
+        - oauth2
+      summary: OAuthのコールバック先
+      operationId: callback
+      responses:
+        '200':
+          description: OK
+        '302':
+          description: Found
+
+  '/oauth2/generate/code':
+    get:
+      tags:
+        - oauth2
+      summary: Code Challenge用Codeの生成
+      responses:
+        '200':
+          description: OK
+
+  '/users/me':
+    get:
+      summary: 自身のユーザー詳細情報を取得
+      tags:
+        - me
+      responses:
+        '200':
+          description: OK
+
+  '/state':
+    parameters:
+      - name: state
+        in: query
+        required: true
+        description: 進行状況
+        schema:
+          type: string
+          enum:
+            - next
+            - pause
+            - resume
+
+    post:
+      summary: 進行状況を変更
+      tags:
+        - state
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+
+  '/presentation':
+    get:
+      summary: プレゼンテーション一覧とその詳細情報を取得
+      tags:
+        - presentation
+      responses:
+        '200':
+          description: OK
+
+    post:
+      summary: プレゼンテーションを追加
+      tags:
+        - presentation
+      responses:
+        '201':
+          description: Created
+        '409':
+          description: Conflict
+
+  '/presentation/{presentationId}':
+    parameters:
+      - $ref: '#/components/parameters/presentationId'
+
+    get:
+      summary: プレゼンテーションの詳細情報を取得
+      tags:
+        - presentation
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+
+    patch:
+      summary: プレゼンテーションの詳細情報を変更
+      tags:
+        - presentation
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+
+    delete:
+      summary: プレゼンテーションを削除
+      tags:
+        - presentation
+      responses:
+        '204':
+          description: |-
+            No Content
+            正常に削除できました。
+        '404':
+          description: Not Found
+
+  '/presentation/{presentationId}/reaction':
+    parameters:
+      - $ref: '#/components/parameters/presentationId'
+
+    get:
+      summary: プレゼンテーションのリアクション統計を取得
+      tags:
+        - presentation
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+
+  '/presentation/{presentationId}/review':
+    parameters:
+      - $ref: '#/components/parameters/presentationId'
+
+    get:
+      summary: プレゼンテーションのレビュー統計を取得
+      tags:
+        - presentation
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+
+    post:
+      summary: プレゼンテーションのレビューを追加
+      tags:
+        - presentation
+      responses:
+        '201':
+          description: Created
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+
+    patch:
+      summary: プレゼンテーションのレビューを変更
+      tags:
+        - presentation
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+
+  '/presentation/{presentationId}/comments':
+    parameters:
+      - $ref: '#/components/parameters/presentationId'
+
+    get:
+      summary: プレゼンテーションのコメント一覧を取得
+      tags:
+        - presentation
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+
+components:
+  parameters:
+    sessions:
+      name: sessions
+      in: cookie
+      required: false
+      schema:
+        type: string
+    presentationId:
+      name: presentationId
+      in: path
+      required: true
+      description: プレゼンテーションID
+      schema:
+        type: string
+        format: uuid

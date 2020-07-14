@@ -4,26 +4,29 @@ CREATE TABLE IF NOT EXISTS state
     state     TINYTEXT NOT NULL,
     info      TEXT,
     createdAt DATETIME NOT NULL,
-    PRIMARY KEY(`id`)
+    PRIMARY KEY (`id`)
 );
 
-CREATE TABLE IF NOT EXISTS team
+CREATE TABLE IF NOT EXISTS presentation
 (
-    id    SMALLINT AUTO_INCREMENT,
-    name  TEXT,
-    title TEXT,
-    PRIMARY KEY(`id`)
+    id          SMALLINT AUTO_INCREMENT,
+    name        TEXT,
+    speakers    TEXT,
+    description TEXT,
+    prev        SMALLINT,
+    next        SMALLINT,
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE IF NOT EXISTS reaction
 (
     id        SMALLINT AUTO_INCREMENT,
-    userId    VARCHAR(32) NOT NULL,
+    userId    VARCHAR(32)      NOT NULL,
     team      TINYINT UNSIGNED NOT NULL,
     stamp     TINYTEXT,
     comment   TEXT,
     createdAt DATETIME,
-    PRIMARY KEY(`id`)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE IF NOT EXISTS review
