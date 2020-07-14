@@ -1,0 +1,24 @@
+syntax = "proto3";
+option go_package = ".;handler";
+
+service ReactionAPI {
+
+}
+
+message Reaction {
+  string userId = 1;
+  uint32 presentationId = 2;
+  Stamp stamp = 3;
+}
+
+enum Stamp {
+  iine = 0;
+  pro = 1;
+  emoi = 2;
+  kandoushita = 3;
+  sugoi = 4;
+  kami = 5;
+  suko = 6;
+  yosa = 7;
+  kusa = 8;
+}

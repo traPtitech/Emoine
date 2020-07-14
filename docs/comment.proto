@@ -1,0 +1,12 @@
+syntax = "proto3";
+option go_package = ".;handler";
+
+service CommentAPI {
+
+}
+
+message Comment {
+  string userId = 1;
+  string presentationId = 2;
+  string text = 3;
+}
