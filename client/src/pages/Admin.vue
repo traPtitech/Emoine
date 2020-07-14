@@ -1,7 +1,11 @@
 <template>
   <routes />
-  <div>Hello</div>
+  <div>Admin Page</div>
   <HelloWorld msg="Hello Vue 3.0 + Vite" />
+  <!--
+    - 進行設定
+    - すべての統計が見れる(リアクションもレビューも)
+  -->
 </template>
 
 <script lang="ts">
@@ -10,7 +14,7 @@ import HelloWorld from '/@/components/HelloWorld.vue'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'Hello',
+  name: 'Admin',
   components: {
     Routes,
     HelloWorld

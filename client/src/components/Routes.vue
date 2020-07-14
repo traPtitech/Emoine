@@ -2,7 +2,7 @@
   <div>
     <router-link :to="{ name: 'index' }">Index</router-link>
     <span>|</span>
-    <router-link :to="{ name: 'hello' }">Hello</router-link>
+    <router-link :to="{ name: 'admin' }">Admin</router-link>
   </div>
 </template>
 

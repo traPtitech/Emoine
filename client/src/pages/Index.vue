@@ -1,7 +1,16 @@
 <template>
   <routes />
-  <div>Index Page</div>
+  <div>Index Page (Viewer)</div>
   <img alt="Vue logo" src="/@/assets/logo.png" />
+  <!--
+    - タイトルと説明と参加者とか？
+    - 統計情報(今映ってるもの)
+    - リアクション
+    - コメント
+    - レビュー
+      - する
+      - 編集できるように
+  -->
 </template>
 
 <script lang="ts">
