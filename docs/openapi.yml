@@ -37,6 +37,7 @@ paths:
 
   '/users/me':
     get:
+      operationId: getMe
       summary: 自身のユーザー詳細情報を取得
       tags:
         - me
@@ -58,6 +59,7 @@ paths:
             - resume
 
     post:
+      operationId: postState
       summary: 進行状況を変更
       tags:
         - state
@@ -67,8 +69,9 @@ paths:
         '400':
           description: Bad Request
 
-  '/presentation':
+  '/presentations':
     get:
+      operationId: getPresentations
       summary: プレゼンテーション一覧とその詳細情報を取得
       tags:
         - presentation
@@ -77,6 +80,7 @@ paths:
           description: OK
 
     post:
+      operationId: postPresentations
       summary: プレゼンテーションを追加
       tags:
         - presentation
@@ -86,11 +90,23 @@ paths:
         '409':
           description: Conflict
 
-  '/presentation/{presentationId}':
+    patch:
+      operationId: editPresentations
+      summary: プレゼンテーションを編集
+      tags:
+        - presentation
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+
+  '/presentations/{presentationId}':
     parameters:
       - $ref: '#/components/parameters/presentationId'
 
     get:
+      operationId: getPresentation
       summary: プレゼンテーションの詳細情報を取得
       tags:
         - presentation
@@ -101,6 +117,7 @@ paths:
           description: Not Found
 
     patch:
+      operationId: editPresentation
       summary: プレゼンテーションの詳細情報を変更
       tags:
         - presentation
@@ -113,6 +130,7 @@ paths:
           description: Not Found
 
     delete:
+      operationId: deletePresentation
       summary: プレゼンテーションを削除
       tags:
         - presentation
@@ -124,11 +142,12 @@ paths:
         '404':
           description: Not Found
 
-  '/presentation/{presentationId}/reaction':
+  '/presentations/{presentationId}/reaction':
     parameters:
       - $ref: '#/components/parameters/presentationId'
 
     get:
+      operationId: getPresentationReactions
       summary: プレゼンテーションのリアクション統計を取得
       tags:
         - presentation
@@ -138,11 +157,12 @@ paths:
         '404':
           description: Not Found
 
-  '/presentation/{presentationId}/review':
+  '/presentations/{presentationId}/review':
     parameters:
       - $ref: '#/components/parameters/presentationId'
 
     get:
+      operationId: getPresentationReviews
       summary: プレゼンテーションのレビュー統計を取得
       tags:
         - presentation
@@ -153,6 +173,7 @@ paths:
           description: Not Found
 
     post:
+      operationId: postPresentationReactions
       summary: プレゼンテーションのレビューを追加
       tags:
         - presentation
@@ -165,6 +186,7 @@ paths:
           description: Conflict
 
     patch:
+      operationId: editPresentationReactions
       summary: プレゼンテーションのレビューを変更
       tags:
         - presentation
@@ -174,11 +196,12 @@ paths:
         '404':
           description: Not Found
 
-  '/presentation/{presentationId}/comments':
+  '/presentations/{presentationId}/comments':
     parameters:
       - $ref: '#/components/parameters/presentationId'
 
     get:
+      operationId: getPresentationComments
       summary: プレゼンテーションのコメント一覧を取得
       tags:
         - presentation
