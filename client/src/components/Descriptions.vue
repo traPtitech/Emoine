@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="$style.desc">
     <h3>Descriptions {{ liveId }}</h3>
     <!--
       - タイトルと説明
@@ -22,8 +22,11 @@ export default defineComponent({
 })
 </script>
 
-<style module>
-.re {
-  font-weight: bold;
+<style lang="scss" module>
+.desc {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.3);
 }
 </style>
