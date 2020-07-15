@@ -1,10 +1,6 @@
 syntax = "proto3";
 option go_package = ".;handler";
 
-service ReactionAPI {
-
-}
-
 message Reaction {
   uint32 presentationId = 1;
   Stamp stamp = 2;

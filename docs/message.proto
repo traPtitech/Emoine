@@ -1,0 +1,12 @@
+syntax = "proto3";
+option go_package = ".;handler";
+
+import "state.proto";
+import "reaction.proto";
+import "comment.proto";
+
+message message {
+  State state = 1;
+  Reaction reaction = 2;
+  Comment comment = 3;
+}

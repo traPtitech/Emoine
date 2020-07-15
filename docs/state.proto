@@ -1,10 +1,6 @@
 syntax = "proto3";
 option go_package = ".;handler";
 
-service StateAPI {
-
-}
-
 message State {
   Status status = 1;
   string info = 2;
