@@ -1,16 +1,11 @@
 package repository
 
-import "time"
-
 type State struct {
-	ID        string    `db:"id"`
-	Status    string    `db:"status"`
-	Info      string    `db:"info"`
-	CreatedAt time.Time `db:"created_at"`
-	UpdatedAt time.Time `db:"updated_at"`
+	Status string `db:"status"`
+	Info   string `db:"info"`
 }
 
 type StateRepository interface {
-	UpdateState(status string, info string) error
+	UpdateState(*State) error
 	GetState() (*State, error)
 }
