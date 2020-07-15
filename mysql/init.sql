@@ -22,7 +22,6 @@ CREATE TABLE IF NOT EXISTS presentation
 );
 
 INSERT INTO presentation(id,name) VALUES (0,'before');
-INSERT INTO presentation(id,name) VALUES (1000,'after');
 
 CREATE TABLE IF NOT EXISTS reaction
 (
