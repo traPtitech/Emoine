@@ -29,6 +29,15 @@ const generateBaseAPI = async sourceFile => {
   await sourceFile.save()
 }
 
+const patchUrl = async sourceFile => {
+  const imports = sourceFile.getImportDeclarations()
+
+  const im = imports.find(im => im.getModuleSpecifierValue() === 'url')
+  im.setModuleSpecifier('/@/patch/url')
+
+  await sourceFile.save()
+}
+
 const addApis = async dir => {
   const project = new Project()
   project.addSourceFilesAtPaths(`${dir}/**/*.ts`)
@@ -36,6 +45,7 @@ const addApis = async dir => {
   const sourceFile = project.getSourceFileOrThrow('api.ts')
 
   await generateBaseAPI(sourceFile)
+  await patchUrl(sourceFile)
 }
 
 module.exports = addApis
