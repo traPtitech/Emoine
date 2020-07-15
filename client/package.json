@@ -7,7 +7,8 @@
     "lint": "eslint --ext .js,.vue src",
     "type-check": "tsc",
     "gen-apis": "node scripts/generate-apis.js",
-    "gen-pb": "pbjs -t static-module -w es6 ../docs/message.proto -o src/lib/pb/message.js && pbts src/lib/pb/message.js -o src/lib/pb/message.d.ts && node scripts/fix-pb.js"
+    "gen-pb": "pbjs -t static-module -w es6 ../docs/message.proto -o src/lib/pb/message.js && pbts src/lib/pb/message.js -o src/lib/pb/message.d.ts && node scripts/fix-pb.js",
+    "postinstall": "patch-package && npm run gen-apis && npm run gen-pb"
   },
   "dependencies": {
     "axios": "^0.19.2",
@@ -27,6 +28,7 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-vue": "^7.0.0-alpha.8",
+    "patch-package": "^6.2.2",
     "prettier": "^2.0.5",
     "protobufjs": "^6.10.0",
     "sass": "^1.26.10",
