@@ -44,6 +44,10 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
 
   '/state':
     parameters:
@@ -52,11 +56,7 @@ paths:
         required: true
         description: 進行状況
         schema:
-          type: string
-          enum:
-            - next
-            - pause
-            - resume
+          $ref: '#/components/schemas/StateChangeType'
 
     post:
       operationId: postState
@@ -78,28 +78,28 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Presentation'
 
     post:
       operationId: postPresentations
       summary: プレゼンテーションを追加
       tags:
         - presentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Presentation'
       responses:
         '201':
           description: Created
         '409':
           description: Conflict
-
-    patch:
-      operationId: editPresentations
-      summary: プレゼンテーションを編集
-      tags:
-        - presentation
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
 
   '/presentations/{presentationId}':
     parameters:
@@ -113,6 +113,10 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Presentation'
         '404':
           description: Not Found
 
@@ -124,6 +128,10 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Presentation'
         '400':
           description: Bad Request
         '404':
@@ -154,6 +162,10 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReactionStatistics'
         '404':
           description: Not Found
 
@@ -169,6 +181,12 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Review'
         '404':
           description: Not Found
 
@@ -177,6 +195,11 @@ paths:
       summary: プレゼンテーションのレビューを追加
       tags:
         - presentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Review'
       responses:
         '201':
           description: Created
@@ -190,6 +213,11 @@ paths:
       summary: プレゼンテーションのレビューを変更
       tags:
         - presentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Review'
       responses:
         '200':
           description: OK
@@ -208,6 +236,12 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
         '404':
           description: Not Found
 
@@ -227,3 +261,151 @@ components:
       schema:
         type: string
         format: uuid
+  schemas:
+    StateChangeType:
+      type: string
+      enum:
+        - next
+        - pause
+        - resume
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          description: traP ID
+      required:
+        - id
+        - name
+      description: ユーザー
+    Presentation:
+      type: object
+      properties:
+        id:
+          type: number
+          readOnly: true
+        name:
+          type: string
+        speakers:
+          type: string
+        description:
+          type: string
+          minLength: 0
+          maxLength: 140
+        prev:
+          type: number
+          nullable: true
+          description: 前の発表のID
+        next:
+          type: number
+          nullable: true
+          description: 次の発表のID
+      required:
+        - id
+        - name
+        - speakers
+        - description
+        - prev
+        - next
+      description: 発表情報
+    ReactionStatistics:
+      type: array
+      items:
+        $ref: '#/components/schemas/Reaction'
+      description: リアクションの統計情報
+    Reaction:
+      type: object
+      properties:
+        id:
+          type: number
+        userId:
+          type: string
+          format: uuid
+        presentationId:
+          type: number
+        stamp:
+          $ref: '#/components/schemas/Stamp'
+      required:
+        - id
+        - userId
+        - presentationId
+        - stamp
+      description: リアクション
+    Stamp:
+      type: number
+      enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+      x-enum-varnames:
+        - iine
+        - pro
+        - emoi
+        - kandoushita
+        - sugoi
+        - kami
+        - suko
+        - yosa
+        - kusa
+    Review:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+          readOnly: true
+        presentationId:
+          type: number
+        skill:
+          type: number
+          minimum: 1
+          maximum: 5
+        artistry:
+          type: number
+          minimum: 1
+          maximum: 5
+        idea:
+          type: number
+          minimum: 1
+          maximum: 5
+        presentation:
+          type: number
+          minimum: 1
+          maximum: 5
+      required:
+        - userId
+        - presentationId
+        - skill
+        - artistry
+        - idea
+        - presentation
+      description: レビュー
+    Comment:
+      type: object
+      properties:
+        id:
+          type: number
+          readOnly: true
+        userId:
+          type: string
+          format: uuid
+          readOnly: true
+        presentationId:
+          type: number
+        text:
+          type: string
+      required:
+        - id
+        - userId
+        - presentationId
+        - text
+      description: コメント

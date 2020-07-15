@@ -5,25 +5,32 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint --ext .js,.vue src",
-    "type-check": "tsc"
+    "type-check": "tsc",
+    "gen-apis": "node scripts/generate-apis.js",
+    "gen-pb": "pbjs -t static-module -w es6 ../docs/message.proto -o src/lib/pb/message.js && pbts src/lib/pb/message.js -o src/lib/pb/message.d.ts && node scripts/fix-pb.js"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "direct-vuex": "^0.12.0",
-    "vue": "^3.0.0-beta.20",
+    "ress": "^2.0.4",
+    "vue": "^3.0.0-beta.21",
     "vue-router": "^4.0.0-beta.1",
     "vuex": "^4.0.0-beta.4"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^3.6.0",
-    "@typescript-eslint/parser": "^3.6.0",
-    "@vue/compiler-sfc": "^3.0.0-beta.20",
+    "@openapitools/openapi-generator-cli": "^1.0.15-4.3.1",
+    "@typescript-eslint/eslint-plugin": "^3.6.1",
+    "@typescript-eslint/parser": "^3.6.1",
+    "@vue/compiler-sfc": "^3.0.0-beta.21",
     "autoprefixer": "^9.8.5",
     "eslint": "^7.4.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-vue": "^7.0.0-alpha.8",
     "prettier": "^2.0.5",
+    "protobufjs": "^6.10.0",
     "sass": "^1.26.10",
+    "ts-morph": "^7.1.2",
     "typescript": "^3.9.6",
     "vite": "^1.0.0-beta.11"
   },
