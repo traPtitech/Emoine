@@ -1,8 +1,8 @@
 <template>
-  <div :class="$style.desc">
-    <h3>Descriptions {{ liveId }}</h3>
+  <div v-if="presentation" :class="$style.desc">
+    <h1>{{ presentation.name }}</h1>
+    <p>{{ presentation.description }}</p>
     <!--
-      - タイトルと説明
       - 統計情報(リアクション数とか)
     -->
   </div>
@@ -16,8 +16,8 @@ export default defineComponent({
   name: 'Descriptions',
   setup() {
     const store = useStore()
-    const liveId = computed(() => store.state.liveId)
-    return { liveId }
+    const presentation = computed(() => store.state.presentation)
+    return { presentation }
   }
 })
 </script>
