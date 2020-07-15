@@ -7,6 +7,6 @@ service CommentAPI {
 
 message Comment {
   string userId = 1;
-  string presentationId = 2;
+  uint32 presentationId = 2;
   string text = 3;
 }
