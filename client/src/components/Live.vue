@@ -1,7 +1,6 @@
 <template>
-  <div>
-    <h3>Live {{ liveUrl }}</h3>
-    <iframe :src="liveUrl" />
+  <div :class="$style.live">
+    <iframe :class="$style.iframe" :src="liveUrl" />
   </div>
 </template>
 
@@ -21,8 +20,17 @@ export default defineComponent({
 })
 </script>
 
-<style module>
-.re {
-  font-weight: bold;
+<style lang="scss" module>
+.live {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+.iframe {
+  height: 100%;
+  width: 100%;
+  border: none;
 }
 </style>

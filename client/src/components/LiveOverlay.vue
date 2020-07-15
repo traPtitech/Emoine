@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="$style.overlay">
     <h3>LiveOverlay {{ liveId }}</h3>
     <!--
       - リアクション
@@ -22,8 +22,13 @@ export default defineComponent({
 })
 </script>
 
-<style module>
-.re {
-  font-weight: bold;
+<style lang="scss" module>
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(255, 0, 0, 0.1);
 }
 </style>
