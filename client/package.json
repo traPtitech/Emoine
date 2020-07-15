@@ -12,15 +12,15 @@
   "dependencies": {
     "axios": "^0.19.2",
     "direct-vuex": "^0.12.0",
-    "vue": "^3.0.0-beta.20",
+    "vue": "^3.0.0-beta.21",
     "vue-router": "^4.0.0-beta.1",
     "vuex": "^4.0.0-beta.4"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^1.0.15-4.3.1",
-    "@typescript-eslint/eslint-plugin": "^3.6.0",
-    "@typescript-eslint/parser": "^3.6.0",
-    "@vue/compiler-sfc": "^3.0.0-beta.20",
+    "@typescript-eslint/eslint-plugin": "^3.6.1",
+    "@typescript-eslint/parser": "^3.6.1",
+    "@vue/compiler-sfc": "^3.0.0-beta.21",
     "autoprefixer": "^9.8.5",
     "eslint": "^7.4.0",
     "eslint-config-prettier": "^6.11.0",
