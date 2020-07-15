@@ -1,0 +1,2 @@
+src/lib/pb/**
+!src/lib/pb/index.ts

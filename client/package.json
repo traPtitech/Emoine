@@ -5,7 +5,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint --ext .js,.vue src",
-    "type-check": "tsc"
+    "type-check": "tsc",
+    "gen-pb": "pbjs -t static-module -w es6 ../docs/message.proto -o src/lib/pb/message.js && pbts src/lib/pb/message.js -o src/lib/pb/message.d.ts"
   },
   "dependencies": {
     "direct-vuex": "^0.12.0",
@@ -23,6 +24,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-vue": "^7.0.0-alpha.8",
     "prettier": "^2.0.5",
+    "protobufjs": "^6.10.0",
     "sass": "^1.26.10",
     "typescript": "^3.9.6",
     "vite": "^1.0.0-beta.11"
