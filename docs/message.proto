@@ -6,7 +6,9 @@ import "reaction.proto";
 import "comment.proto";
 
 message message {
-  State state = 1;
-  Reaction reaction = 2;
-  Comment comment = 3;
+  oneof payload {
+    State state = 1;
+    Reaction reaction = 2;
+    Comment comment = 3;
+  }
 }
