@@ -6,9 +6,8 @@ service ReactionAPI {
 }
 
 message Reaction {
-  string userId = 1;
-  uint32 presentationId = 2;
-  Stamp stamp = 3;
+  uint32 presentationId = 1;
+  Stamp stamp = 2;
 }
 
 enum Stamp {
