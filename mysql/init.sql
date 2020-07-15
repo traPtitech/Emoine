@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS state
 (
     id        SMALLINT AUTO_INCREMENT,
-    state     TINYTEXT NOT NULL DEFAULT 'pause',
+    status    TINYTEXT NOT NULL DEFAULT 'pause',
     info      TEXT              DEFAULT '準備中...',
     createdAt DATETIME,
     updatedAt DATETIME,
