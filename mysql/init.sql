@@ -16,6 +16,8 @@ CREATE TABLE IF NOT EXISTS presentation
     description TEXT,
     prev        SMALLINT,
     next        SMALLINT,
+    createdAt   DATETIME,
+    updatedAt   DATETIME,
     PRIMARY KEY (`id`)
 );
 

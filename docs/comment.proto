@@ -1,0 +1,7 @@
+syntax = "proto3";
+option go_package = ".;handler";
+
+message Comment {
+  uint32 presentationId = 1;
+  string text = 2;
+}

@@ -1,0 +1,19 @@
+syntax = "proto3";
+option go_package = ".;handler";
+
+message Reaction {
+  uint32 presentationId = 1;
+  Stamp stamp = 2;
+}
+
+enum Stamp {
+  iine = 0;
+  pro = 1;
+  emoi = 2;
+  kandoushita = 3;
+  sugoi = 4;
+  kami = 5;
+  suko = 6;
+  yosa = 7;
+  kusa = 8;
+}

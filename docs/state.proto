@@ -1,0 +1,13 @@
+syntax = "proto3";
+option go_package = ".;handler";
+
+message State {
+  Status status = 1;
+  string info = 2;
+}
+
+enum Status {
+  speaking = 0;
+  reviewing = 1;
+  pause = 2;
+}
