@@ -2,17 +2,19 @@
   <div :class="$style.container">
     <live :class="$style.live" />
     <live-overlay :class="$style.overlay" />
-    <review v-if="false" :class="$style.review" />
+    <review v-if="isReview" :class="$style.review" />
     <descriptions :class="$style.desc" />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
 import Live from '/@/components/Live.vue'
 import LiveOverlay from '/@/components/LiveOverlay.vue'
 import Review from '/@/components/Review.vue'
 import Descriptions from '/@/components/Descriptions.vue'
+import { useStore } from '/@/store'
+import { Status } from '/@/lib/pb'
 
 export default defineComponent({
   name: 'Index',
@@ -21,6 +23,12 @@ export default defineComponent({
     LiveOverlay,
     Review,
     Descriptions
+  },
+  setup() {
+    const store = useStore()
+    const isReview = computed(() => store.state.state === Status.reviewing)
+
+    return { isReview }
   }
 })
 </script>
