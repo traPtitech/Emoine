@@ -11,6 +11,9 @@ const config: UserConfig = {
       target: 'https://example.com',
       changeOrigin: true
     }
+  },
+  optimizeDeps: {
+    include: ['protobufjs/minimal']
   }
 }
 
