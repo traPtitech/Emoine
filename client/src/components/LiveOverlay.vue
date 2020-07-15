@@ -46,13 +46,13 @@ export default defineComponent({
   height: 100%;
   width: 100%;
   background: rgba(255, 0, 0, 0.1);
-  pointer-events: all;
+  pointer-events: auto;
 }
 .toggle {
   position: absolute;
   bottom: 0;
   right: 0;
   background: rgba(255, 255, 255, 0.8);
-  pointer-events: all;
+  pointer-events: auto;
 }
 </style>
