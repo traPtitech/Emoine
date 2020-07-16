@@ -10,8 +10,8 @@ func (repo *SqlxRepository) CreateReaction(reaction *Reaction) error {
 	return err
 }
 
-func (repo *SqlxRepository) GetReactionStatistics(id int) (*Statistics, error) {
-	var statistics Statistics
+func (repo *SqlxRepository) GetReactionStatistics(id int) (*ReactionStatistics, error) {
+	var statistics ReactionStatistics
 	statistics.PresentationId = id
 
 	var rows *sqlx.Rows

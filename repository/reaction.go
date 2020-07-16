@@ -10,7 +10,7 @@ type Reaction struct {
 	Stamp          string    `db:"stamp"`
 }
 
-type Statistics struct {
+type ReactionStatistics struct {
 	PresentationId int
 	Counts         []struct {
 		Stamp string `db:"stamp"`
@@ -20,5 +20,5 @@ type Statistics struct {
 
 type ReactionRepository interface {
 	CreateReaction(reaction *Reaction) error
-	GetReactionStatistics(id int) (*Statistics, error)
+	GetReactionStatistics(id int) (*ReactionStatistics, error)
 }
