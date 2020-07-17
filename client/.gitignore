@@ -1,8 +1,0 @@
-node_modules
-.DS_Store
-dist
-*.local
-
-/src/lib/pb/**
-!/src/lib/pb/index.ts
-src/lib/apis/generated/**

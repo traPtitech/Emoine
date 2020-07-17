@@ -1,11 +1,9 @@
 .idea
 .DS_Store
-*.pb.go
 
-node_modules
+**/node_modules
 .DS_Store
 dist
-*.local
 
 /client/src/lib/pb/**
 !/client/src/lib/pb/index.ts
