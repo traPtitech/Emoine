@@ -1,13 +1,13 @@
 package repository
 
 //TODO: read lock
-func (repo *SqlxRepository) CreatePresentation(args *CreatePresentationArgs) error {
+func (repo *SqlxRepository) CreatePresentation(presentation *CreatePresentation) error {
 	var lastId int
 	if err := repo.db.Get(&lastId, "SELECT id FROM `presentation` WHERE `next` IS NULL LIMIT 1"); err != nil {
 		return err
 	}
 	if res, err := repo.db.Exec("INSERT INTO `presentation` (name, speaker, description ,prev) VALUES (?, ?, ?, ?)",
-		args.Name, args.Speaker, args.Description, lastId); err != nil {
+		presentation.Name, presentation.Speaker, presentation.Description, lastId); err != nil {
 		return err
 	} else {
 		_, err = repo.db.Exec("UPDATE `presentation` SET `next` = ? WHERE `id` = ?", res.LastInsertId(), lastId)
@@ -15,14 +15,14 @@ func (repo *SqlxRepository) CreatePresentation(args *CreatePresentationArgs) err
 	}
 }
 
-func (repo *SqlxRepository) UpdatePresentation(state *State) error {
-	if _, err := repo.db.Exec("UPDATE `presentation` SET `id` = :id, `name` = :name, `speakers` = :speakers, description = :description, prev = :prev, next = :next", state); err != nil {
+func (repo *SqlxRepository) UpdatePresentation(presentation *Presentation) error {
+	if _, err := repo.db.Exec("UPDATE `presentation` SET `id` = :id, `name` = :name, `speakers` = :speakers, description = :description, prev = :prev, next = :next", presentation); err != nil {
 		return err
 	}
-	if _, err := repo.db.Exec("UPDATE `presentation` SET `next` = :id WHERE `id` = :prev", state); err != nil {
+	if _, err := repo.db.Exec("UPDATE `presentation` SET `next` = :id WHERE `id` = :prev", presentation); err != nil {
 		return err
 	}
-	if _, err := repo.db.Exec("UPDATE `presentation` SET `prev` = :id WHERE `id` = :next", state); err != nil {
+	if _, err := repo.db.Exec("UPDATE `presentation` SET `prev` = :id WHERE `id` = :next", presentation); err != nil {
 		return err
 	}
 	return nil
