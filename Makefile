@@ -6,3 +6,7 @@ proto:
 		echo "protobuf build ... $$t"; \
 		protoc -I=./docs --go_out=./router/handler ./docs/$$t.proto; \
 	done
+
+.PHONY: build
+build:
+	docker build -t emoine .
