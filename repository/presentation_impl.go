@@ -10,7 +10,11 @@ func (repo *SqlxRepository) CreatePresentation(presentation *CreatePresentation)
 		presentation.Name, presentation.Speaker, presentation.Description, lastId); err != nil {
 		return err
 	} else {
-		_, err = repo.db.Exec("UPDATE `presentation` SET `next` = ? WHERE `id` = ?", res.LastInsertId(), lastId)
+		lastInsertId, err := res.LastInsertId()
+		if err != nil {
+			return err
+		}
+		_, err = repo.db.Exec("UPDATE `presentation` SET `next` = ? WHERE `id` = ?", lastInsertId, lastId)
 		return err
 	}
 }
