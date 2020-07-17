@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = ".;handler";
+option go_package = ".;router";
 
 message State {
   Status status = 1;
