@@ -1,13 +1,24 @@
 package repository
 
-import "time"
+type CreatePresentationArgs struct {
+	Name        string    `db:"name"`
+	Speaker     string    `db:"speaker"`
+	Description string    `db:"description"`
+}
 
 type Presentation struct {
 	ID          int       `db:"id"`
 	Name        string    `db:"name"`
 	Speaker     string    `db:"speaker"`
 	Description string    `db:"description"`
-	Password    string    `db:"password"`
-	CreatedAt   time.Time `db:"created_at"`
-	UpdatedAt   time.Time `db:"updated_at"`
+	Prev        int       `db:"prev"`
+	Next        int       `db:"next"`
+}
+
+type PresentationRepository interface {
+	CreatePresentation(*CreatePresentationArgs) (*Presentation, error)
+	UpdatePresentation(*Presentation) error
+	GetPresentations() ([]*Presentation, error)
+	GetPresentation(id int) (*Presentation, error)
+	DeletePresentation(id int) error
 }
