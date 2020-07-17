@@ -63,9 +63,7 @@ func main() {
 		panic(err)
 	}
 	echo := router.Setup(repo)
-	echo.Logger.Fatal(echo.Start(":80"))
-	// if err = echo.Start(fmt.Sprintf(":%d", port)); err != nil {
-	// 	panic(err)
-	// }
-	// fmt.Println("aaaa")
+	if err = echo.Start(fmt.Sprintf(":%d", port)); err != nil {
+		panic(err)
+	}
 }
