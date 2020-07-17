@@ -8,8 +8,8 @@ import (
 
 	"github.com/FujishigeTemma/Emoine/repository"
 	"github.com/FujishigeTemma/Emoine/router"
-	"github.com/jmoiron/sqlx"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
 const (
@@ -37,6 +37,7 @@ func main() {
 		"mysql:3306",
 		"emoine",
 	))
+
 
 	// create schema
 	var paths []string
