@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	dbInitDirectory = "./mysql/init"
+	dbInitDirectory = "./mysql"
 )
 
 var (
@@ -26,7 +26,7 @@ func main() {
 		"%s:%s@tcp(%s)/%s?parseTime=true",
 		"root",
 		"password",
-		"mysql",
+		"mysql:3306",
 		"emoine",
 	))
 	// db connection for batch executing, allowing multi statements
@@ -34,7 +34,7 @@ func main() {
 		"%s:%s@tcp(%s)/%s?multiStatements=true&parseTime=true",
 		"root",
 		"password",
-		"mysql",
+		"mysql:3306",
 		"emoine",
 	))
 
@@ -62,7 +62,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
 	echo := router.Setup(repo)
-	echo.Start(fmt.Sprintf(":%d", port))
+	echo.Logger.Fatal(echo.Start(":80"))
+	// if err = echo.Start(fmt.Sprintf(":%d", port)); err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Println("aaaa")
 }

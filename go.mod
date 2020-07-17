@@ -5,6 +5,7 @@ go 1.15
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-ozzo/ozzo-validation/v4 v4.2.1
+	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gofrs/uuid v3.3.0+incompatible
 	github.com/golang/protobuf v1.4.2
 	github.com/jmoiron/sqlx v1.2.0
