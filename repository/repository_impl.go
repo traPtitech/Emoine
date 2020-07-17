@@ -8,7 +8,7 @@ type SqlxRepository struct {
 }
 
 // NewSqlxRepository リポジトリ実装を初期化して生成します
-func NewSqlxRepository(db *sqlx.DB) (Repository, error) {
+func NewSqlxRepository(db *sqlx.DB) (*SqlxRepository, error) {
 	repo := &SqlxRepository{
 		db: db,
 	}
