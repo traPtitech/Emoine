@@ -1,6 +1,6 @@
 package repository
 
-type CreatePresentationArgs struct {
+type CreatePresentation struct {
 	Name        string    `db:"name"`
 	Speaker     string    `db:"speaker"`
 	Description string    `db:"description"`
@@ -16,8 +16,8 @@ type Presentation struct {
 }
 
 type PresentationRepository interface {
-	CreatePresentation(*CreatePresentationArgs) (*Presentation, error)
-	UpdatePresentation(*Presentation) error
+	CreatePresentation(presentation *CreatePresentation) error
+	UpdatePresentation(presentation *Presentation) error
 	GetPresentations() ([]*Presentation, error)
 	GetPresentation(id int) (*Presentation, error)
 	DeletePresentation(id int) error
