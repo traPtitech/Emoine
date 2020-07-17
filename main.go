@@ -22,28 +22,25 @@ var (
 
 func main() {
 	// connect to db
-	db, err := sqlx.Open("mysql", fmt.Sprintf(
-		"%s:%s@tcp(%s:3306)/%s?parseTime=true",
+	db := sqlx.MustConnect("mysql", fmt.Sprintf(
+		"%s:%s@tcp(%s)/%s?parseTime=true",
 		"root",
 		"password",
-		"localhost",
+		"mysql",
 		"emoine",
 	))
-	if err != nil {
-		panic(err)
-	}
 	// db connection for batch executing, allowing multi statements
 	dbForBatch := sqlx.MustConnect("mysql", fmt.Sprintf(
-		"%s:%s@tcp(%s:3306)/%s?multiStatements=true&parseTime=true",
+		"%s:%s@tcp(%s)/%s?multiStatements=true&parseTime=true",
 		"root",
 		"password",
-		"localhost",
+		"mysql",
 		"emoine",
 	))
 
 	// create schema
 	var paths []string
-	err = filepath.Walk(dbInitDirectory, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(dbInitDirectory, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() {
 			return nil
 		}
