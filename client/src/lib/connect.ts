@@ -22,7 +22,7 @@ export const connectTarget = document.createDocumentFragment() as ConnectTarget
 const onReaction = (m: Message) => {
   const reaction = m.reaction
   if (!reaction) return
-  if (reaction.stamp !== null && reaction.stamp !== undefined) return
+  if (reaction.stamp === null && reaction.stamp === undefined) return
   const reactionSafe = reaction as ReactionSafe
 
   connectTarget.dispatchEvent(
