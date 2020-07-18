@@ -20,13 +20,14 @@ func (repo *SqlxRepository) CreatePresentation(presentation *CreatePresentation)
 }
 
 func (repo *SqlxRepository) UpdatePresentation(presentation *Presentation) error {
-	if _, err := repo.db.Exec("UPDATE `presentation` SET `id` = :id, `name` = :name, `speakers` = :speakers, description = :description, prev = :prev, next = :next", presentation); err != nil {
+	if _, err := repo.db.Exec("UPDATE `presentation` SET `name` = ?, `speakers` = ?, description = ?, prev = ?, next = ? WHERE `id` = ?",
+		presentation.ID, presentation.Name, presentation.Speakers, presentation.Description, presentation.Prev, presentation.Next); err != nil {
 		return err
 	}
-	if _, err := repo.db.Exec("UPDATE `presentation` SET `next` = :id WHERE `id` = :prev", presentation); err != nil {
+	if _, err := repo.db.Exec("UPDATE `presentation` SET `next` = ? WHERE `id` = ?", presentation.ID, presentation.Prev); err != nil {
 		return err
 	}
-	if _, err := repo.db.Exec("UPDATE `presentation` SET `prev` = :id WHERE `id` = :next", presentation); err != nil {
+	if _, err := repo.db.Exec("UPDATE `presentation` SET `prev` = ? WHERE `id` = ?", presentation.ID, presentation.Next); err != nil {
 		return err
 	}
 	return nil

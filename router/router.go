@@ -27,6 +27,7 @@ func Setup(repo repository.Repository) *echo.Echo {
 			apiPresentationsID := apiPresentations.Group("/:presentationID")
 			{
 				apiPresentationsID.GET("", h.GetPresentation)
+				apiPresentationsID.PATCH("", h.PatchPresentation)
 			}
 		}
 	}
