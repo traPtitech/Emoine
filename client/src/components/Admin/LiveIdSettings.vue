@@ -1,8 +1,8 @@
 <template>
   <div>
-    LiveId
-    <input v-model="id" type="text" />
-    <button @click="set">設定</button>
+    <h2>LiveId</h2>
+    <input v-model="id" :class="$style.input" type="text" />
+    <button :class="$style.button" @click="set">設定</button>
   </div>
 </template>
 
@@ -39,7 +39,12 @@ export default defineComponent({
 </script>
 
 <style module>
-.re {
-  font-weight: bold;
+.input {
+  background-color: #fff;
+}
+.button {
+  margin: 0 4px;
+  padding: 2px 4px;
+  border: solid 2px #333;
 }
 </style>

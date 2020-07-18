@@ -1,10 +1,12 @@
 <template>
   <div>
-    進行設定
+    <h2>進行設定</h2>
     <presentation
       v-for="presentation in presentationList"
       :key="presentation.id"
+      :class="$style.presentation"
       :presentation="presentation"
+      @need-update="refetch"
     />
   </div>
 </template>
@@ -26,18 +28,28 @@ export default defineComponent({
       linkedListMapToArray(presentationMap.value)
     )
 
-    onMounted(async () => {
+    const refetch = async () => {
       const { data } = await apis.getPresentations()
       presentationMap.value = new Map(data.map(p => [p.id, p]))
+    }
+
+    onMounted(() => {
+      refetch()
     })
 
-    return { presentationList }
+    return { presentationList, refetch }
   }
 })
 </script>
 
 <style module>
-.re {
-  font-weight: bold;
+.presentation {
+  margin: 8px 0;
+  &:first-child {
+    margin-top: 0;
+  }
+  &:last-child {
+    margin-bottom: 0;
+  }
 }
 </style>

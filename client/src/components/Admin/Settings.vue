@@ -1,7 +1,7 @@
 <template>
   <div>
-    <live-id-settings />
-    <presentations-settings />
+    <live-id-settings :class="$style.settings" />
+    <presentations-settings :class="$style.settings" />
   </div>
 </template>
 
@@ -18,3 +18,15 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="scss" module>
+.settings {
+  margin: 24px 0;
+  &:first-child {
+    margin-top: 0;
+  }
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+</style>
