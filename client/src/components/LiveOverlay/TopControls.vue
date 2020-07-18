@@ -1,8 +1,11 @@
 <template>
   <div :class="$style.topControls" :data-is-shown="show">
-    <button @click="reaction">
-      :iine:
-    </button>
+    <reaction-button
+      v-for="stamp in stamps"
+      :key="stamp"
+      :presentation-id="presentationId"
+      :stamp="stamp"
+    />
   </div>
 </template>
 
@@ -10,10 +13,13 @@
 import { defineComponent, computed } from 'vue'
 import { useStore } from '/@/store'
 import { Stamp } from '/@/lib/pb'
-import { sendReaction } from '/@/lib/connect'
+import ReactionButton from './ReactionButton.vue'
 
 export default defineComponent({
   name: 'TopControls',
+  components: {
+    ReactionButton
+  },
   props: {
     show: {
       type: Boolean,
@@ -22,19 +28,29 @@ export default defineComponent({
   },
   setup() {
     const store = useStore()
-    const presentationId = computed(() => 1) //store.state.presentation?.id ?? null)
+    const presentationId = computed(() => 1) //store.state.presentation?.id)
 
-    const reaction = () => {
-      sendReaction({ presentationId: presentationId.value, stamp: Stamp.iine })
-    }
+    const stamps = [
+      Stamp.iine,
+      Stamp.pro,
+      Stamp.emoi,
+      Stamp.kandoushita,
+      Stamp.sugoi,
+      Stamp.kami,
+      Stamp.suko,
+      Stamp.yosa,
+      Stamp.kusa
+    ]
 
-    return { reaction }
+    return { presentationId, stamps }
   }
 })
 </script>
 
 <style lang="scss" module>
 .topControls {
+  display: flex;
+  justify-content: space-around;
   background: rgba(255, 255, 255, 0.8);
   pointer-events: auto;
   &:not([data-is-shown='true']) {
