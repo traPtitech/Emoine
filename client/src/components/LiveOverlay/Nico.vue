@@ -7,6 +7,7 @@ import { defineComponent, ref } from 'vue'
 import { connectTarget } from '/@/lib/connect'
 import useElementSize from '/@/use/elementSize'
 import { addComment } from './commentRenderer'
+import { addReaction } from './reactionRenderer'
 
 export default defineComponent({
   name: 'Nico',
@@ -21,7 +22,7 @@ export default defineComponent({
     const { height: baseHeight } = useElementSize($base)
 
     connectTarget.addEventListener('reaction', e => {
-      //received.value.push(e.detail.stamp.toString())
+      addReaction($base, baseHeight, e.detail.stamp)
     })
     connectTarget.addEventListener('comment', e => {
       addComment($base, baseHeight, e.detail.text)

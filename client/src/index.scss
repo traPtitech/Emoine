@@ -35,3 +35,11 @@ body,
     transform: translateX(-200%);
   }
 }
+
+.animation-reaction {
+  position: absolute;
+  display: inline-block;
+  animation: comment 10s linear;
+  font-size: 20vh;
+  color: rgba(255, 255, 255, .5);
+}
