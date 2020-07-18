@@ -23,6 +23,7 @@ func Setup(repo repository.Repository) *echo.Echo {
 		apiPresentations := api.Group("/presentations")
 		{
 			apiPresentations.GET("", h.GetPresentations)
+			apiPresentations.POST("", h.PostPresentations)
 		}
 	}
 	return e
