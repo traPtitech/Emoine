@@ -1,5 +1,7 @@
 package repository
 
+import "database/sql"
+
 //TODO: read lock
 func (repo *SqlxRepository) CreatePresentation(presentation *CreatePresentation) error {
 	var lastId int
@@ -51,8 +53,8 @@ func (repo *SqlxRepository) GetPresentation(id int) (*Presentation, error) {
 
 func (repo *SqlxRepository) DeletePresentation(id int) error {
 	type Order struct {
-		Prev int `db:"prev"`
-		Next int `db:"next"`
+		Prev sql.NullInt32 `db:"prev"`
+		Next sql.NullInt32 `db:"next"`
 	}
 	order := Order{}
 	if err := repo.db.Get(&order, "SELECT `prev`, `next` FROM `presentation` WHERE `id` = ? LIMIT 1", id); err != nil {
