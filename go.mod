@@ -10,7 +10,6 @@ require (
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/json-iterator/go v1.1.10
 	github.com/kr/pretty v0.1.0 // indirect
-	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/echo/v4 v4.1.16
 	github.com/leandro-lugaresi/hub v1.1.0
 	github.com/stretchr/testify v1.6.1 // indirect
