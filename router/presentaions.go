@@ -8,6 +8,9 @@ import (
 
 // GetPresentations GET /presentations
 func (h *Handlers) GetPresentations(c echo.Context) error {
-	fmt.Println("GET /presentations")
-	return c.NoContent(http.StatusNoContent)
+	presentations, err := h.Repo.GetPresentations()
+	if err != nil {
+		return err
+	}
+	return c.JSON(http.StatusOK, presentations)
 }
