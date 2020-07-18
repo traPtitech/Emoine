@@ -2,14 +2,13 @@ package router
 
 import (
 	"errors"
-	"github.com/FujishigeTemma/Emoine/repository"
-	"github.com/FujishigeTemma/Emoine/utils"
-	"github.com/gofrs/uuid"
-	"github.com/gorilla/websocket"
-	"github.com/labstack/echo-contrib/session"
-	"github.com/labstack/echo/v4"
 	"net/http"
 	"sync"
+
+	"github.com/FujishigeTemma/Emoine/repository"
+	"github.com/FujishigeTemma/Emoine/utils"
+	"github.com/gorilla/websocket"
+	"github.com/labstack/echo/v4"
 )
 
 var (
@@ -85,7 +84,7 @@ func (s *Streamer) ServeHTTP(c echo.Context) {
 		http.Error(c.Response(), http.StatusText(http.StatusServiceUnavailable), http.StatusServiceUnavailable)
 		return
 	}
-	sess, err := session.Get("e_session", c)
+	userID, err := getRequestUserID(c)
 	if err != nil {
 		return
 	}
@@ -97,7 +96,7 @@ func (s *Streamer) ServeHTTP(c echo.Context) {
 
 	client := &client{
 		key:      utils.RandAlphabetAndNumberString(20),
-		userID:   sess.Values["usetID"].(uuid.UUID),
+		userID:   userID,
 		req:      c.Request(),
 		streamer: s,
 		conn:     conn,
