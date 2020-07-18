@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS reaction
     id             SMALLINT UNSIGNED AUTO_INCREMENT,
     userId         VARCHAR(32)       NOT NULL,
     presentationId SMALLINT UNSIGNED NOT NULL,
-    stamp          TINYTEXT,
+    stamp          TINYINT,
     createdAt      DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)
 );
