@@ -8,6 +8,8 @@ services:
       - 3050:80
     depends_on:
       - mysql
+    environment:
+      - CLIENT_ID=I62ZG0yeAZUFmFKgWAfFRRuA8blN5IxlnnJd
 
   mysql:
     image: mariadb:10.0.19
