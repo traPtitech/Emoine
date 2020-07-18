@@ -6,6 +6,7 @@ import (
 	"github.com/FujishigeTemma/Emoine/utils"
 	"github.com/gofrs/uuid"
 	"github.com/gorilla/websocket"
+	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"sync"
@@ -84,6 +85,10 @@ func (s *Streamer) ServeHTTP(c echo.Context) {
 		http.Error(c.Response(), http.StatusText(http.StatusServiceUnavailable), http.StatusServiceUnavailable)
 		return
 	}
+	sess, err := session.Get("e_session", c)
+	if err != nil {
+		return
+	}
 
 	conn, err := upgrader.Upgrade(c.Response(), c.Request(), c.Response().Header())
 	if err != nil {
@@ -92,7 +97,7 @@ func (s *Streamer) ServeHTTP(c echo.Context) {
 
 	client := &client{
 		key:      utils.RandAlphabetAndNumberString(20),
-		userID:   c.Request().Context().Value("userId").(uuid.UUID),
+		userID:   sess.Values["usetID"].(uuid.UUID),
 		req:      c.Request(),
 		streamer: s,
 		conn:     conn,
