@@ -1,13 +1,11 @@
 package router
 
 import (
-	"database/sql"
-	"fmt"
 	"net/http"
-	"reflect"
 	"strconv"
 
 	"github.com/FujishigeTemma/Emoine/repository"
+	"github.com/FujishigeTemma/Emoine/utils"
 	"github.com/labstack/echo/v4"
 )
 
@@ -18,11 +16,11 @@ type PostPresentationsStruct struct {
 }
 
 type PatchPresentationsStruct struct {
-	Name        *string `json:"name"`
-	Speakers    *string `json:"speakers"`
-	Description *string `json:"description"`
-	Prev				*int			`json:"prev"`
-	Next				*int			`json:"next"`
+	Name        utils.String `json:"name"`
+	Speakers    utils.String `json:"speakers"`
+	Description utils.String `json:"description"`
+	Prev        utils.Int    `json:"prev"`
+	Next        utils.Int    `json:"next"`
 }
 
 // GetPresentations GET /presentations
@@ -85,29 +83,9 @@ func (h *Handlers) PatchPresentation(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	rtPatchStruct := reflect.TypeOf(patchStruct)
-	rvPatchStruct := reflect.ValueOf(patchStruct)
-
-	rvPresentation := reflect.ValueOf(&presentation).Elem()
-
-	for i := 0; i < rtPatchStruct.NumField(); i++ {
-		f := rtPatchStruct.Field(i)
-		v := rvPatchStruct.FieldByName(f.Name).Interface()
-		fmt.Println(v)
-		str := ""
-		integer := 0
-		if v != nil {
-			if f.Type == reflect.TypeOf(&str) {
-				fmt.Println("string")
-				rvPresentation.FieldByName(f.Name).Set(reflect.ValueOf(sql.NullString{ String: v.(string), Valid: true }))
-			}
-			if f.Type == reflect.TypeOf(&integer) {
-				fmt.Println("int")
-				rvPresentation.FieldByName(f.Name).Set(reflect.ValueOf(sql.NullInt32{ Int32: v.(int32), Valid: true }))
-			}
-		}
-	}
-	fmt.Println(presentation)
+	presentation.Name = patchStruct.Name
+	presentation.Description = patchStruct.Description
+	presentation.Speakers = patchStruct.Speakers
 
 	if err = h.Repo.UpdatePresentation(presentation); err != nil {
 		return err
