@@ -153,6 +153,11 @@ paths:
       summary: プレゼンテーションの詳細情報を変更
       tags:
         - presentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Presentation'
       responses:
         '200':
           description: OK
