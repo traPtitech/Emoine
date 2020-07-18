@@ -10,6 +10,8 @@ type rawMessage struct {
 	data []byte
 }
 
+var stateData []byte
+
 func (c *client) MsgHandler(b []byte) error {
 	m := &Message{}
 	if err := proto.Unmarshal(b, m); err != nil {
@@ -22,6 +24,7 @@ func (c *client) MsgHandler(b []byte) error {
 		if err := c.stateMsgHandler(m.GetState()); err != nil {
 			return nil
 		}
+		stateData = b
 	case *Message_Reaction:
 		if err := c.reactionMsgHandler(m.GetReaction()); err != nil {
 			return err
