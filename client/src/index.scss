@@ -29,7 +29,7 @@ li {
   left: 0;
   display: inline-block;
   animation: comment 10s linear;
-  color: rgba(255, 255, 255, 0.5);
+  opacity: 0.7;
 }
 @keyframes comment {
   0% {
@@ -43,7 +43,19 @@ li {
 .animation-reaction {
   position: absolute;
   display: inline-block;
-  animation: comment 10s linear;
-  font-size: 20vh;
+  animation: reaction 5s ease-out;
   color: rgba(255, 255, 255, 0.5);
+  opacity: 0.7;
+  img {
+    height: 100%;
+    width: 100%;
+  }
+}
+@keyframes reaction {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
 }

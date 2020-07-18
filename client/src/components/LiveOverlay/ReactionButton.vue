@@ -1,6 +1,6 @@
 <template>
   <button :class="$style.reactionButton" @click="reaction">
-    {{ name }}
+    <img :class="$style.img" :src="`/assets/${fileName}.png`" />
   </button>
 </template>
 
@@ -8,34 +8,7 @@
 import { defineComponent, PropType, computed } from 'vue'
 import { Stamp } from '/@/lib/pb'
 import { sendReaction } from '/@/lib/connect'
-
-const stampToName = (stamp: Stamp) => {
-  switch (stamp) {
-    case Stamp.iine:
-      return 'いいね'
-    case Stamp.pro:
-      return 'プロ'
-    case Stamp.emoi:
-      return 'エモい'
-    case Stamp.kandoushita:
-      return '感動した'
-    case Stamp.sugoi:
-      return 'すごい'
-    case Stamp.kami:
-      return '神'
-    case Stamp.suko:
-      return 'すこ'
-    case Stamp.yosa:
-      return 'よさ'
-    case Stamp.kusa:
-      return '草'
-    default: {
-      const invalid: never = stamp
-      // eslint-disable-next-line no-console
-      console.warn('invalid stamp', invalid)
-    }
-  }
-}
+import { stampToFileName } from './reactionRenderer'
 
 export default defineComponent({
   name: 'ReactionButton',
@@ -48,7 +21,7 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const name = computed(() => stampToName(props.stamp))
+    const fileName = computed(() => stampToFileName(props.stamp))
 
     const reaction = () => {
       sendReaction({
@@ -57,12 +30,19 @@ export default defineComponent({
       })
     }
 
-    return { name, reaction }
+    return { fileName, reaction }
   }
 })
 </script>
 
 <style lang="scss" module>
 .reactionButton {
+  height: min(5em, 10vh);
+  width: min(5em, 10vh);
+}
+.img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
 }
 </style>
