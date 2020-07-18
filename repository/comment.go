@@ -5,8 +5,8 @@ import (
 )
 
 type Comment struct {
-	UserId         uuid.UUID `db:"userId"`
-	PresentationId int       `db:"presentationId"`
+	UserID         uuid.UUID `db:"userId"`
+	PresentationID int       `db:"presentationId"`
 	Text           string    `db:"text"`
 }
 

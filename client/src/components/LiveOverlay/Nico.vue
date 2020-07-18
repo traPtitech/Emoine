@@ -19,10 +19,10 @@ export default defineComponent({
   },
   setup() {
     const $base = ref<HTMLDivElement>()
-    const { height: baseHeight } = useElementSize($base)
+    const { height: baseHeight, width: baseWidth } = useElementSize($base)
 
     connectTarget.addEventListener('reaction', e => {
-      addReaction($base, baseHeight, e.detail.stamp)
+      addReaction($base, baseHeight, baseWidth, e.detail.stamp)
     })
     connectTarget.addEventListener('comment', e => {
       addComment($base, baseHeight, e.detail.text)
