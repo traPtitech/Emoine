@@ -2,14 +2,13 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"os"
-	"path/filepath"
-
 	"github.com/FujishigeTemma/Emoine/repository"
 	"github.com/FujishigeTemma/Emoine/router"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 )
 
 const (
