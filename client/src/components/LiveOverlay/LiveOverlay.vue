@@ -2,10 +2,15 @@
   <div :class="$style.container">
     <div v-if="show" :class="$style.overlay">
       <h3>LiveOverlay {{ liveId }}</h3>
-      <!--
-        - リアクション
-        - コメント
-      -->
+      <div v-for="a in received" :key="a">{{ a }}</div>
+    </div>
+    <div :class="$style.sends">
+      <button @click="reaction">
+        :iine:
+      </button>
+      <button @click="comment">
+        コメント「ぽ」
+      </button>
     </div>
     <button :class="$style.toggle" @click="toggle">
       Toggle overlay
@@ -16,6 +21,8 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue'
 import { useStore } from '/@/store'
+import { Stamp } from '/@/lib/pb'
+import { connectTarget, sendReaction, sendComment } from '/@/lib/connect'
 
 export default defineComponent({
   name: 'LiveOverlay',
@@ -28,7 +35,22 @@ export default defineComponent({
       show.value = !show.value
     }
 
-    return { liveId, show, toggle }
+    const received = ref([])
+    connectTarget.addEventListener('reaction', e => {
+      received.value.push(e.detail.stamp)
+    })
+    connectTarget.addEventListener('comment', e => {
+      received.value.push(e.detail.text)
+    })
+
+    const reaction = () => {
+      sendReaction({ presentationId: 1, stamp: Stamp.iine })
+    }
+    const comment = () => {
+      sendComment({ presentationId: 1, text: 'ぽ' })
+    }
+
+    return { liveId, show, toggle, received, reaction, comment }
   }
 })
 </script>
@@ -46,6 +68,13 @@ export default defineComponent({
   height: 100%;
   width: 100%;
   background: rgba(255, 0, 0, 0.1);
+  pointer-events: auto;
+}
+.sends {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: rgba(255, 255, 255, 0.8);
   pointer-events: auto;
 }
 .toggle {
