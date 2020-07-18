@@ -38,7 +38,6 @@ func main() {
 		"emoine",
 	))
 
-
 	// create schema
 	var paths []string
 	err := filepath.Walk(dbInitDirectory, func(path string, info os.FileInfo, err error) error {

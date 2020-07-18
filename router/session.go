@@ -15,15 +15,69 @@ type Session interface {
 }
 
 type session struct {
-	key    string
-	userID uuid.UUID
-	sync.RWMutex
+	key      string
+	userID   uuid.UUID
 	req      *http.Request
-	conn     *websocket.Conn
 	streamer *Streamer
+	conn     *websocket.Conn
 	open     bool
 	send     chan *rawMessage
+	sync.RWMutex
 }
+
+// 受信待受
+func (s *session) listenRead() {
+	s.conn.SetReadLimit(maxReadMessageSize)
+	_ = s.conn.SetReadDeadline(time.Now().Add(pongWait))
+	s.conn.SetPongHandler(func(string) error {
+		_ = s.conn.SetReadDeadline(time.Now().Add(pongWait))
+		return nil
+	})
+
+	for {
+		t, m, err := s.conn.ReadMessage()
+		if err != nil {
+			break
+		}
+
+		if t == websocket.BinaryMessage {
+			_ = s.write(t, m)
+		}
+
+		//if t == websocket.BinaryMessage {
+		//	// unsupported
+		//	_ = s.writeMessage(&rawMessage{t: websocket.CloseMessage, data: websocket.FormatCloseMessage(websocket.CloseUnsupportedData, "binary message is not supported.")})
+		//	break
+		//}
+	}
+}
+
+// listenWrite 送信待受
+func (s *session) listenWrite() {
+	ticker := time.NewTicker(pingPeriod)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case msg, ok := <-s.send:
+			if !ok {
+				return
+			}
+
+			if err := s.write(msg.t, msg.data); err != nil {
+				return
+			}
+
+			if msg.t == websocket.CloseMessage {
+				return
+			}
+
+		case <-ticker.C:
+			_ = s.write(websocket.PingMessage, []byte{})
+		}
+	}
+}
+
 func (s *session) writeMessage(msg *rawMessage) error {
 	if s.closed() {
 		return ErrAlreadyClosed

@@ -18,12 +18,18 @@ func Setup(repo repository.Repository) *echo.Echo {
 		Repo: repo,
 	}
 
+	s := NewStreamer()
+
 	api := e.Group("/api")
 	{
 		apiPresentations := api.Group("/presentations")
 		{
 			apiPresentations.GET("", h.GetPresentations)
 		}
+		api.Group("/ws").GET("", func(c echo.Context) error {
+			s.ServeHTTP(c)
+			return nil
+		})
 	}
 	return e
 }

@@ -5,7 +5,6 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
-	"github.com/leandro-lugaresi/hub"
 	"math/rand"
 	"net/http"
 	"sync"
@@ -30,7 +29,7 @@ type Streamer struct {
 }
 
 // NewStreamer WebSocketストリーマーを生成し起動します
-func NewStreamer(hub *hub.Hub) *Streamer {
+func NewStreamer() *Streamer {
 	s := &Streamer{
 		sessions:   make(map[*session]struct{}),
 		register:   make(chan *session),
@@ -90,29 +89,19 @@ func (s *Streamer) ServeHTTP(c echo.Context) {
 
 	session := &session{
 		key:      randomAlphaNumeric(20),
-		userID:   c.Request().Context().Value(extension.CtxUserIDKey).(uuid.UUID),
+		userID:   c.Request().Context().Value("userId").(uuid.UUID),
 		req:      c.Request(),
+		streamer: s,
 		conn:     conn,
 		open:     true,
-		streamer: s,
 		send:     make(chan *rawMessage, messageBufferSize),
 	}
 
 	s.register <- session
 
-	go session.writeLoop()
-	session.readLoop()
+	go session.listenWrite()
+	session.listenRead()
 
-	s.vm.RemoveViewer(session)
-	_ = s.webrtc.ResetState(session.Key(), session.UserID())
-	s.hub.Publish(hub.Message{
-		Name: event.WSDisconnected,
-		Fields: hub.Fields{
-			"user_id": session.UserID(),
-			"req":     r,
-		},
-	})
-	wsConnectionCounter.Dec()
 	s.unregister <- session
 	session.close()
 }
