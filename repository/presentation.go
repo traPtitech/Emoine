@@ -1,8 +1,9 @@
 package repository
 
 import (
-	"database/sql"
 	"time"
+
+	"github.com/FujishigeTemma/Emoine/utils"
 )
 
 type CreatePresentation struct {
@@ -12,14 +13,14 @@ type CreatePresentation struct {
 }
 
 type Presentation struct {
-	ID          int            `db:"id"`
-	Name        sql.NullString `db:"name"`
-	Speakers    sql.NullString `db:"speakers"`
-	Description sql.NullString `db:"description"`
-	Prev        sql.NullInt32  `db:"prev"`
-	Next        sql.NullInt32  `db:"next"`
-	CreatedAt   time.Time      `db:"createdAt"`
-	UpdatedAt   time.Time      `db:"updatedAt"`
+	ID          int          `db:"id" json:"id"`
+	Name        utils.String `db:"name" json:"name"`
+	Speakers    utils.String `db:"speakers" json:"speakers"`
+	Description utils.String `db:"description" json:"description"`
+	Prev        utils.Int    `db:"prev" json:"prev"`
+	Next        utils.Int    `db:"next" json:"next"`
+	CreatedAt   time.Time    `db:"createdAt" json:"createdAt"`
+	UpdatedAt   time.Time    `db:"updatedAt" json:"updatedAt"`
 }
 
 type PresentationRepository interface {
