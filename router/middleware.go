@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/patrickmn/go-cache"
+	"net/http"
 	"os"
 	"strings"
 )
@@ -63,7 +64,7 @@ func (h *Handlers) WatchCallbackMiddleware(next echo.HandlerFunc) echo.HandlerFu
 			return internalServerError(err)
 		}
 
-		return next(c)
+		return c.Redirect(http.StatusFound, "/")
 	}
 }
 

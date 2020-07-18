@@ -55,7 +55,8 @@ func Setup(repo repository.Repository) *echo.Echo {
 				apiPresentationsID.POST("/review", h.PostPresentationReview)
 			}
 		}
-		// api.Group("/ws").GET("", func(c echo.Context) error {
+		api.GET("/users/me", h.GetUserMe)
+		// api.GET("/ws", func(c echo.Context) error {
 		// 	s.ServeHTTP(c)
 		// 	return nil
 		// })
