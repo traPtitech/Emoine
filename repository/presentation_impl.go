@@ -6,7 +6,7 @@ import "database/sql"
 func (repo *SqlxRepository) CreatePresentation(presentation *CreatePresentation) error {
 	var lastId int
 	if err := repo.db.Get(&lastId, "SELECT id FROM `presentation` WHERE `next` IS NULL LIMIT 1"); err != nil {
-		lastId = -1
+		return err
 	}
 	if res, err := repo.db.Exec("INSERT INTO `presentation` (name, speakers, description ,prev) VALUES (?, ?, ?, ?)",
 		presentation.Name, presentation.Speakers, presentation.Description, lastId); err != nil {
