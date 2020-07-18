@@ -15,12 +15,6 @@ import (
 
 var verifierCache = cache.New(5*time.Minute, 10*time.Minute)
 
-type AuthParams struct {
-	ClientID      string `json:"clientId"`
-	State         string `json:"state"`
-	CodeChallenge string `json:"codeChallenge"`
-}
-
 func (h *Handlers) HandlePostAuthParams(c echo.Context) error {
 	fmt.Println("HandlePostAuthParams")
 	codeVerifier := traQutils.RandAlphabetAndNumberString(43)

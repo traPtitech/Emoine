@@ -2,15 +2,15 @@ package repository
 
 //TODO: read lock
 func (repo *SqlxRepository) CreatePresentation(presentation *CreatePresentation) error {
-	var lastId int
-	if err := repo.db.Get(&lastId, "SELECT id FROM `presentation` WHERE `next` IS NULL LIMIT 1"); err != nil {
-		lastId = -1
+	var lastID int
+	if err := repo.db.Get(&lastID, "SELECT id FROM `presentation` WHERE `next` IS NULL LIMIT 1"); err != nil {
+		lastID = -1
 	}
 	if res, err := repo.db.Exec("INSERT INTO `presentation` (name, speakers, description ,prev) VALUES (?, ?, ?, ?)",
 		presentation.Name, presentation.Speakers, presentation.Description, lastId); err != nil {
 		return err
 	} else {
-		lastInsertId, err := res.LastInsertId()
+		lastInsertID, err := res.LastInsertID()
 		if err != nil {
 			return err
 		}
