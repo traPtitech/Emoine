@@ -102,7 +102,7 @@ func (h *Handlers) DeletePresentation(c echo.Context) error {
 
 	err = h.Repo.DeletePresentation(presentationID)
 	if err != nil {
-		return c.NoContent(http.StatusNotFound)
+		return err
 	}
 	return c.NoContent(http.StatusOK)
 }
