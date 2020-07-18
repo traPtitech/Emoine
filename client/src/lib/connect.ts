@@ -1,9 +1,12 @@
 import { getWs } from '/@/lib/ws'
-import { Message, IMessage, IReaction, IComment } from '/@/lib/pb'
+import { Message, IMessage, IReaction, IComment, Stamp } from '/@/lib/pb'
+
+type ReactionSafe = Omit<IReaction, 'stamp'> & { stamp: Stamp }
+type CommentSafe = Omit<IComment, 'text'> & { text: string }
 
 interface ConnectEventMap {
-  reaction: CustomEvent<IReaction>
-  comment: CustomEvent<IComment>
+  reaction: CustomEvent<ReactionSafe>
+  comment: CustomEvent<CommentSafe>
 }
 
 interface ConnectTarget extends Omit<EventTarget, 'addEventListener'> {
@@ -17,19 +20,27 @@ interface ConnectTarget extends Omit<EventTarget, 'addEventListener'> {
 export const connectTarget = document.createDocumentFragment() as ConnectTarget
 
 const onReaction = (m: Message) => {
-  if (!m.reaction) return
+  const reaction = m.reaction
+  if (!reaction) return
+  if (reaction.stamp !== null && reaction.stamp !== undefined) return
+  const reactionSafe = reaction as ReactionSafe
+
   connectTarget.dispatchEvent(
     new CustomEvent('reaction', {
-      detail: m.reaction
+      detail: reactionSafe
     })
   )
 }
 
 const onComment = (m: Message) => {
-  if (!m.comment) return
+  const comment = m.comment
+  if (!comment) return
+  if (!comment.text) return
+  const commentSafe = comment as CommentSafe
+
   connectTarget.dispatchEvent(
     new CustomEvent('comment', {
-      detail: m.comment
+      detail: commentSafe
     })
   )
 }
