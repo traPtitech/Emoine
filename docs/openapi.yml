@@ -361,28 +361,47 @@ components:
         - next
       description: 発表情報
     ReactionStatistics:
-      type: array
-      items:
-        $ref: '#/components/schemas/Reaction'
-      description: リアクションの統計情報
-    Reaction:
       type: object
       properties:
-        id:
-          type: number
-        userId:
-          type: string
-          format: uuid
         presentationId:
           type: number
+        counts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReactionCounts'
+          nullable: true
+      required:
+        - presentationId
+        - counts
+      description: リアクションの統計情報
+    ReactionCounts:
+      type: object
+      properties:
         stamp:
           $ref: '#/components/schemas/Stamp'
+        count:
+          type: number
       required:
-        - id
-        - userId
-        - presentationId
         - stamp
-      description: リアクション
+        - count
+    # Reaction:
+    #   type: object
+    #   properties:
+    #     id:
+    #       type: number
+    #     userId:
+    #       type: string
+    #       format: uuid
+    #     presentationId:
+    #       type: number
+    #     stamp:
+    #       $ref: '#/components/schemas/Stamp'
+    #   required:
+    #     - id
+    #     - userId
+    #     - presentationId
+    #     - stamp
+    #   description: リアクション
     Stamp:
       type: number
       enum:
