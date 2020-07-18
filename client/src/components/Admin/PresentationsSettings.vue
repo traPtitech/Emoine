@@ -42,7 +42,7 @@ export default defineComponent({
 })
 </script>
 
-<style module>
+<style lang="scss" module>
 .presentation {
   margin: 8px 0;
   &:first-child {
