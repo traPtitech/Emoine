@@ -1,7 +1,7 @@
 package repository
 
 func (repo *SqlxRepository) UpdateState(state *State) error {
-	_, err := repo.db.Exec("UPDATE `state` SET `status` = :status, `info` = :info", state)
+	_, err := repo.db.Exec("UPDATE `state` SET `status` = ?, `info` = ?", state.Status, state.Info)
 	return err
 }
 

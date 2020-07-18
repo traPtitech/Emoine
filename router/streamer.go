@@ -93,7 +93,8 @@ func (s *Streamer) ServeHTTP(c echo.Context) {
 
 	client := &client{
 		key:      randomAlphaNumeric(20),
-		userID:   c.Request().Context().Value("userId").(uuid.UUID),
+		// userID:   c.Request().Context().Value("userId").(uuid.UUID),
+		userID:   uuid.Nil,
 		req:      c.Request(),
 		streamer: s,
 		conn:     conn,

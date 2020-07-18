@@ -3,7 +3,7 @@ package repository
 import "log"
 
 func (repo *SqlxRepository) CreateComment(comment *Comment) error {
-	_, err := repo.db.Exec("INSERT INTO `comment` (userId, presentationId, text) VALUES (:userId, :presentationId, :text)", comment)
+	_, err := repo.db.Exec("INSERT INTO `comment` (userId, presentationId, text) VALUES (?, ?, ?)", comment.UserId, comment.PresentationId, comment.Text)
 	return err
 }
 

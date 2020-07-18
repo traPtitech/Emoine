@@ -1,12 +1,14 @@
 package repository
 
 func (repo *SqlxRepository) CreateReview(review *Review) error {
-	_, err := repo.db.Exec("INSERT INTO `review` (userId, presentationId, skill, artistry, idea, presentation) VALUES (:userId, :presentationId, :skill, :artistry, :idea, :presentation)", review)
+	_, err := repo.db.Exec("INSERT INTO `review` (userId, presentationId, skill, artistry, idea, presentation) VALUES (?, ?, ?, ?, ?, ?)",
+		review.UserId, review.PresentationId, review.Scores.Skill, review.Scores.Artistry, review.Scores.Idea, review.Scores.Presentation)
 	return err
 }
 
 func (repo *SqlxRepository) UpdateReview(review *Review) error {
-	_, err := repo.db.Exec("UPDATE `review` SET userId = :userId, presentationId = :presentationId, skill = :skill, artistry = :artistry, idea = :idea, presentation = :presentation", review)
+	_, err := repo.db.Exec("UPDATE `review` SET `presentationId` = ?, `skill` = ?, `artistry` = ?, `idea` = ?, `presentation` = ? WHERE `userId` = ?",
+		review.PresentationId, review.Scores.Skill, review.Scores.Artistry, review.Scores.Idea, review.Scores.Presentation, review.UserId)
 	return err
 }
 
