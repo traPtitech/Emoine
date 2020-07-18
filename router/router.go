@@ -41,6 +41,11 @@ func Setup(repo repository.Repository) *echo.Echo {
 	{
 		isAdmin := h.AdminUserMiddleware
 
+		apiLiveID := e.Group("/live-id")
+		{
+			apiLiveID.GET("", h.GetLiveID)
+			apiLiveID.PUT("", h.PutLiveID, isAdmin)
+		}
 		apiPresentations := api.Group("/presentations")
 		{
 			apiPresentations.GET("", h.GetPresentations)
