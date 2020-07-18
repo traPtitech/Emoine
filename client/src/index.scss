@@ -19,13 +19,18 @@ body,
   }
 }
 
+ul,
+li {
+  list-style: none;
+}
+
 .animation-comment {
   position: absolute;
   left: 0;
   display: inline-block;
   animation: comment 10s linear;
   font-size: 20vh;
-  color: rgba(255, 255, 255, .5);
+  color: rgba(255, 255, 255, 0.5);
 }
 @keyframes comment {
   0% {
@@ -41,5 +46,5 @@ body,
   display: inline-block;
   animation: comment 10s linear;
   font-size: 20vh;
-  color: rgba(255, 255, 255, .5);
+  color: rgba(255, 255, 255, 0.5);
 }
