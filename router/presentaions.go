@@ -19,8 +19,6 @@ type PatchPresentationsStruct struct {
 	Name        utils.String `json:"name"`
 	Speakers    utils.String `json:"speakers"`
 	Description utils.String `json:"description"`
-	Prev        utils.Int    `json:"prev"`
-	Next        utils.Int    `json:"next"`
 }
 
 // GetPresentations GET /presentations
@@ -28,6 +26,9 @@ func (h *Handlers) GetPresentations(c echo.Context) error {
 	presentations, err := h.Repo.GetPresentations()
 	if err != nil {
 		return err
+	}
+	if presentations == nil {
+		return c.JSON(http.StatusOK, []repository.Presentation{})
 	}
 	return c.JSON(http.StatusOK, presentations)
 }
@@ -83,9 +84,15 @@ func (h *Handlers) PatchPresentation(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	presentation.Name = patchStruct.Name
-	presentation.Description = patchStruct.Description
-	presentation.Speakers = patchStruct.Speakers
+	if patchStruct.Name.Valid {
+		presentation.Name = patchStruct.Name
+	}
+	if patchStruct.Description.Valid {
+		presentation.Description = patchStruct.Description
+	}
+	if patchStruct.Speakers.Valid {
+		presentation.Speakers = patchStruct.Speakers
+	}
 
 	if err = h.Repo.UpdatePresentation(presentation); err != nil {
 		return err

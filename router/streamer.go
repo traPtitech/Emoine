@@ -2,13 +2,12 @@ package router
 
 import (
 	"errors"
-	"net/http"
-	"sync"
-
 	"github.com/FujishigeTemma/Emoine/repository"
 	"github.com/FujishigeTemma/Emoine/utils"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
+	"net/http"
+	"sync"
 )
 
 var (
