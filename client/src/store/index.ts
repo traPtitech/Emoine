@@ -31,6 +31,12 @@ const { store, rootActionContext } = createDirectStore({
   mutations: {
     setMe(state, me: User) {
       state.me = me
+    },
+    setState(state, s: IState) {
+      state.state = s
+    },
+    setPresentation(state, presentation: Presentation) {
+      state.presentation = presentation
     }
   },
   actions: {
@@ -42,6 +48,16 @@ const { store, rootActionContext } = createDirectStore({
       } catch {
         return
       }
+    },
+    async fetchAndSetPresentation(
+      context,
+      { presentationId }: { presentationId: number }
+    ) {
+      const { commit } = rootActionContext(context)
+      const { data: presentation } = await apis.getPresentation(
+        '' + presentationId
+      )
+      commit.setPresentation(presentation)
     }
   }
 })
