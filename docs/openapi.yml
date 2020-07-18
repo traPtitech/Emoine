@@ -407,8 +407,6 @@ components:
           type: string
           format: uuid
           readOnly: true
-        presentationId:
-          type: number
         skill:
           type: number
           minimum: 1
@@ -427,7 +425,6 @@ components:
           maximum: 5
       required:
         - userId
-        - presentationId
         - skill
         - artistry
         - idea
