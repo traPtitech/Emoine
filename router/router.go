@@ -18,7 +18,8 @@ func Setup(repo repository.Repository) *echo.Echo {
 		Repo: repo,
 	}
 
-	s := NewStreamer()
+	s := NewStreamer(repo)
+	s.run()
 
 	api := e.Group("/api")
 	{
