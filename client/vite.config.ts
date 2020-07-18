@@ -8,7 +8,7 @@ const config: UserConfig = {
   },
   proxy: {
     '/api': {
-      target: 'https://example.com',
+      target: 'http://localhost:3050',
       changeOrigin: true
     }
   },
