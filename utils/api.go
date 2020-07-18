@@ -1,15 +1,32 @@
 package utils
 
 import (
+	"encoding/json"
 	"errors"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/gofrs/uuid"
 )
 
 const baseURL = "https://q.trap.jp/api/v3"
 
-func GetUserMe(token string) ([]byte, error) {
-	return APIGetRequest(token, "/users/me")
+type UserMe struct {
+	Id   uuid.UUID `json:"id"`
+	Name string    `json:"name`
+}
+
+func GetUserMe(token string) (*UserMe, error) {
+	bytes, err := APIGetRequest(token, "/users/me")
+	if err != nil {
+		return nil, err
+	}
+
+	userMe := new(UserMe)
+	if err := json.Unmarshal(bytes, userMe); err != nil {
+		return nil, err
+	}
+	return userMe, nil
 }
 
 func APIGetRequest(token, endpoint string) ([]byte, error) {

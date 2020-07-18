@@ -13,6 +13,7 @@ var sessionCache = cache.New(2*time.Hour, 3*time.Hour)
 
 type userResponse struct {
 	ID      uuid.UUID `json:"id"`
+	Name    string    `json:"name`
 	IsAdmin bool      `json:"isAdmin"`
 }
 
@@ -23,6 +24,11 @@ func (h *Handlers) GetUserMe(c echo.Context) error {
 	if err != nil {
 		return unauthorized(err)
 	}
+	userName, err := getRequestUserName(c)
+	if err != nil {
+		return unauthorized(err)
+	}
+
 	token, err := getRequestUserToken(c)
 	if err != nil {
 		return unauthorized(err)
@@ -38,6 +44,7 @@ func (h *Handlers) GetUserMe(c echo.Context) error {
 
 	data := &userResponse{
 		userID,
+		userName,
 		getRequestUserIsAdmin(c),
 	}
 
