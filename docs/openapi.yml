@@ -217,9 +217,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Review'
+                $ref: '#/components/schemas/ReviewStatistics'
         '404':
           description: Not Found
 
@@ -454,6 +452,37 @@ components:
         - idea
         - presentation
       description: レビュー
+    ReviewStatistics:
+      type: object
+      properties:
+        presentationId:
+          type: number
+        count:
+          type: number
+        avgSkill:
+          type: number
+          minimum: 1
+          maximum: 5
+        avgArtistry:
+          type: number
+          minimum: 1
+          maximum: 5
+        avgIdea:
+          type: number
+          minimum: 1
+          maximum: 5
+        avgPresentation:
+          type: number
+          minimum: 1
+          maximum: 5
+      required:
+        - presentationId
+        - count
+        - avgSkill
+        - avgArtistry
+        - avgIdea
+        - avgPresentation
+      description: レビュー統計情報
     Comment:
       type: object
       properties:
