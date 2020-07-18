@@ -5,7 +5,7 @@ services:
     entrypoint: dockerize -timeout 60s -wait tcp://mysql:3306
     command: ./Emoine
     ports:
-      - 80:80
+      - 3050:80
     depends_on:
       - mysql
 
