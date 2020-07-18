@@ -7,13 +7,13 @@ import (
 )
 
 func (repo *SqlxRepository) CreateReaction(reaction *Reaction) error {
-	_, err := repo.db.Exec("INSERT INTO `reaction` (userId, presentationId, stamp) VALUES ( ?, ?, ?)", reaction.UserId, reaction.PresentationId, reaction.Stamp)
+	_, err := repo.db.Exec("INSERT INTO `reaction` (userId, presentationId, stamp) VALUES ( ?, ?, ?)", reaction.UserID, reaction.PresentationID, reaction.Stamp)
 	return err
 }
 
 func (repo *SqlxRepository) GetReactionStatistics(id int) (*ReactionStatistics, error) {
 	var statistics ReactionStatistics
-	statistics.PresentationId = id
+	statistics.PresentationID = id
 
 	var rows *sqlx.Rows
 	rows, err := repo.db.Queryx("SELECT `stamp`, COUNT(stamp) FROM `reaction` WHERE presentationId = ? GROUP BY `stamp`", id)

@@ -4,19 +4,19 @@ import "database/sql"
 
 //TODO: read lock
 func (repo *SqlxRepository) CreatePresentation(presentation *CreatePresentation) error {
-	var lastId sql.NullInt32
-	if err := repo.db.Get(&lastId, "SELECT id FROM `presentation` WHERE `next` IS NULL LIMIT 1"); err != nil {
-		lastId = sql.NullInt32 { Int32: 0, Valid: false }
+	var lastID sql.NullInt32
+	if err := repo.db.Get(&lastID, "SELECT id FROM `presentation` WHERE `next` IS NULL LIMIT 1"); err != nil {
+		lastID = sql.NullInt32 { Int32: 0, Valid: false }
 	}
 	if res, err := repo.db.Exec("INSERT INTO `presentation` (name, speakers, description ,prev) VALUES (?, ?, ?, ?)",
-		presentation.Name, presentation.Speakers, presentation.Description, lastId); err != nil {
+		presentation.Name, presentation.Speakers, presentation.Description, lastID); err != nil {
 		return err
 	} else {
-		lastInsertId, err := res.LastInsertId()
+		lastInsertID, err := res.LastInsertId()
 		if err != nil {
 			return err
 		}
-		_, err = repo.db.Exec("UPDATE `presentation` SET `next` = ? WHERE `id` = ?", lastInsertId, lastId)
+		_, err = repo.db.Exec("UPDATE `presentation` SET `next` = ? WHERE `id` = ?", lastInsertID, lastID)
 		return err
 	}
 }

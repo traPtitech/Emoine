@@ -50,12 +50,6 @@ func (c *client) listenRead() {
 				_ = client.write(t, m)
 			}
 		}
-
-		//if t == websocket.BinaryMessage {
-		//	// unsupported
-		//	_ = s.writeMessage(&rawMessage{t: websocket.CloseMessage, data: websocket.FormatCloseMessage(websocket.CloseUnsupportedData, "binary message is not supported.")})
-		//	break
-		//}
 	}
 }
 

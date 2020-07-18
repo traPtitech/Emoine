@@ -1,11 +1,12 @@
 import { createDirectStore } from 'direct-vuex'
 import { IState, Status } from '/@/lib/pb'
-import { Presentation } from '/@/lib/apis'
+import apis, { User, Presentation } from '/@/lib/apis'
 
 interface State {
   liveId: string
   state: IState
   presentation: Presentation | null
+  me: User | null
 }
 
 const state: State = {
@@ -14,10 +15,11 @@ const state: State = {
     status: Status.pause,
     info: '準備中'
   },
-  presentation: null
+  presentation: null,
+  me: null
 }
 
-const { store } = createDirectStore({
+const { store, rootActionContext } = createDirectStore({
   state,
   getters: {
     // countString(state) {
@@ -27,9 +29,20 @@ const { store } = createDirectStore({
     // }
   },
   mutations: {
-    // increment(state) {
-    //   state.count++
-    // }
+    setMe(state, me: User) {
+      state.me = me
+    }
+  },
+  actions: {
+    async fetchMe(context) {
+      const { commit } = rootActionContext(context)
+      try {
+        const { data } = await apis.getMe()
+        commit.setMe(data)
+      } catch {
+        return
+      }
+    }
   }
 })
 

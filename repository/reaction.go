@@ -5,13 +5,13 @@ import (
 )
 
 type Reaction struct {
-	UserId         uuid.UUID `db:"userId"`
-	PresentationId int       `db:"presentationId"`
+	UserID         uuid.UUID `db:"userId"`
+	PresentationID int       `db:"presentationId"`
 	Stamp          int       `db:"stamp"`
 }
 
 type ReactionStatistics struct {
-	PresentationId int
+	PresentationID int
 	Counts         []Count
 }
 
