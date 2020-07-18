@@ -2,6 +2,7 @@ package router
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/FujishigeTemma/Emoine/repository"
 	"github.com/labstack/echo/v4"
@@ -40,4 +41,18 @@ func (h *Handlers) PostPresentations(c echo.Context) error {
 		return err
 	}
 	return c.NoContent(http.StatusCreated)
+}
+
+// GetPresentations GET /presentations
+func (h *Handlers) GetPresentation(c echo.Context) error {
+	presentationID, err := strconv.Atoi(c.Param("presentationID"))
+	if err != nil {
+		return c.NoContent(http.StatusBadRequest)
+	}
+
+	presentation, err := h.Repo.GetPresentation(presentationID)
+	if err != nil {
+		return c.NoContent(http.StatusNotFound)
+	}
+	return c.JSON(http.StatusOK, presentation)
 }

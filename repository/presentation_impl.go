@@ -41,11 +41,11 @@ func (repo *SqlxRepository) GetPresentations() ([]*Presentation, error) {
 }
 
 func (repo *SqlxRepository) GetPresentation(id int) (*Presentation, error) {
-	var presentation *Presentation
-	if err := repo.db.Get(&presentation, "SELECT * FROM `presentation` WHERE `id` = ?", id); err != nil {
+	presentation := Presentation{}
+	if err := repo.db.Get(&presentation, "SELECT * FROM `presentation` WHERE `id` = ? LIMIT 1", id); err != nil {
 		return nil, err
 	}
-	return presentation, nil
+	return &presentation, nil
 }
 
 func (repo *SqlxRepository) DeletePresentation(id int) error {
