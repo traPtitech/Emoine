@@ -21,7 +21,7 @@ func (repo *SqlxRepository) CreatePresentation(presentation *CreatePresentation)
 
 func (repo *SqlxRepository) UpdatePresentation(presentation *Presentation) error {
 	if _, err := repo.db.Exec("UPDATE `presentation` SET `name` = ?, `speakers` = ?, description = ?, prev = ?, next = ? WHERE `id` = ?",
-		presentation.ID, presentation.Name, presentation.Speakers, presentation.Description, presentation.Prev, presentation.Next); err != nil {
+		presentation.Name, presentation.Speakers, presentation.Description, presentation.Prev, presentation.Next, presentation.ID); err != nil {
 		return err
 	}
 	if _, err := repo.db.Exec("UPDATE `presentation` SET `next` = ? WHERE `id` = ?", presentation.ID, presentation.Prev); err != nil {
@@ -50,6 +50,20 @@ func (repo *SqlxRepository) GetPresentation(id int) (*Presentation, error) {
 }
 
 func (repo *SqlxRepository) DeletePresentation(id int) error {
+	type Order struct {
+		Prev int `db:"prev"`
+		Next int `db:"next"`
+	}
+	order := Order{}
+	if err := repo.db.Get(&order, "SELECT `prev`, `next` FROM `presentation` WHERE `id` = ? LIMIT 1", id); err != nil {
+		return err
+	}
+	if _, err := repo.db.Exec("UPDATE `presentation` SET `next` = ? WHERE `id` = ?", order.Next, order.Prev); err != nil {
+		return err
+	}
+	if _, err := repo.db.Exec("UPDATE `presentation` SET `prev` = ? WHERE `id` = ?", order.Prev, order.Next); err != nil {
+		return err
+	}
 	_, err := repo.db.Exec("DELETE FROM `presentation` WHERE `id` = ?", id)
 	return err
 }
