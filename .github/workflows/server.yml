@@ -47,7 +47,8 @@ jobs:
       - name: Install protoc-gen-go
         run: go get github.com/golang/protobuf/protoc-gen-go
       - name: Install protoc
-        run: sudo apt install protoc
+        run: sudo apt-get install protoc
+      - run: make protoc
       - run: go build main.go
   lint:
     name: Lint
