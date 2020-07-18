@@ -3,7 +3,6 @@ package router
 import (
 	"database/sql"
 	"fmt"
-
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"

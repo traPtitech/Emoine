@@ -4,15 +4,16 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
-	"errors"
-	"fmt"
+	"github.com/gofrs/uuid"
+	"github.com/labstack/echo-contrib/session"
+	"github.com/labstack/echo/v4"
+	"github.com/patrickmn/go-cache"
 	"github.com/traPtitech/traQ/utils"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
-
-	"github.com/labstack/echo-contrib/session"
-	"github.com/labstack/echo/v4"
+	"time"
 )
 
 type AuthParams struct {
@@ -20,6 +21,12 @@ type AuthParams struct {
 	CodeChallengeMethod string `json:"codeChallengeMethod"`
 	CodeChallenge       string `json:"codeChallenge"`
 }
+
+type UserID struct {
+	Value uuid.UUID `json:"userId"`
+}
+
+var verifierCache = cache.New(5*time.Minute, 10*time.Minute)
 
 // GetGeneratedCode GET /oauth2/generate/code
 func (h *Handlers) GetGeneratedCode(c echo.Context) error {
@@ -36,7 +43,6 @@ func (h *Handlers) GetGeneratedCode(c echo.Context) error {
 		sess.Values["ID"] = sessionID
 	}
 
-	// DBに保存
 	codeVerifier := utils.RandAlphabetAndNumberString(43)
 	codeVerifierHash := sha256.Sum256([]byte(codeVerifier))
 	encoder := base64.NewEncoding("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_").WithPadding(base64.NoPadding)
@@ -48,6 +54,8 @@ func (h *Handlers) GetGeneratedCode(c echo.Context) error {
 		return err
 	}
 
+	// セッションIDとをキーにCodeVerifierをキャッシュ
+	verifierCache.Set(sessionID, codeVerifier, cache.DefaultExpiration)
 	authParams := &AuthParams{
 		ClientID:            h.ClientID,
 		CodeChallengeMethod: "S256",
@@ -57,71 +65,33 @@ func (h *Handlers) GetGeneratedCode(c echo.Context) error {
 	return c.JSON(http.StatusCreated, authParams)
 }
 
-// Callback GET /oauth2/callback
-func (h *Handlers) Callback(code string, c echo.Context) error {
-	sess, err := session.Get("sessions", c)
-	if err != nil {
-		return fmt.Errorf("Failed In Getting Session: %w", err)
-	}
-
-	interfaceCodeVerifier, ok := sess.Values["codeVerifier"]
-	if !ok || interfaceCodeVerifier == nil {
-		return errors.New("CodeVerifier IS NULL")
-	}
-	codeVerifier := interfaceCodeVerifier.(string)
-
-	res, err := o.getAccessToken(code, codeVerifier)
-	if err != nil {
-		return fmt.Errorf("Failed In Getting AccessToken:%w", err)
-	}
-
-	sess.Values["accessToken"] = res.AccessToken
-	sess.Values["refreshToken"] = res.RefreshToken
-
-	user, err := o.oauth.GetMe(res.AccessToken)
-	if err != nil {
-		return fmt.Errorf("Failed In Getting Me: %w", err)
-	}
-
-	sess.Values["userID"] = user.Id
-	sess.Values["userName"] = user.Name
-
-	err = sess.Save(c.Request(), c.Response())
-	if err != nil {
-		return fmt.Errorf("Failed In Save Session: %w", err)
-	}
-
-	return nil
-}
-
-func (o *OAuth2) getAccessToken(code string, codeVerifier string) (*authResponse, error) {
+func requestToken(clientID, code, codeVerifier string) (token string, err error) {
 	form := url.Values{}
-	form.Set("grant_type", "authorization_code")
-	form.Set("client_id", o.clientID)
-	form.Set("code", code)
-	form.Set("code_verifier", codeVerifier)
-	reqBody := strings.NewReader(form.Encode())
-	path := o.oauth.BaseURL()
-	path.Path += "/oauth2/token"
-	req, err := http.NewRequest("POST", path.String(), reqBody)
+	form.Add("grant_type", "authorization_code")
+	form.Add("client_id", clientID)
+	form.Add("code", code)
+	form.Add("code_verifier", codeVerifier)
+
+	body := strings.NewReader(form.Encode())
+
+	req, err := http.NewRequest("POST", "https://q.trap.jp/api/v3/oauth2/token", body)
 	if err != nil {
-		return &authResponse{}, err
+		return "", err
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-
-	httpClient := http.DefaultClient
-	res, err := httpClient.Do(req)
+	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return &authResponse{}, err
+		return "", err
 	}
-	if res.StatusCode != 200 {
-		return &authResponse{}, fmt.Errorf("Failed In Getting Access Token:(Status:%d %s)", res.StatusCode, res.Status)
+	if res.StatusCode >= 300 {
+		return "", err
 	}
 
-	authRes := &authResponse{}
-	err = json.NewDecoder(res.Body).Decode(authRes)
-	if err != nil {
-		return &authResponse{}, fmt.Errorf("Failed In Parsing Json: %w", err)
+	data, _ := ioutil.ReadAll(res.Body)
+	tokenInfo := TokenResponse{}
+	if err := json.Unmarshal(data, &tokenInfo); err != nil {
+		return "", err
 	}
-	return authRes, nil
+
+	return tokenInfo.AccessToken, nil
 }

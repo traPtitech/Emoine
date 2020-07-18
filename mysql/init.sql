@@ -58,10 +58,3 @@ CREATE TABLE IF NOT EXISTS review
     updatedAt      DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`userId`, `presentationId`)
 );
-
-CREATE TABLE IF NOT EXISTS pkce
-(
-    sessionId VARCHAR(32),
-    codeVerifier VARCHAR(32),
-    PRIMARY KEY (`sessionId`)
-);

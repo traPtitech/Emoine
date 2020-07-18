@@ -1,21 +1,20 @@
 package router
 
 import (
-	"net/http"
-	"os"
-	"strings"
-
 	"github.com/FujishigeTemma/Emoine/repository"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"net/http"
+	"os"
+	"strings"
 )
 
 type Handlers struct {
-	Repo repository.Repository
-	SessionOption     sessions.Options
-	ClientID          string
+	Repo          repository.Repository
+	SessionOption sessions.Options
+	ClientID      string
 }
 
 func Setup(repo repository.Repository) *echo.Echo {
@@ -32,13 +31,13 @@ func Setup(repo repository.Repository) *echo.Echo {
 			HttpOnly: true,
 			SameSite: http.SameSiteLaxMode,
 		},
-		ClientID:   os.Getenv("CLIENT_ID"),
+		ClientID: os.Getenv("CLIENT_ID"),
 	}
 	e.Use(h.WatchCallbackMiddleware())
 
 	// s := NewStreamer()
 
-	api := e.Group("/api", h.TraQUserMiddleware)
+	api := e.Group("/api", h.IsTraQUserMiddleware)
 	{
 		apiPresentations := api.Group("/presentations")
 		{
@@ -59,7 +58,7 @@ func Setup(repo repository.Repository) *echo.Echo {
 		// 	return nil
 		// })
 	}
-	e.POST("/api/authParams", h.HandlePostAuthParams)
+	e.POST("/api/oauth2/code", h.GetGeneratedCode)
 
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Skipper: func(c echo.Context) bool {
