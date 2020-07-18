@@ -19,7 +19,9 @@ func (c *client) MsgHandler(b []byte) error {
 	payload := m.GetPayload()
 	switch payload.(type) {
 	case *Message_State:
-
+		if err := c.stateMsgHandler(m.GetState()); err != nil {
+			return nil
+		}
 	case *Message_Reaction:
 		if err := c.reactionMsgHandler(m.GetReaction()); err != nil {
 			return err
@@ -28,6 +30,16 @@ func (c *client) MsgHandler(b []byte) error {
 		if err := c.commentMsgHandler(m.GetComment()); err != nil {
 			return err
 		}
+	}
+	return nil
+}
+
+func (c *client) stateMsgHandler(m *State) error {
+	// TODO Validate message
+	// アカン
+	state := repository.State{string(m.Status), m.Info}
+	if err := c.streamer.repo.UpdateState(&state); err != nil {
+		return err
 	}
 	return nil
 }
