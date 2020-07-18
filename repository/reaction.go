@@ -7,7 +7,7 @@ import (
 type Reaction struct {
 	UserId         uuid.UUID `db:"userId"`
 	PresentationId int       `db:"presentationId"`
-	Stamp          string    `db:"stamp"`
+	Stamp          int       `db:"stamp"`
 }
 
 type ReactionStatistics struct {
@@ -16,8 +16,8 @@ type ReactionStatistics struct {
 }
 
 type Count struct {
-	Stamp string `db:"stamp"`
-	Count int    `db:"COUNT(stamp)"`
+	Stamp int `db:"stamp"`
+	Count int `db:"COUNT(stamp)"`
 }
 
 type ReactionRepository interface {
