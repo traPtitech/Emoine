@@ -8,6 +8,7 @@
       :presentation="presentation"
       @need-update="refetch"
     />
+    <add-presentation @need-update="refetch" />
   </div>
 </template>
 
@@ -16,11 +17,13 @@ import { defineComponent, ref, onMounted, computed } from 'vue'
 import apis, { Presentation } from '/@/lib/apis'
 import { linkedListMapToArray } from '/@/lib/util'
 import PresentaionComponent from './Presentation.vue'
+import AddPresentation from './AddPresentation.vue'
 
 export default defineComponent({
   name: 'PresentationsSettings',
   components: {
-    Presentation: PresentaionComponent
+    Presentation: PresentaionComponent,
+    AddPresentation
   },
   setup() {
     const presentationMap = ref(new Map<number, Presentation>())
