@@ -1,6 +1,8 @@
 package router
 
 import (
+	"fmt"
+
 	"github.com/FujishigeTemma/Emoine/repository"
 	"github.com/golang/protobuf/proto"
 )
@@ -47,7 +49,9 @@ func (c *client) stateMsgHandler(m *State) error {
 func (c *client) reactionMsgHandler(m *Reaction) error {
 	// TODO Validate message
 	// カス
-	reaction := repository.Reaction{c.userID, int(m.PresentationId), string(m.Stamp)}
+	fmt.Println(Stamp_name[int32(m.Stamp)])
+	fmt.Println(int(m.Stamp))
+	reaction := repository.Reaction{c.userID, int(m.PresentationId), Stamp_name[int32(m.Stamp)]}
 	if err := c.streamer.repo.CreateReaction(&reaction); err != nil {
 		return err
 	}

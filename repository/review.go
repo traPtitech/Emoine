@@ -7,21 +7,23 @@ import (
 type Review struct {
 	UserId         uuid.UUID `db:"userId"`
 	PresentationId int       `db:"presentationId"`
-	Scores         struct {
-		Skill        int `db:"skill"`
-		Artistry     int `db:"artistry"`
-		Idea         int `db:"idea"`
-		Presentation int `db:"presentation"`
-	}
+	Score
+}
+
+type Score struct {
+	Skill        int `db:"skill"`
+	Artistry     int `db:"artistry"`
+	Idea         int `db:"idea"`
+	Presentation int `db:"presentation"`
 }
 
 type ReviewStatistics struct {
 	PresentationId  int `db:"presentationId"`
-	Count           int `db:"count"`
-	AvgSkill        int `db:"skill"`
-	AvgArtistry     int `db:"artistry"`
-	AvgIdea         int `db:"idea"`
-	AvgPresentation int `db:"presentation"`
+	Count           int `db:"COUNT(*)"`
+	AvgSkill        float64 `db:"AVG(skill)"`
+	AvgArtistry     float64 `db:"AVG(artistry)"`
+	AvgIdea         float64 `db:"AVG(idea)"`
+	AvgPresentation float64 `db:"AVG(presentation)"`
 }
 
 type ReviewRepository interface {

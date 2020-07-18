@@ -12,10 +12,12 @@ type Reaction struct {
 
 type ReactionStatistics struct {
 	PresentationId int
-	Counts         []struct {
-		Stamp string `db:"stamp"`
-		Count int    `db:"count"`
-	}
+	Counts         []Count
+}
+
+type Count struct {
+	Stamp string `db:"stamp"`
+	Count int    `db:"COUNT(stamp)"`
 }
 
 type ReactionRepository interface {
