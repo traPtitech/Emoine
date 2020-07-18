@@ -2,13 +2,13 @@ package router
 
 import (
 	"errors"
-	"github.com/FujishigeTemma/Emoine/repository"
-	"github.com/FujishigeTemma/Emoine/utils"
-	"github.com/gofrs/uuid"
-	"github.com/gorilla/websocket"
-	"github.com/labstack/echo/v4"
 	"net/http"
 	"sync"
+
+	"github.com/FujishigeTemma/Emoine/repository"
+	"github.com/FujishigeTemma/Emoine/utils"
+	"github.com/gorilla/websocket"
+	"github.com/labstack/echo/v4"
 )
 
 var (
@@ -84,6 +84,10 @@ func (s *Streamer) ServeHTTP(c echo.Context) {
 		http.Error(c.Response(), http.StatusText(http.StatusServiceUnavailable), http.StatusServiceUnavailable)
 		return
 	}
+	userID, err := getRequestUserID(c)
+	if err != nil {
+		return
+	}
 
 	conn, err := upgrader.Upgrade(c.Response(), c.Request(), c.Response().Header())
 	if err != nil {
@@ -92,7 +96,7 @@ func (s *Streamer) ServeHTTP(c echo.Context) {
 
 	client := &client{
 		key:      utils.RandAlphabetAndNumberString(20),
-		userID:   c.Request().Context().Value("userId").(uuid.UUID),
+		userID:   userID,
 		req:      c.Request(),
 		streamer: s,
 		conn:     conn,
@@ -101,6 +105,8 @@ func (s *Streamer) ServeHTTP(c echo.Context) {
 	}
 
 	s.register <- client
+
+	client.write(websocket.BinaryMessage, stateData)
 
 	go client.listenWrite()
 	client.listenRead()
