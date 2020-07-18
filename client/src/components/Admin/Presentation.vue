@@ -55,15 +55,19 @@ export default defineComponent({
     const startEdit = () => {
       showEdit.value = true
     }
-    const finishEdit = () => {
-      // TODO
+    const finishEdit = async () => {
+      const data: Partial<Presentation> = state
       showEdit.value = false
+      await apis.editPresentation(
+        '' + props.presentation.id,
+        data as Presentation
+      )
       emit('need-update')
     }
 
-    const deleteThis = () => {
+    const deleteThis = async () => {
       if (!window.confirm('本当に削除しますか？')) return
-      // TODO
+      await apis.deletePresentation('' + props.presentation.id)
       emit('need-update')
     }
 
