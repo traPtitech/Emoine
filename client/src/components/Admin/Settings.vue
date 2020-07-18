@@ -1,5 +1,6 @@
 <template>
   <div>
+    <state-settings :class="$style.settings" />
     <live-id-settings :class="$style.settings" />
     <presentations-settings :class="$style.settings" />
   </div>
@@ -7,12 +8,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import StateSettings from './StateSettings.vue'
 import LiveIdSettings from './LiveIdSettings.vue'
 import PresentationsSettings from './PresentationsSettings.vue'
 
 export default defineComponent({
   name: 'Settings',
   components: {
+    StateSettings,
     LiveIdSettings,
     PresentationsSettings
   }
