@@ -2,7 +2,6 @@ package router
 
 import (
 	"github.com/gorilla/websocket"
-	jsoniter "github.com/json-iterator/go"
 	"net/http"
 	"time"
 )
@@ -16,7 +15,6 @@ const (
 )
 
 var (
-	json     = jsoniter.ConfigFastest
 	upgrader = &websocket.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
