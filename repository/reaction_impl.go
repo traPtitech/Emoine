@@ -1,8 +1,9 @@
 package repository
 
 import (
-	"github.com/jmoiron/sqlx"
 	"log"
+
+	"github.com/jmoiron/sqlx"
 )
 
 func (repo *SqlxRepository) CreateReaction(reaction *Reaction) error {
@@ -15,7 +16,7 @@ func (repo *SqlxRepository) GetReactionStatistics(id int) (*ReactionStatistics, 
 	statistics.PresentationId = id
 
 	var rows *sqlx.Rows
-	rows, err := repo.db.Queryx("SELECT `stamp`, COUNT(`stamp`) FROM `reaction` WHERE presentationId = ? GROUP BY `stamp`", id)
+	rows, err := repo.db.Queryx("SELECT `stamp`, COUNT(stamp) FROM `reaction` WHERE presentationId = ? GROUP BY `stamp`", id)
 	if err != nil {
 		return nil, err
 	}
@@ -27,9 +28,11 @@ func (repo *SqlxRepository) GetReactionStatistics(id int) (*ReactionStatistics, 
 	}()
 
 	for rows.Next() {
-		if err := rows.StructScan(&statistics.Counts); err != nil {
+		count := Count{}
+		if err := rows.StructScan(&count); err != nil {
 			return nil, err
 		}
+		statistics.Counts = append(statistics.Counts, count)
 	}
 	return &statistics, nil
 }

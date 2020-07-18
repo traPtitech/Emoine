@@ -31,6 +31,9 @@ func Setup(repo repository.Repository) *echo.Echo {
 				apiPresentationsID.GET("", h.GetPresentation)
 				apiPresentationsID.PATCH("", h.PatchPresentation)
 				apiPresentationsID.DELETE("", h.DeletePresentation)
+				apiPresentationsID.GET("/reaction", h.GetPresentationReaction)
+				apiPresentationsID.GET("/review", h.GetPresentationReview)
+				apiPresentationsID.POST("/review", h.PostPresentationReview)
 			}
 		}
 		api.Group("/ws").GET("", func(c echo.Context) error {

@@ -47,7 +47,7 @@ func (c *client) stateMsgHandler(m *State) error {
 func (c *client) reactionMsgHandler(m *Reaction) error {
 	// TODO Validate message
 	// カス
-	reaction := repository.Reaction{c.userID, int(m.PresentationId), string(m.Stamp)}
+	reaction := repository.Reaction{c.userID, int(m.PresentationId), int(m.Stamp)}
 	if err := c.streamer.repo.CreateReaction(&reaction); err != nil {
 		return err
 	}
