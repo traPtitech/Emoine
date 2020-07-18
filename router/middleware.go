@@ -24,49 +24,46 @@ type TokenResponse struct {
 var admins = os.Getenv("ADMINS")
 
 // WatchCallbackMiddleware /callback?code= を監視
-func (h *Handlers) WatchCallbackMiddleware() echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			path := c.Request().URL.Path
-			if path != "/callback" {
-				return next(c)
-			}
-			code := c.QueryParam("code")
-			sess, _ := session.Get("session", c)
-
-			sessionID, ok := sess.Values["ID"].(string)
-			if !ok {
-				return errors.New("session_id cannot be parsed as a string")
-			}
-			codeVerifier, ok := verifierCache.Get(sessionID)
-			if !ok {
-				return errors.New("code_verifier is not found")
-			}
-
-			token, err := requestToken(h.ClientID, code, codeVerifier.(string))
-			if err != nil {
-				return err
-			}
-
-			bytes, _ := utils.GetUserMe(token)
-			userID := new(UserID)
-			if err := json.Unmarshal(bytes, userID); err != nil {
-				return err
-			}
-
-			sess.Values["accessToken"] = token
-			sess.Values["userID"] = userID.Value.String()
-			sess.Options = &h.SessionOption
-
-			sessionCache.Add(userID.Value.String(), token, cache.DefaultExpiration)
-
-			err = sess.Save(c.Request(), c.Response())
-			if err != nil {
-				return internalServerError(err)
-			}
-
+func (h *Handlers) WatchCallbackMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		path := c.Request().URL.Path
+		if path != "/api/callback" {
 			return next(c)
 		}
+		code := c.QueryParam("code")
+		sess, _ := session.Get("session", c)
+		sessionID, ok := sess.Values["ID"].(string)
+		if !ok {
+			return errors.New("session_id cannot be parsed as a string")
+		}
+		codeVerifier, ok := verifierCache.Get(sessionID)
+		if !ok {
+			return errors.New("code_verifier is not found")
+		}
+
+		token, err := requestToken(h.ClientID, code, codeVerifier.(string))
+		if err != nil {
+			return err
+		}
+
+		bytes, _ := utils.GetUserMe(token)
+		userID := new(UserID)
+		if err := json.Unmarshal(bytes, userID); err != nil {
+			return err
+		}
+
+		sess.Values["accessToken"] = token
+		sess.Values["userID"] = userID.Value.String()
+		sess.Options = &h.SessionOption
+
+		sessionCache.Add(userID.Value.String(), token, cache.DefaultExpiration)
+
+		err = sess.Save(c.Request(), c.Response())
+		if err != nil {
+			return internalServerError(err)
+		}
+
+		return next(c)
 	}
 }
 

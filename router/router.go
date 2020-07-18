@@ -33,7 +33,7 @@ func Setup(repo repository.Repository) *echo.Echo {
 		},
 		ClientID: os.Getenv("CLIENT_ID"),
 	}
-	e.Use(h.WatchCallbackMiddleware())
+	e.Use(h.WatchCallbackMiddleware)
 
 	// s := NewStreamer()
 
