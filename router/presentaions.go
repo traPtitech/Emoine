@@ -92,3 +92,17 @@ func (h *Handlers) PatchPresentation(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, presentation)
 }
+
+// DeletePresentation DELETE /presentations/:presentationID
+func (h *Handlers) DeletePresentation(c echo.Context) error {
+	presentationID, err := strconv.Atoi(c.Param("presentationID"))
+	if err != nil {
+		return c.NoContent(http.StatusBadRequest)
+	}
+
+	err = h.Repo.DeletePresentation(presentationID)
+	if err != nil {
+		return c.NoContent(http.StatusNotFound)
+	}
+	return c.NoContent(http.StatusOK)
+}
