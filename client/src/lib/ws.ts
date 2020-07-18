@@ -16,9 +16,6 @@ const connect = (): void => {
   _ws.addEventListener('open', e => {
     console.log('connected', e)
   })
-  _ws.addEventListener('message', e => {
-    console.log(e.data)
-  })
   _ws.addEventListener('error', e => {
     console.log('err', e)
   })

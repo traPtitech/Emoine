@@ -10,7 +10,7 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import Live from '/@/components/Live.vue'
-import LiveOverlay from '/@/components/LiveOverlay.vue'
+import LiveOverlay from '/@/components/LiveOverlay/LiveOverlay.vue'
 import Review from '/@/components/Review.vue'
 import Descriptions from '/@/components/Descriptions.vue'
 import { useStore } from '/@/store'

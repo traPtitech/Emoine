@@ -1,11 +1,24 @@
 import { getWs } from '/@/lib/ws'
 import { Message, IMessage, IReaction, IComment } from '/@/lib/pb'
 
-export const ConnectTarget = document.createDocumentFragment()
+interface ConnectEventMap {
+  reaction: CustomEvent<IReaction>
+  comment: CustomEvent<IComment>
+}
+
+interface ConnectTarget extends Omit<EventTarget, 'addEventListener'> {
+  addEventListener<K extends keyof ConnectEventMap>(
+    name: K,
+    listener: (e: ConnectEventMap[K]) => void,
+    options?: boolean | AddEventListenerOptions
+  ): void
+}
+
+export const connectTarget = document.createDocumentFragment() as ConnectTarget
 
 const onReaction = (m: Message) => {
   if (!m.reaction) return
-  ConnectTarget.dispatchEvent(
+  connectTarget.dispatchEvent(
     new CustomEvent('reaction', {
       detail: m.reaction
     })
@@ -14,7 +27,7 @@ const onReaction = (m: Message) => {
 
 const onComment = (m: Message) => {
   if (!m.comment) return
-  ConnectTarget.dispatchEvent(
+  connectTarget.dispatchEvent(
     new CustomEvent('comment', {
       detail: m.comment
     })
@@ -40,16 +53,16 @@ export const setup = (): void => {
   })
 }
 
-export const send = (m: IMessage): void => {
+const send = (m: IMessage): void => {
   const ws = getWs()
   const buff = Message.encode(m).finish()
   ws.send(buff.buffer.slice(buff.byteOffset, buff.byteOffset + buff.length))
 }
 
-const sendReaction = (reaction: Required<IReaction>): void => {
+export const sendReaction = (reaction: Required<IReaction>): void => {
   send({ reaction })
 }
 
-const sendComment = (comment: Required<IComment>): void => {
+export const sendComment = (comment: Required<IComment>): void => {
   send({ comment })
 }
