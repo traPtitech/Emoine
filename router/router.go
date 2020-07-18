@@ -60,8 +60,7 @@ func Setup(repo repository.Repository) *echo.Echo {
 		// 	return nil
 		// })
 	}
-	e.POST("/api/oauth2/code", h.GetGeneratedCode)
-
+	e.GET("/api/oauth2/code", h.GetGeneratedCode)
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Skipper: func(c echo.Context) bool {
 			return strings.HasPrefix(c.Request().URL.Path, "/api")

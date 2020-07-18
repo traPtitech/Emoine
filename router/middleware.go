@@ -7,6 +7,7 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
+	"github.com/patrickmn/go-cache"
 	"os"
 	"strings"
 )
@@ -56,6 +57,8 @@ func (h *Handlers) WatchCallbackMiddleware() echo.MiddlewareFunc {
 			sess.Values["accessToken"] = token
 			sess.Values["userID"] = userID.Value.String()
 			sess.Options = &h.SessionOption
+
+			sessionCache.Add(userID.Value.String(), token, cache.DefaultExpiration)
 
 			err = sess.Save(c.Request(), c.Response())
 			if err != nil {
@@ -122,4 +125,17 @@ func (h *Handlers) AdminUserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 func getRequestUserIsAdmin(c echo.Context) bool {
 	return c.Get("IsAdmin").(bool)
+}
+
+func getRequestUserToken(c echo.Context) (string, error) {
+	sess, err := session.Get("session", c)
+	if err != nil {
+		return "", err
+	}
+	token, ok := sess.Values["accessToken"].(string)
+	if !ok {
+		return "", errors.New("error")
+	}
+
+	return token, nil
 }

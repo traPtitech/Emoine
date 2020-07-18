@@ -16,12 +16,6 @@ import (
 	"time"
 )
 
-type AuthParams struct {
-	ClientID            string `json:"clientId"`
-	CodeChallengeMethod string `json:"codeChallengeMethod"`
-	CodeChallenge       string `json:"codeChallenge"`
-}
-
 type UserID struct {
 	Value uuid.UUID `json:"userId"`
 }
@@ -47,8 +41,9 @@ func (h *Handlers) GetGeneratedCode(c echo.Context) error {
 	codeVerifierHash := sha256.Sum256([]byte(codeVerifier))
 	encoder := base64.NewEncoding("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_").WithPadding(base64.NoPadding)
 
-	sess.Values["codeVerifier"] = codeVerifier
+	codeChallengeMethod := "S256"
 
+	sess.Values["codeVerifier"] = codeVerifier
 	err = sess.Save(c.Request(), c.Response())
 	if err != nil {
 		return err
@@ -56,13 +51,8 @@ func (h *Handlers) GetGeneratedCode(c echo.Context) error {
 
 	// セッションIDとをキーにCodeVerifierをキャッシュ
 	verifierCache.Set(sessionID, codeVerifier, cache.DefaultExpiration)
-	authParams := &AuthParams{
-		ClientID:            h.ClientID,
-		CodeChallengeMethod: "S256",
-		CodeChallenge:       encoder.EncodeToString(codeVerifierHash[:]),
-	}
 
-	return c.JSON(http.StatusCreated, authParams)
+	return c.Redirect(http.StatusFound, "https://q.trap.jp/api/v3/oauth2/authorize?client_id"+h.ClientID+"&code_challenge"+encoder.EncodeToString(codeVerifierHash[:])+"&code_challenge_method"+codeChallengeMethod)
 }
 
 func requestToken(clientID, code, codeVerifier string) (token string, err error) {
