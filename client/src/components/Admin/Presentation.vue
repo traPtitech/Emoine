@@ -10,11 +10,8 @@
         <span :class="$style.inputTitle">発表者:</span>
         {{ presentation.speakers }}
       </p>
-      <template v-if="!showInsert">
-        <button :class="$style.button" @click="startEdit">編集</button>
-        <button :class="$style.button" @click="startInsert">移動</button>
-        <button :class="$style.button" @click="deleteThis">削除</button>
-      </template>
+      <button :class="$style.button" @click="startEdit">編集</button>
+      <button :class="$style.button" @click="deleteThis">削除</button>
     </template>
     <template v-if="showEdit">
       <div :class="$style.inputContainer">
@@ -31,13 +28,6 @@
       </div>
       <button :class="$style.button" @click="finishEdit">編集完了</button>
     </template>
-    <template v-if="showInsert">
-      <div :class="$style.inputContainer">
-        <span :class="$style.inputTitle">n番目に移動:</span>
-        <input v-model="insertN" :class="$style.input" type="number" />
-      </div>
-      <button :class="$style.button" @click="finishInsert">移動完了</button>
-    </template>
   </div>
 </template>
 
@@ -50,10 +40,6 @@ export default defineComponent({
   props: {
     presentation: {
       type: Object as PropType<Presentation>,
-      required: true
-    },
-    presentationList: {
-      type: Array as PropType<Presentation[]>,
       required: true
     }
   },
@@ -77,47 +63,6 @@ export default defineComponent({
       emit('need-update')
     }
 
-    const insertN = ref(0)
-    const showInsert = ref(false)
-    const startInsert = () => {
-      showInsert.value = true
-    }
-    const finishInsert = async () => {
-      showInsert.value = false
-      const now = props.presentation.id
-
-      const prev = props.presentationList[insertN.value - 1 - 1] ?? null
-      const current = props.presentationList[insertN.value - 1] ?? null
-      if (prev === null) {
-        // eslint-disable-next-line no-console
-        console.error('no prev')
-        return
-      }
-
-      try {
-        await apis.editPresentation('' + prev.id, {
-          ...prev,
-          prev: prev.prev === now ? props.presentation.prev : prev.prev,
-          next: now
-        } as Presentation)
-        if (current) {
-          await apis.editPresentation('' + current.id, {
-            ...current,
-            prev: props.presentation.id,
-            next: current.next === now ? props.presentation.next : current.next
-          } as Presentation)
-        }
-        await apis.editPresentation('' + props.presentation.id, {
-          ...props.presentation,
-          prev: prev.id,
-          next: current.id
-        } as Presentation)
-      } catch (e) {
-        console.error('failed to insert', e)
-      }
-      emit('need-update')
-    }
-
     const deleteThis = async () => {
       if (!window.confirm('本当に削除しますか？')) return
       await apis.deletePresentation('' + props.presentation.id)
@@ -129,10 +74,6 @@ export default defineComponent({
       showEdit,
       startEdit,
       finishEdit,
-      insertN,
-      showInsert,
-      startInsert,
-      finishInsert,
       deleteThis
     }
   }
