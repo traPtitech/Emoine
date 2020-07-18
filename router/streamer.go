@@ -3,10 +3,10 @@ package router
 import (
 	"errors"
 	"github.com/FujishigeTemma/Emoine/repository"
+	"github.com/FujishigeTemma/Emoine/utils"
 	"github.com/gofrs/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
-	"github.com/traPtitech/traQ/utils"
 	"net/http"
 	"sync"
 )

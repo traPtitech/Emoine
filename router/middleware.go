@@ -3,11 +3,11 @@ package router
 import (
 	"encoding/json"
 	"errors"
+	"github.com/FujishigeTemma/Emoine/utils"
 	"github.com/gofrs/uuid"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/patrickmn/go-cache"
-	"github.com/traPtitech/traQ/utils"
 	"os"
 	"strings"
 )
