@@ -12,6 +12,22 @@ type rawMessage struct {
 
 var stateData []byte
 
+func setDefaultStateData() {
+	m := &Message{
+		Payload: &Message_State{
+			State: &State{
+				Status: Status_pause,
+				Info:   "準備中",
+			},
+		},
+	}
+	data, err := proto.Marshal(m)
+	if err != nil {
+		panic(err)
+	}
+	stateData = data
+}
+
 func (c *client) MsgHandler(b []byte) error {
 	m := &Message{}
 	if err := proto.Unmarshal(b, m); err != nil {
