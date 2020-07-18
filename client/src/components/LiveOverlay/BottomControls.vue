@@ -1,7 +1,8 @@
 <template>
   <div :class="$style.bottomControls">
+    <input v-model="text" type="text" />
     <button @click="comment">
-      コメント「ぽ」
+      コメント
     </button>
     <button :class="$style.toggle" @click="emit('toggle')">
       Toggle overlay
@@ -10,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, ref } from 'vue'
 import { useStore } from '/@/store'
 import { sendComment } from '/@/lib/connect'
 
@@ -20,11 +21,13 @@ export default defineComponent({
     const store = useStore()
     const presentationId = computed(() => 1) //store.state.presentation?.id ?? null)
 
+    const text = ref('')
     const comment = () => {
-      sendComment({ presentationId: presentationId.value, text: 'ぽ' })
+      sendComment({ presentationId: presentationId.value, text: text.value })
+      text.value = ''
     }
 
-    return { comment, emit }
+    return { text, comment, emit }
   }
 })
 </script>
