@@ -1,14 +1,15 @@
 package router
 
 import (
+	"net/http"
+	"os"
+	"strings"
+
 	"github.com/FujishigeTemma/Emoine/repository"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"net/http"
-	"os"
-	"strings"
 )
 
 type Handlers struct {
@@ -41,11 +42,10 @@ func Setup(repo repository.Repository) *echo.Echo {
 	{
 		isAdmin := h.AdminUserMiddleware
 
-		apiLiveID := e.Group("/live-id")
-		{
-			apiLiveID.GET("", h.GetLiveID)
-			apiLiveID.PUT("", h.PutLiveID, isAdmin)
-		}
+		// TODO: グループだと動かない
+		api.GET("/live-id", h.GetLiveID)
+		api.PUT("/live-id", h.PutLiveID, isAdmin)
+
 		apiPresentations := api.Group("/presentations")
 		{
 			apiPresentations.GET("", h.GetPresentations)
