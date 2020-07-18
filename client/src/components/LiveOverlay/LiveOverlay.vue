@@ -1,8 +1,13 @@
 <template>
   <div :class="$style.container">
-    <nico v-show="show" :class="$style.overlay" />
-    <top-controls :class="$style.topControls" />
-    <bottom-controls :class="$style.bottomControls" @toggle="toggle" />
+    <top-controls :show="show" />
+    <nico :show="show" :class="$style.overlay" />
+    <bottom-controls
+      :class="$style.bottomControls"
+      :data-is-shown="show"
+      :show="show"
+      @toggle="toggle"
+    />
   </div>
 </template>
 
@@ -37,26 +42,17 @@ export default defineComponent({
   left: 0;
   bottom: 0;
   right: 0;
+  display: flex;
+  flex-direction: column;
   pointer-events: none;
 }
 .overlay {
-  height: 100%;
   width: 100%;
-  background: rgba(255, 0, 0, 0.1);
-  pointer-events: auto;
-}
-.topControls {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  pointer-events: auto;
+  flex: 1;
 }
 .bottomControls {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  pointer-events: auto;
+  &:not([data-is-shown='true']) {
+    align-self: flex-end;
+  }
 }
 </style>

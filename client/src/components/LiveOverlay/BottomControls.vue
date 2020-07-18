@@ -1,9 +1,11 @@
 <template>
   <div :class="$style.bottomControls">
-    <input v-model="text" type="text" />
-    <button @click="comment">
-      コメント
-    </button>
+    <div v-show="show" :class="$style.other">
+      <input v-model="text" :class="$style.input" type="text" />
+      <button @click="comment">
+        コメント
+      </button>
+    </div>
     <button :class="$style.toggle" @click="emit('toggle')">
       Toggle overlay
     </button>
@@ -17,6 +19,12 @@ import { sendComment } from '/@/lib/connect'
 
 export default defineComponent({
   name: 'BottomControls',
+  props: {
+    show: {
+      type: Boolean,
+      required: true
+    }
+  },
   setup(_, { emit }) {
     const store = useStore()
     const presentationId = computed(() => 1) //store.state.presentation?.id ?? null)
@@ -34,6 +42,16 @@ export default defineComponent({
 
 <style lang="scss" module>
 .bottomControls {
+  display: flex;
+  pointer-events: auto;
   background: rgba(255, 255, 255, 0.8);
+}
+.other {
+  display: flex;
+  flex: 1;
+  pointer-events: auto;
+}
+.input {
+  flex: 1;
 }
 </style>
