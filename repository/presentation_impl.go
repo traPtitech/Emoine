@@ -4,9 +4,9 @@ import "database/sql"
 
 //TODO: read lock
 func (repo *SqlxRepository) CreatePresentation(presentation *CreatePresentation) error {
-	var lastId int
+	var lastId sql.NullInt32
 	if err := repo.db.Get(&lastId, "SELECT id FROM `presentation` WHERE `next` IS NULL LIMIT 1"); err != nil {
-		return err
+		lastId = sql.NullInt32 { Int32: 0, Valid: false }
 	}
 	if res, err := repo.db.Exec("INSERT INTO `presentation` (name, speakers, description ,prev) VALUES (?, ?, ?, ?)",
 		presentation.Name, presentation.Speakers, presentation.Description, lastId); err != nil {
