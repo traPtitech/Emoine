@@ -5,6 +5,7 @@
       v-for="presentation in presentationList"
       :key="presentation.id"
       :class="$style.presentation"
+      :presentation-list="presentationList"
       :presentation="presentation"
       @need-update="refetch"
     />
