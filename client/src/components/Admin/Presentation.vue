@@ -84,6 +84,8 @@ export default defineComponent({
     }
     const finishInsert = async () => {
       showInsert.value = false
+      const now = props.presentation.id
+
       const prev = props.presentationList[insertN.value - 1 - 1] ?? null
       const current = props.presentationList[insertN.value - 1] ?? null
       if (prev === null) {
@@ -94,14 +96,19 @@ export default defineComponent({
 
       try {
         await apis.editPresentation('' + prev.id, {
-          next: props.presentation.id
+          ...prev,
+          prev: prev.prev === now ? props.presentation.prev : prev.prev,
+          next: now
         } as Presentation)
         if (current) {
           await apis.editPresentation('' + current.id, {
-            prev: props.presentation.id
+            ...current,
+            prev: props.presentation.id,
+            next: current.next === now ? props.presentation.next : current.next
           } as Presentation)
         }
         await apis.editPresentation('' + props.presentation.id, {
+          ...props.presentation,
           prev: prev.id,
           next: current.id
         } as Presentation)
