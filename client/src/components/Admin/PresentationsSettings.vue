@@ -1,22 +1,58 @@
 <template>
   <div>
-    進行設定
+    <h2>進行設定</h2>
+    <presentation
+      v-for="presentation in presentationList"
+      :key="presentation.id"
+      :class="$style.presentation"
+      :presentation="presentation"
+      @need-update="refetch"
+    />
+    <add-presentation @need-update="refetch" />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref, onMounted, computed } from 'vue'
+import apis, { Presentation } from '/@/lib/apis'
+import { linkedListMapToArray } from '/@/lib/util'
+import PresentaionComponent from './Presentation.vue'
+import AddPresentation from './AddPresentation.vue'
 
 export default defineComponent({
   name: 'PresentationsSettings',
+  components: {
+    Presentation: PresentaionComponent,
+    AddPresentation
+  },
   setup() {
-    return {}
+    const presentationMap = ref(new Map<number, Presentation>())
+    const presentationList = computed(() =>
+      linkedListMapToArray(presentationMap.value)
+    )
+
+    const refetch = async () => {
+      const { data } = await apis.getPresentations()
+      presentationMap.value = new Map(data.map(p => [p.id, p]))
+    }
+
+    onMounted(() => {
+      refetch()
+    })
+
+    return { presentationList, refetch }
   }
 })
 </script>
 
-<style module>
-.re {
-  font-weight: bold;
+<style lang="scss" module>
+.presentation {
+  margin: 8px 0;
+  &:first-child {
+    margin-top: 0;
+  }
+  &:last-child {
+    margin-bottom: 0;
+  }
 }
 </style>

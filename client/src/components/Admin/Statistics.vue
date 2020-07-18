@@ -1,17 +1,37 @@
 <template>
   <div>
     <h3>統計情報</h3>
-    <p>すべての発表の統計が見れる(リアクションもレビューも)</p>
+    <presentation-statics
+      v-for="presentation in presentationList"
+      :key="presentation.id"
+      :presentation="presentation"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref, computed, onMounted } from 'vue'
+import apis, { Presentation } from '/@/lib/apis'
+import { linkedListMapToArray } from '/@/lib/util'
+import PresentationStatics from './PresentationStatics.vue'
 
 export default defineComponent({
   name: 'Statistics',
+  components: {
+    PresentationStatics
+  },
   setup() {
-    return {}
+    const presentationMap = ref(new Map<number, Presentation>())
+    const presentationList = computed(() =>
+      linkedListMapToArray(presentationMap.value)
+    )
+
+    onMounted(async () => {
+      const { data } = await apis.getPresentations()
+      presentationMap.value = new Map(data.map(p => [p.id, p]))
+    })
+
+    return { presentationList }
   }
 })
 </script>
