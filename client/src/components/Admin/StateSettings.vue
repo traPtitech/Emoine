@@ -1,6 +1,10 @@
 <template>
   <div :class="$style.stateSettings">
-    <button :class="$style.button" @click="next">次の発表を開始</button>
+    <p>
+      <span :class="$style.title">現在の発表:</span>
+      {{ presentationTitle }}
+    </p>
+    <button :class="$style.button" @click="next">この発表を終了</button>
     <button v-if="!isPaused" :class="$style.button" @click="pause">
       発表を一時停止
     </button>
@@ -20,6 +24,9 @@ export default defineComponent({
   name: 'StateSettings',
   setup() {
     const store = useStore()
+    const presentationTitle = computed(
+      () => store.state.presentation?.name ?? 'なし'
+    )
     const status = computed(() => store.state.state.status ?? null)
     const isPaused = computed(() => status.value === Status.pause)
 
@@ -50,12 +57,15 @@ export default defineComponent({
       }
     }
 
-    return { isPaused, next, pause, resume }
+    return { presentationTitle, isPaused, next, pause, resume }
   }
 })
 </script>
 
 <style lang="scss" module>
+.title {
+  font-weight: bold;
+}
 .button {
   margin: 0 4px;
   padding: 2px 4px;
