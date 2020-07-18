@@ -18,6 +18,8 @@ func Setup(repo repository.Repository) *echo.Echo {
 		Repo: repo,
 	}
 
+	s := NewStreamer()
+
 	api := e.Group("/api")
 	{
 		apiPresentations := api.Group("/presentations")
@@ -30,6 +32,10 @@ func Setup(repo repository.Repository) *echo.Echo {
 				apiPresentationsID.PATCH("", h.PatchPresentation)
 			}
 		}
+		api.Group("/ws").GET("", func(c echo.Context) error {
+			s.ServeHTTP(c)
+			return nil
+		})
 	}
 	return e
 }
