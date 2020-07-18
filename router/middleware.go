@@ -3,11 +3,11 @@ package router
 import (
 	"encoding/json"
 	"errors"
-	"github.com/FujishigeTemma/Emoine/utils"
 	"github.com/gofrs/uuid"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/patrickmn/go-cache"
+	"github.com/traPtitech/traQ/utils"
 	"os"
 	"strings"
 )
@@ -31,7 +31,7 @@ func (h *Handlers) WatchCallbackMiddleware(next echo.HandlerFunc) echo.HandlerFu
 			return next(c)
 		}
 		code := c.QueryParam("code")
-		sess, _ := session.Get("session", c)
+		sess, _ := session.Get("e_session", c)
 		sessionID, ok := sess.Values["ID"].(string)
 		if !ok {
 			return errors.New("session_id cannot be parsed as a string")
@@ -70,14 +70,14 @@ func (h *Handlers) WatchCallbackMiddleware(next echo.HandlerFunc) echo.HandlerFu
 // TraQUserMiddleware traQユーザーか判定するミドルウェア
 func (h *Handlers) IsTraQUserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		sess, err := session.Get("session", c)
+		sess, err := session.Get("e_session", c)
 		if err != nil {
 			return unauthorized(err)
 		}
 		auth, ok := sess.Values["accessToken"].(string)
 		if !ok {
 			sess.Options = &h.SessionOption
-			sess.Values["ID"] = utils.RandomAlphaNumeric(10)
+			sess.Values["ID"] = utils.RandAlphabetAndNumberString(10)
 			sess.Save(c.Request(), c.Response())
 			return unauthorized(err)
 		}
@@ -90,7 +90,7 @@ func (h *Handlers) IsTraQUserMiddleware(next echo.HandlerFunc) echo.HandlerFunc 
 }
 
 func getRequestUserID(c echo.Context) (uuid.UUID, error) {
-	sess, err := session.Get("session", c)
+	sess, err := session.Get("e_session", c)
 	if err != nil {
 		return uuid.Nil, err
 	}
@@ -125,7 +125,7 @@ func getRequestUserIsAdmin(c echo.Context) bool {
 }
 
 func getRequestUserToken(c echo.Context) (string, error) {
-	sess, err := session.Get("session", c)
+	sess, err := session.Get("e_session", c)
 	if err != nil {
 		return "", err
 	}

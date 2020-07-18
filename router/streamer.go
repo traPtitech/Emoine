@@ -3,10 +3,10 @@ package router
 import (
 	"errors"
 	"github.com/FujishigeTemma/Emoine/repository"
-	"github.com/FujishigeTemma/Emoine/utils"
 	"github.com/gofrs/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
+	"github.com/traPtitech/traQ/utils"
 	"net/http"
 	"sync"
 )
@@ -91,7 +91,7 @@ func (s *Streamer) ServeHTTP(c echo.Context) {
 	}
 
 	client := &client{
-		key:      utils.RandomAlphaNumeric(20),
+		key:      utils.RandAlphabetAndNumberString(20),
 		userID:   c.Request().Context().Value("userId").(uuid.UUID),
 		req:      c.Request(),
 		streamer: s,

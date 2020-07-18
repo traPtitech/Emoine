@@ -24,7 +24,7 @@ var verifierCache = cache.New(5*time.Minute, 10*time.Minute)
 
 // GetGeneratedCode GET /oauth2/generate/code
 func (h *Handlers) GetGeneratedCode(c echo.Context) error {
-	sess, err := session.Get("sessions", c)
+	sess, err := session.Get("e_session", c)
 	if err != nil {
 		return err
 	}
@@ -43,7 +43,6 @@ func (h *Handlers) GetGeneratedCode(c echo.Context) error {
 
 	codeChallengeMethod := "S256"
 
-	sess.Values["codeVerifier"] = codeVerifier
 	err = sess.Save(c.Request(), c.Response())
 	if err != nil {
 		return err
