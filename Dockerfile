@@ -12,10 +12,11 @@ RUN npm run build
 FROM golang:1.14-alpine AS server-build
 RUN apk add --update --no-cache git curl make protoc
 WORKDIR /go/src/github.com/FujishigeTemma/Emoine
-COPY . .
+COPY ./go.* ./
 RUN go mod download
 RUN go install github.com/golang/protobuf/protoc-gen-go
 RUN mkdir -p ./router/handler
+COPY . .
 RUN make proto
 RUN go build
 
