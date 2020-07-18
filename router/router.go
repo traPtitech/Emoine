@@ -39,17 +39,19 @@ func Setup(repo repository.Repository) *echo.Echo {
 
 	api := e.Group("/api", h.IsTraQUserMiddleware)
 	{
+		isAdmin := h.AdminUserMiddleware
+
 		apiPresentations := api.Group("/presentations")
 		{
 			apiPresentations.GET("", h.GetPresentations)
-			apiPresentations.POST("", h.PostPresentations)
+			apiPresentations.POST("", h.PostPresentations, isAdmin)
 			apiPresentationsID := apiPresentations.Group("/:presentationID")
 			{
 				apiPresentationsID.GET("", h.GetPresentation)
-				apiPresentationsID.PATCH("", h.PatchPresentation)
-				apiPresentationsID.DELETE("", h.DeletePresentation)
-				apiPresentationsID.GET("/reaction", h.GetPresentationReaction)
-				apiPresentationsID.GET("/review", h.GetPresentationReview)
+				apiPresentationsID.PATCH("", h.PatchPresentation, isAdmin)
+				apiPresentationsID.DELETE("", h.DeletePresentation, isAdmin)
+				apiPresentationsID.GET("/reaction", h.GetPresentationReaction, isAdmin)
+				apiPresentationsID.GET("/review", h.GetPresentationReview, isAdmin)
 				apiPresentationsID.POST("/review", h.PostPresentationReview)
 			}
 		}
