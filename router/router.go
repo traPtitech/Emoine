@@ -18,6 +18,8 @@ type Handlers struct {
 }
 
 func Setup(repo repository.Repository) *echo.Echo {
+	setDefaultStateData()
+
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
