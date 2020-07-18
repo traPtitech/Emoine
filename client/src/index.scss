@@ -18,3 +18,28 @@ body,
     y: auto;
   }
 }
+
+.animation-comment {
+  position: absolute;
+  left: 0;
+  display: inline-block;
+  animation: comment 10s linear;
+  font-size: 20vh;
+  color: rgba(255, 255, 255, .5);
+}
+@keyframes comment {
+  0% {
+    transform: translateX(100vw);
+  }
+  100% {
+    transform: translateX(-200%);
+  }
+}
+
+.animation-reaction {
+  position: absolute;
+  display: inline-block;
+  animation: comment 10s linear;
+  font-size: 20vh;
+  color: rgba(255, 255, 255, .5);
+}

@@ -40,7 +40,8 @@ func (c *client) listenRead() {
 			break
 		}
 
-		if err := msgHandler(m); err != nil {
+		// カス
+		if err := c.MsgHandler(m); err != nil {
 			break
 		}
 
