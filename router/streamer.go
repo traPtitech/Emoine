@@ -20,9 +20,9 @@ var (
 
 // Streamer WebSocketストリーマー
 type Streamer struct {
-	sessions   map[*session]struct{}
-	register   chan *session
-	unregister chan *session
+	clients    map[*client]struct{}
+	register   chan *client
+	unregister chan *client
 	stop       chan struct{}
 	open       bool
 	mu         sync.RWMutex
@@ -31,9 +31,9 @@ type Streamer struct {
 // NewStreamer WebSocketストリーマーを生成し起動します
 func NewStreamer() *Streamer {
 	s := &Streamer{
-		sessions:   make(map[*session]struct{}),
-		register:   make(chan *session),
-		unregister: make(chan *session),
+		clients:    make(map[*client]struct{}),
+		register:   make(chan *client),
+		unregister: make(chan *client),
 		stop:       make(chan struct{}),
 		open:       true,
 	}
@@ -45,15 +45,15 @@ func NewStreamer() *Streamer {
 func (s *Streamer) run() {
 	for {
 		select {
-		case session := <-s.register:
+		case client := <-s.register:
 			s.mu.Lock()
-			s.sessions[session] = struct{}{}
+			s.clients[client] = struct{}{}
 			s.mu.Unlock()
 
-		case session := <-s.unregister:
-			if _, ok := s.sessions[session]; ok {
+		case client := <-s.unregister:
+			if _, ok := s.clients[client]; !ok {
 				s.mu.Lock()
-				delete(s.sessions, session)
+				delete(s.clients, client)
 				s.mu.Unlock()
 			}
 
@@ -63,10 +63,10 @@ func (s *Streamer) run() {
 				t:    websocket.CloseMessage,
 				data: websocket.FormatCloseMessage(websocket.CloseServiceRestart, "Server is stopping..."),
 			}
-			for session := range s.sessions {
-				_ = session.writeMessage(m)
-				delete(s.sessions, session)
-				session.close()
+			for client := range s.clients {
+				_ = client.writeMessage(m)
+				delete(s.clients, client)
+				client.close()
 			}
 			s.open = false
 			s.mu.Unlock()
@@ -87,7 +87,7 @@ func (s *Streamer) ServeHTTP(c echo.Context) {
 		return
 	}
 
-	session := &session{
+	client := &client{
 		key:      randomAlphaNumeric(20),
 		userID:   c.Request().Context().Value("userId").(uuid.UUID),
 		req:      c.Request(),
@@ -97,13 +97,13 @@ func (s *Streamer) ServeHTTP(c echo.Context) {
 		send:     make(chan *rawMessage, messageBufferSize),
 	}
 
-	s.register <- session
+	s.register <- client
 
-	go session.listenWrite()
-	session.listenRead()
+	go client.listenWrite()
+	client.listenRead()
 
-	s.unregister <- session
-	session.close()
+	s.unregister <- client
+	client.close()
 }
 
 // IsClosed ストリーマーが停止しているかどうか
