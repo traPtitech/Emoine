@@ -25,6 +25,7 @@ export default defineComponent({
 
     const text = ref('')
     const comment = () => {
+      if (!text.value) return
       sendComment({ presentationId: presentationId.value, text: text.value })
       text.value = ''
     }
