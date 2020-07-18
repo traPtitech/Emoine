@@ -1,6 +1,10 @@
 <template>
   <button :class="$style.reactionButton" @click="reaction">
-    <img :class="$style.img" :src="`/assets/${fileName}.png`" />
+    <img
+      draggable="false"
+      :class="$style.img"
+      :src="`/assets/${fileName}.png`"
+    />
   </button>
 </template>
 
@@ -44,5 +48,6 @@ export default defineComponent({
   height: 100%;
   width: 100%;
   object-fit: contain;
+  user-select: none;
 }
 </style>
