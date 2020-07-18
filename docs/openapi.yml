@@ -69,6 +69,34 @@ paths:
         '400':
           description: Bad Request
 
+  '/live-id':
+    get:
+      operationId: getLiveId
+      summary: Youtubeのライブ配信のID
+      tags:
+        - live
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveId'
+
+    put:
+      operationId: putLiveId
+      summary: Youtubeのライブ配信のIDの変更
+      tags:
+        - live
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/LiveId'
+      responses:
+        '200':
+          description: Updated
+
   '/presentations':
     get:
       operationId: getPresentations
@@ -425,3 +453,10 @@ components:
         - presentationId
         - text
       description: コメント
+    LiveId:
+      type: object
+      properties:
+        liveId:
+          type: string
+      required:
+        - liveId
