@@ -36,6 +36,7 @@ export default defineComponent({
 
 <style lang="scss" module>
 .nico {
+  color: white;
   background: rgba(255, 0, 0, 0.1);
   pointer-events: auto;
   &:not([data-is-shown='true']) {
