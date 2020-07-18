@@ -7,14 +7,14 @@ func (repo *SqlxRepository) CreatePresentation(presentation *CreatePresentation)
 		lastID = -1
 	}
 	if res, err := repo.db.Exec("INSERT INTO `presentation` (name, speakers, description ,prev) VALUES (?, ?, ?, ?)",
-		presentation.Name, presentation.Speakers, presentation.Description, lastId); err != nil {
+		presentation.Name, presentation.Speakers, presentation.Description, lastID); err != nil {
 		return err
 	} else {
-		lastInsertID, err := res.LastInsertID()
+		lastInsertID, err := res.LastInsertId()
 		if err != nil {
 			return err
 		}
-		_, err = repo.db.Exec("UPDATE `presentation` SET `next` = ? WHERE `id` = ?", lastInsertId, lastId)
+		_, err = repo.db.Exec("UPDATE `presentation` SET `next` = ? WHERE `id` = ?", lastInsertID, lastID)
 		return err
 	}
 }

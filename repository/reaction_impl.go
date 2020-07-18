@@ -7,7 +7,7 @@ import (
 )
 
 func (repo *SqlxRepository) CreateReaction(reaction *Reaction) error {
-	_, err := repo.db.Exec("INSERT INTO `reaction` (userId, presentationId, stamp) VALUES ( ?, ?, ?)", reaction.UserId, reaction.PresentationId, reaction.Stamp)
+	_, err := repo.db.Exec("INSERT INTO `reaction` (userId, presentationId, stamp) VALUES ( ?, ?, ?)", reaction.UserID, reaction.PresentationID, reaction.Stamp)
 	return err
 }
 
