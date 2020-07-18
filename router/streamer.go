@@ -2,6 +2,7 @@ package router
 
 import (
 	"errors"
+	"github.com/FujishigeTemma/Emoine/repository"
 	"github.com/gofrs/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
@@ -18,8 +19,10 @@ var (
 	ErrBufferIsFull = errors.New("buffer is full")
 )
 
+// やっぱhub必要かも
 // Streamer WebSocketストリーマー
 type Streamer struct {
+	repo       repository.Repository // これキモい
 	clients    map[*client]struct{}
 	register   chan *client
 	unregister chan *client
@@ -29,8 +32,9 @@ type Streamer struct {
 }
 
 // NewStreamer WebSocketストリーマーを生成し起動します
-func NewStreamer() *Streamer {
+func NewStreamer(repo repository.Repository) *Streamer {
 	s := &Streamer{
+		repo:       repo, // これ
 		clients:    make(map[*client]struct{}),
 		register:   make(chan *client),
 		unregister: make(chan *client),
@@ -89,7 +93,8 @@ func (s *Streamer) ServeHTTP(c echo.Context) {
 
 	client := &client{
 		key:      randomAlphaNumeric(20),
-		userID:   c.Request().Context().Value("userId").(uuid.UUID),
+		// userID:   c.Request().Context().Value("userId").(uuid.UUID),
+		userID:   uuid.Nil,
 		req:      c.Request(),
 		streamer: s,
 		conn:     conn,
