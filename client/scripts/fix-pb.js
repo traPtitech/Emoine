@@ -4,11 +4,9 @@ const path = require('path')
 const { Project } = require('ts-morph')
 
 const GENERATED = 'src/lib/pb'
+const protoTargets = ['comment', 'reaction', 'state', 'message']
 
-const fixImport = async dir => {
-  const project = new Project()
-  project.addSourceFilesAtPaths(`${dir}/**/*.js`)
-
+const fixImport = async project => {
   const sourceFile = project.getSourceFileOrThrow('message.js')
   const imports = sourceFile.getImportDeclarations()
 
@@ -22,6 +20,27 @@ const fixImport = async dir => {
   await sourceFile.save()
 }
 
+const addImport = async project => {
+  const sourceFile = project.getSourceFileOrThrow('message.d.ts')
+
+  protoTargets
+    .filter(p => p !== 'message')
+    .forEach(p => {
+      sourceFile.addImportDeclaration({
+        namedImports: [{ name: `I${p[0].toUpperCase()}${p.slice(1)}` }],
+        moduleSpecifier: `./${p}`
+      })
+    })
+
+  await sourceFile.save()
+}
+
 ;(async () => {
-  await fixImport(path.resolve(__dirname, '../', GENERATED))
+  const dir = path.resolve(__dirname, '../', GENERATED)
+
+  const project = new Project()
+  project.addSourceFilesAtPaths(`${dir}/**/*.{js,ts}`)
+
+  await fixImport(project)
+  await addImport(project)
 })()

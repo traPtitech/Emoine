@@ -26,6 +26,11 @@ func Setup(repo repository.Repository) *echo.Echo {
 		{
 			apiPresentations.GET("", h.GetPresentations)
 			apiPresentations.POST("", h.PostPresentations)
+			apiPresentationsID := apiPresentations.Group("/:presentationID")
+			{
+				apiPresentationsID.GET("", h.GetPresentation)
+				apiPresentationsID.PATCH("", h.PatchPresentation)
+			}
 		}
 		api.Group("/ws").GET("", func(c echo.Context) error {
 			s.ServeHTTP(c)
