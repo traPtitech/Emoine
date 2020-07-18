@@ -29,6 +29,9 @@ func (h *Handlers) GetPresentations(c echo.Context) error {
 	if err != nil {
 		return err
 	}
+	if presentations == nil {
+		return c.JSON(http.StatusOK, []repository.Presentation{})
+	}
 	return c.JSON(http.StatusOK, presentations)
 }
 
@@ -83,9 +86,21 @@ func (h *Handlers) PatchPresentation(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	presentation.Name = patchStruct.Name
-	presentation.Description = patchStruct.Description
-	presentation.Speakers = patchStruct.Speakers
+	if patchStruct.Name.Valid {
+		presentation.Name = patchStruct.Name
+	}
+	if patchStruct.Description.Valid {
+		presentation.Description = patchStruct.Description
+	}
+	if patchStruct.Speakers.Valid {
+		presentation.Speakers = patchStruct.Speakers
+	}
+	if patchStruct.Prev.Valid {
+		presentation.Prev = patchStruct.Prev
+	}
+	if patchStruct.Next.Valid {
+		presentation.Next = patchStruct.Next
+	}
 
 	if err = h.Repo.UpdatePresentation(presentation); err != nil {
 		return err
