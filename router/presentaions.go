@@ -95,12 +95,8 @@ func (h *Handlers) PatchPresentation(c echo.Context) error {
 	if patchStruct.Speakers.Valid {
 		presentation.Speakers = patchStruct.Speakers
 	}
-	if patchStruct.Prev.Valid {
-		presentation.Prev = patchStruct.Prev
-	}
-	if patchStruct.Next.Valid {
-		presentation.Next = patchStruct.Next
-	}
+	presentation.Prev = patchStruct.Prev
+	presentation.Next = patchStruct.Next
 
 	if err = h.Repo.UpdatePresentation(presentation); err != nil {
 		return err
