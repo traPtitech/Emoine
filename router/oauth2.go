@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"github.com/FujishigeTemma/Emoine/utils"
-	"github.com/gofrs/uuid"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/patrickmn/go-cache"
@@ -15,10 +14,6 @@ import (
 	"strings"
 	"time"
 )
-
-type UserID struct {
-	Value uuid.UUID `json:"userId"`
-}
 
 var verifierCache = cache.New(5*time.Minute, 10*time.Minute)
 

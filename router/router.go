@@ -35,7 +35,7 @@ func Setup(repo repository.Repository) *echo.Echo {
 	}
 	e.Use(h.WatchCallbackMiddleware)
 
-	// s := NewStreamer()
+	s := NewStreamer(repo)
 
 	api := e.Group("/api", h.IsTraQUserMiddleware)
 	{
@@ -56,10 +56,10 @@ func Setup(repo repository.Repository) *echo.Echo {
 			}
 		}
 		api.GET("/users/me", h.GetUserMe)
-		// api.GET("/ws", func(c echo.Context) error {
-		// 	s.ServeHTTP(c)
-		// 	return nil
-		// })
+		api.GET("/ws", func(c echo.Context) error {
+			s.ServeHTTP(c)
+			return nil
+		})
 	}
 	e.GET("/api/oauth2/code", h.GetGeneratedCode)
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{

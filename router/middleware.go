@@ -1,7 +1,6 @@
 package router
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/FujishigeTemma/Emoine/utils"
 	"github.com/gofrs/uuid"
@@ -47,17 +46,17 @@ func (h *Handlers) WatchCallbackMiddleware(next echo.HandlerFunc) echo.HandlerFu
 			return err
 		}
 
-		bytes, _ := utils.GetUserMe(token)
-		userID := new(UserID)
-		if err := json.Unmarshal(bytes, userID); err != nil {
+		userMe, err := utils.GetUserMe(token)
+		if err != nil {
 			return err
 		}
 
 		sess.Values["accessToken"] = token
-		sess.Values["userID"] = userID.Value.String()
+		sess.Values["userID"] = userMe.Id.String()
+		sess.Values["userName"] = userMe.Name
 		sess.Options = &h.SessionOption
 
-		sessionCache.Add(userID.Value.String(), token, cache.DefaultExpiration)
+		sessionCache.Add(userMe.Id.String(), token, cache.DefaultExpiration)
 
 		err = sess.Save(c.Request(), c.Response())
 		if err != nil {
@@ -96,6 +95,18 @@ func getRequestUserID(c echo.Context) (uuid.UUID, error) {
 		return uuid.Nil, err
 	}
 	return uuid.FromString(sess.Values["userID"].(string))
+}
+
+func getRequestUserName(c echo.Context) (string, error) {
+	sess, err := session.Get("e_session", c)
+	if err != nil {
+		return "", err
+	}
+	userName := sess.Values["userName"]
+	if userName == nil {
+		return "", nil
+	}
+	return userName.(string), nil
 }
 
 func setRequestUserIsAdmin(c echo.Context) {
