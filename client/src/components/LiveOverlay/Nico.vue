@@ -5,15 +5,33 @@
 <script lang="ts">
 import { defineComponent, ref, Ref } from 'vue'
 import { connectTarget } from '/@/lib/connect'
+import useElementSize from '/@/use/elementSize'
 
-const addComment = ($base: Ref<HTMLDivElement | undefined>, text: string) => {
+const CommentLines = 10
+let commentLineNow = 0
+
+const incrementCommentLine = () => {
+  commentLineNow++
+  if (commentLineNow === CommentLines) {
+    commentLineNow = 0
+  }
+}
+
+const addComment = (
+  $base: Ref<HTMLDivElement | undefined>,
+  baseHeight: Ref<number>,
+  text: string
+) => {
   if (!$base.value) return
-  const baseHeight = $base.value.clientHeight
-  const windowHeight = window.innerHeight
+
+  const lineHeight = baseHeight.value / CommentLines
 
   const $comment = document.createElement('div')
   $comment.className = 'animation-comment'
   $comment.textContent = text
+  $comment.style.top = `${commentLineNow * lineHeight}px`
+  $comment.style.fontSize = `${lineHeight}px`
+
   $comment.addEventListener(
     'animationend',
     () => {
@@ -22,6 +40,8 @@ const addComment = ($base: Ref<HTMLDivElement | undefined>, text: string) => {
     { once: true }
   )
   $base.value.append($comment)
+
+  incrementCommentLine()
 }
 
 export default defineComponent({
@@ -34,12 +54,13 @@ export default defineComponent({
   },
   setup() {
     const $base = ref<HTMLDivElement>()
+    const { height: baseHeight } = useElementSize($base)
 
     connectTarget.addEventListener('reaction', e => {
       //received.value.push(e.detail.stamp.toString())
     })
     connectTarget.addEventListener('comment', e => {
-      addComment($base, e.detail.text)
+      addComment($base, baseHeight, e.detail.text)
     })
 
     return { $base }
