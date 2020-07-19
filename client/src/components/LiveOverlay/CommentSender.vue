@@ -6,8 +6,8 @@
       type="text"
       @keydown.enter="comment"
     />
-    <button @click="comment">
-      コメント
+    <button :class="$style.send" @click="comment">
+      送信
     </button>
   </div>
 </template>
@@ -41,6 +41,11 @@ export default defineComponent({
   flex: 1;
 }
 .input {
+  background-color: #fff;
   flex: 1;
+}
+.send {
+  color: #eee;
+  background-color: #333;
 }
 </style>

@@ -1,8 +1,11 @@
 <template>
   <div :class="$style.bottomControls">
-    <comment-sender v-show="show" />
-    <button :class="$style.toggle" @click="emit('toggle')">
-      Toggle overlay
+    <comment-sender v-show="show" :class="sender" />
+    <button v-show="show" :class="$style.button" @click="$emit('toggle-desc')">
+      説明
+    </button>
+    <button :class="$style.button" @click="$emit('toggle')">
+      オーバーレイ
     </button>
   </div>
 </template>
@@ -24,7 +27,7 @@ export default defineComponent({
       required: true
     }
   },
-  setup(_, { emit }) {
+  setup() {
     const store = useStore()
     const presentationId = computed(() => 1) //store.state.presentation?.id ?? null)
 
@@ -34,7 +37,7 @@ export default defineComponent({
       text.value = ''
     }
 
-    return { text, comment, emit }
+    return { text, comment }
   }
 })
 </script>
@@ -44,5 +47,9 @@ export default defineComponent({
   display: flex;
   pointer-events: auto;
   background: rgba(255, 255, 255, 0.8);
+}
+.button {
+  margin: 0 8px;
+  padding: 0 8px;
 }
 </style>

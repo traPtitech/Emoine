@@ -1,14 +1,14 @@
 <template>
   <div :class="$style.container">
     <live :class="$style.live" />
-    <live-overlay :class="$style.overlay" />
+    <live-overlay :class="$style.overlay" @toggle-desc="toggleDesc" />
     <review v-if="isReview" :class="$style.review" />
-    <descriptions :class="$style.desc" />
+    <descriptions v-if="showDesc" :class="$style.desc" @toggle="toggleDesc" />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, ref } from 'vue'
 import Live from '/@/components/Live.vue'
 import LiveOverlay from '/@/components/LiveOverlay/LiveOverlay.vue'
 import Review from '/@/components/Review.vue'
@@ -26,9 +26,16 @@ export default defineComponent({
   },
   setup() {
     const store = useStore()
-    const isReview = computed(() => store.state.state === Status.reviewing)
+    const isReview = computed(
+      () => store.state.state.status === Status.reviewing
+    )
 
-    return { isReview }
+    const showDesc = ref(false)
+    const toggleDesc = () => {
+      showDesc.value = !showDesc.value
+    }
+
+    return { isReview, showDesc, toggleDesc }
   }
 })
 </script>

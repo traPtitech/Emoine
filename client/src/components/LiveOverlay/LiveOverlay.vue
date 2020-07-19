@@ -7,6 +7,7 @@
       :data-is-shown="show"
       :show="show"
       @toggle="toggle"
+      @toggle-desc="$emit('toggle-desc')"
     />
   </div>
 </template>

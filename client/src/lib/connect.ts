@@ -1,23 +1,41 @@
 import { getWs } from '/@/lib/ws'
-import { Message, IMessage, IReaction, IComment, Stamp } from '/@/lib/pb'
+import {
+  Message,
+  IMessage,
+  IReaction,
+  IComment,
+  Stamp,
+  IState,
+  Status
+} from '/@/lib/pb'
 
 type ReactionSafe = Omit<IReaction, 'stamp'> & { stamp: Stamp }
 type CommentSafe = Omit<IComment, 'text'> & { text: string }
+type StateSafe = Omit<IState, 'status'> & { status: Status }
 
 interface ConnectEventMap {
   reaction: CustomEvent<ReactionSafe>
   comment: CustomEvent<CommentSafe>
 }
 
-interface ConnectTarget extends Omit<EventTarget, 'addEventListener'> {
-  addEventListener<K extends keyof ConnectEventMap>(
+interface StateEventMap {
+  state: CustomEvent<StateSafe>
+}
+
+interface CustomTarget<M> extends Omit<EventTarget, 'addEventListener'> {
+  addEventListener<K extends keyof M>(
     name: K,
-    listener: (e: ConnectEventMap[K]) => void,
+    listener: (e: M[K]) => void,
     options?: boolean | AddEventListenerOptions
   ): void
 }
 
-export const connectTarget = document.createDocumentFragment() as ConnectTarget
+export const connectTarget = document.createDocumentFragment() as CustomTarget<
+  ConnectEventMap
+>
+export const stateTarget = document.createDocumentFragment() as CustomTarget<
+  StateEventMap
+>
 
 const onReaction = (m: Message) => {
   const reaction = m.reaction
@@ -26,9 +44,7 @@ const onReaction = (m: Message) => {
   const reactionSafe = reaction as ReactionSafe
 
   connectTarget.dispatchEvent(
-    new CustomEvent('reaction', {
-      detail: reactionSafe
-    })
+    new CustomEvent('reaction', { detail: reactionSafe })
   )
 }
 
@@ -39,10 +55,17 @@ const onComment = (m: Message) => {
   const commentSafe = comment as CommentSafe
 
   connectTarget.dispatchEvent(
-    new CustomEvent('comment', {
-      detail: commentSafe
-    })
+    new CustomEvent('comment', { detail: commentSafe })
   )
+}
+
+const onState = (m: Message) => {
+  const state = m.state
+  if (!state) return
+  if (state.status === undefined || state.status === null) return
+  const stateSafe = state as CommentSafe
+
+  stateTarget.dispatchEvent(new CustomEvent('state', { detail: stateSafe }))
 }
 
 export const setup = (): void => {
@@ -56,6 +79,10 @@ export const setup = (): void => {
       }
       case 'comment': {
         onComment(message)
+        break
+      }
+      case 'state': {
+        onState(message)
         break
       }
       default:

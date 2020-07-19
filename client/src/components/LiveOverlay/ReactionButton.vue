@@ -43,6 +43,7 @@ export default defineComponent({
 .reactionButton {
   height: min(5em, 10vh);
   width: min(5em, 10vh);
+  margin: 0.5em;
 }
 .img {
   height: 100%;
