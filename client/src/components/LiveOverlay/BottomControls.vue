@@ -29,7 +29,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore()
-    const presentationId = computed(() => 1) //store.state.presentation?.id ?? null)
+    const presentationId = computed(() => store.state.presentation?.id ?? null)
 
     const text = ref('')
     const comment = () => {
