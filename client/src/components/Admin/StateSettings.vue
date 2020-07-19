@@ -3,6 +3,7 @@
     <p>
       <span :class="$style.title">現在の発表:</span>
       {{ presentationTitle }}
+      ({{ statusString }})
     </p>
     <button :class="$style.button" @click="next">この発表を終了</button>
     <button v-if="isSpeaking" :class="$style.button" @click="pause">
@@ -30,6 +31,17 @@ export default defineComponent({
     const status = computed(() => store.state.state.status ?? null)
     const isSpeaking = computed(() => status.value === Status.speaking)
     const isPaused = computed(() => status.value === Status.pause)
+    const statusString = computed(() => {
+      switch (status.value) {
+        case Status.speaking:
+          return '発表中'
+        case Status.reviewing:
+          return 'レビュー中'
+        case Status.pause:
+          return store.state.state.info ?? '一時停止中'
+      }
+      return '不明'
+    })
 
     const next = async () => {
       try {
@@ -58,7 +70,15 @@ export default defineComponent({
       }
     }
 
-    return { presentationTitle, isSpeaking, isPaused, next, pause, resume }
+    return {
+      presentationTitle,
+      isSpeaking,
+      isPaused,
+      statusString,
+      next,
+      pause,
+      resume
+    }
   }
 })
 </script>
