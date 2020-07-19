@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/FujishigeTemma/Emoine/repository"
-	"github.com/gofrs/uuid"
 	"github.com/labstack/echo/v4"
 )
 
