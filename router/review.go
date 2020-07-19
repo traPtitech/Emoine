@@ -47,7 +47,10 @@ func (h *Handlers) PostPresentationReview(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	userID := uuid.Nil
+	userID, err := getRequestUserID(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, err)
+	}
 	createReview := repository.Review{
 		UserId:         userID,
 		PresentationId: presentationID,
