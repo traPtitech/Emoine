@@ -222,7 +222,7 @@ paths:
           description: Not Found
 
     post:
-      operationId: postPresentationReactions
+      operationId: postPresentationReview
       summary: プレゼンテーションのレビューを追加
       tags:
         - presentation
@@ -240,7 +240,7 @@ paths:
           description: Conflict
 
     patch:
-      operationId: editPresentationReactions
+      operationId: editPresentationReview
       summary: プレゼンテーションのレビューを変更
       tags:
         - presentation
