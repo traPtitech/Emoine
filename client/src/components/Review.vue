@@ -1,7 +1,8 @@
 <template>
   <div :class="$style.reviewContainer">
     <div :class="$style.review">
-      <div v-if="done">レビューを送信しました</div>
+      <div v-if="err !== ''">{{ err }}</div>
+      <div v-else-if="done">レビューを送信しました</div>
       <template v-else-if="presentation">
         <h3>{{ presentation.name }}</h3>
         <p>説明: {{ presentation.description }}</p>
@@ -42,20 +43,29 @@ export default defineComponent({
     })
 
     const done = ref(false)
+    const err = ref('')
 
     const send = async () => {
       if (!presentation.value) return
 
       try {
-        await apis.postPresentationReview('' + presentation.value.id, state)
+        const res = await apis.postPresentationReview(
+          '' + presentation.value.id,
+          state
+        )
         done.value = true
       } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error(e)
+        if (e.response.status === 409) {
+          err.value = '既に回答済みです'
+          done.value = true
+        } else {
+          // eslint-disable-next-line no-console
+          console.error(e)
+        }
       }
     }
 
-    return { presentation, state, send, done }
+    return { presentation, state, send, done, err }
   }
 })
 </script>
