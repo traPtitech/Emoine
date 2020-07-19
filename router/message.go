@@ -18,6 +18,8 @@ func setDefaultStateData() {
 			State: &State{
 				Status: Status_pause,
 				Info:   "準備中",
+				// nullと同義
+				PresentationId: 0,
 			},
 		},
 	}

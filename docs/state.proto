@@ -4,6 +4,7 @@ option go_package = ".;router";
 message State {
   Status status = 1;
   string info = 2;
+  uint32 presentationId = 3;
 }
 
 enum Status {
