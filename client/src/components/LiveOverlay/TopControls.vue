@@ -28,7 +28,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore()
-    const presentationId = computed(() => 1) //store.state.presentation?.id)
+    const presentationId = computed(() => store.state.presentation?.id)
 
     const stamps = [
       Stamp.iine,
