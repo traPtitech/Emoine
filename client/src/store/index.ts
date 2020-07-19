@@ -1,6 +1,7 @@
 import { createDirectStore } from 'direct-vuex'
 import { IState, Status } from '/@/lib/pb'
 import apis, { User, Presentation } from '/@/lib/apis'
+import { stateTarget } from '/@/lib/connect'
 
 interface State {
   liveId: string
@@ -49,6 +50,15 @@ const { store, rootActionContext } = createDirectStore({
         return
       }
     },
+    async setState(context, state: IState) {
+      const { commit, dispatch } = rootActionContext(context)
+      commit.setState(state)
+      if (state.presentationId) {
+        await dispatch.fetchAndSetPresentation({
+          presentationId: state.presentationId
+        })
+      }
+    },
     async fetchAndSetPresentation(
       context,
       { presentationId }: { presentationId: number }
@@ -60,6 +70,10 @@ const { store, rootActionContext } = createDirectStore({
       commit.setPresentation(presentation)
     }
   }
+})
+
+stateTarget.addEventListener('state', e => {
+  store.dispatch.setState(e.detail)
 })
 
 export default store.original
