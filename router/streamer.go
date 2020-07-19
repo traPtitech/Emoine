@@ -2,12 +2,14 @@ package router
 
 import (
 	"errors"
+	"net/http"
+	"sync"
+
 	"github.com/FujishigeTemma/Emoine/repository"
 	"github.com/FujishigeTemma/Emoine/utils"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
-	"net/http"
-	"sync"
+	"google.golang.org/protobuf/proto"
 )
 
 var (
@@ -77,45 +79,16 @@ func (s *Streamer) run() {
 	}
 }
 
-// getClient
-func (s *Streamer) getClient(c echo.Context) *client {
-	if s.IsClosed() {
-		http.Error(c.Response(), http.StatusText(http.StatusServiceUnavailable), http.StatusServiceUnavailable)
-		return nil
-	}
-	userID, err := getRequestUserID(c)
+// SendAll すべてのclientにメッセージを送る
+func (s *Streamer) SendAll(m *Message) {
+	byteMessage, err := proto.Marshal(m)
 	if err != nil {
-		return nil
+		return
 	}
 
-	conn, err := upgrader.Upgrade(c.Response(), c.Request(), c.Response().Header())
-	if err != nil {
-		return nil
+	for client := range s.clients {
+		client.write(websocket.BinaryMessage, byteMessage)
 	}
-
-	client := &client{
-		key:      utils.RandAlphabetAndNumberString(20),
-		userID:   userID,
-		req:      c.Request(),
-		streamer: s,
-		conn:     conn,
-		open:     true,
-		send:     make(chan *rawMessage, messageBufferSize),
-	}
-	return client
-}
-
-// ServeHTTP http.Handlerインターフェイスの実装
-func (s *Streamer) ServeHTTPByClient(client * client) {
-	s.register <- client
-
-	client.write(websocket.BinaryMessage, stateData)
-
-	go client.listenWrite()
-	client.listenRead()
-
-	s.unregister <- client
-	client.close()
 }
 
 // ServeHTTP http.Handlerインターフェイスの実装
@@ -146,7 +119,15 @@ func (s *Streamer) ServeHTTP(c echo.Context) {
 
 	s.register <- client
 
-	client.write(websocket.BinaryMessage, stateData)
+	m := &Message{
+		Payload: &Message_State{
+			State: stateData,
+		},
+	}
+	data, err := proto.Marshal(m)
+	if err == nil {
+		client.write(websocket.BinaryMessage, data)
+	}
 
 	go client.listenWrite()
 	client.listenRead()

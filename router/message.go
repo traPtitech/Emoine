@@ -10,24 +10,15 @@ type rawMessage struct {
 	data []byte
 }
 
-var stateData []byte
+var stateData *State
 
 func setDefaultStateData() {
-	m := &Message{
-		Payload: &Message_State{
-			State: &State{
-				Status: Status_pause,
-				Info:   "準備中",
-				// nullと同義
-				PresentationId: 0,
-			},
-		},
+	stateData = &State{
+		Status: Status_pause,
+		Info:   "準備中",
+		// nullと同義
+		PresentationId: 0,
 	}
-	data, err := proto.Marshal(m)
-	if err != nil {
-		panic(err)
-	}
-	stateData = data
 }
 
 func (c *client) MsgHandler(b []byte) error {
@@ -39,10 +30,7 @@ func (c *client) MsgHandler(b []byte) error {
 	payload := m.GetPayload()
 	switch payload.(type) {
 	case *Message_State:
-		if err := c.stateMsgHandler(m.GetState()); err != nil {
-			return nil
-		}
-		stateData = b
+		// do nothing
 	case *Message_Reaction:
 		if err := c.reactionMsgHandler(m.GetReaction()); err != nil {
 			return err

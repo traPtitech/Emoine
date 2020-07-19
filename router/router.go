@@ -50,6 +50,8 @@ func Setup(repo repository.Repository) *echo.Echo {
 		api.GET("/live-id", h.GetLiveID)
 		api.PUT("/live-id", h.PutLiveID, isAdmin)
 
+		api.POST("/state", h.PostState, isAdmin)
+
 		apiPresentations := api.Group("/presentations")
 		{
 			apiPresentations.GET("", h.GetPresentations)
