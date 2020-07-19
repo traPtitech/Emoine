@@ -9,3 +9,68 @@ export default defineComponent({
   name: 'App'
 })
 </script>
+
+<style lang="scss">
+*,
+::after,
+::before {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  height: 100%;
+  width: 100%;
+}
+
+#app {
+  overflow: {
+    x: hidden;
+    y: auto;
+  }
+}
+
+ul,
+li {
+  list-style: none;
+}
+
+.animation-comment {
+  position: absolute;
+  left: 0;
+  display: inline-block;
+  animation: comment 10s linear;
+  opacity: 0.7;
+  -webkit-text-stroke: 0.02em #333;
+}
+@keyframes comment {
+  0% {
+    transform: translateX(100vw);
+  }
+  100% {
+    transform: translateX(-200%);
+  }
+}
+
+.animation-reaction {
+  position: absolute;
+  display: inline-block;
+  animation: reaction 5s ease-out;
+  color: rgba(255, 255, 255, 0.5);
+  opacity: 0.7;
+  img {
+    height: 100%;
+    width: 100%;
+  }
+}
+@keyframes reaction {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+</style>
