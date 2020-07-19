@@ -12,5 +12,5 @@ type Comment struct {
 
 type CommentRepository interface {
 	CreateComment(comment *Comment) error
-	GetComments(id int) (*[]Comment, error)
+	GetComments(id int) ([]*Comment, error)
 }

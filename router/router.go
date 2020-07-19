@@ -65,6 +65,7 @@ func Setup(repo repository.Repository) *echo.Echo {
 				apiPresentationsID.GET("/review", h.GetPresentationReview, isAdmin)
 				apiPresentationsID.POST("/review", h.PostPresentationReview)
 				apiPresentationsID.PATCH("/review", h.PatchPresentationReview)
+				apiPresentationsID.GET("/comments", h.GetPresentationComments, isAdmin)
 			}
 		}
 		api.GET("/users/me", h.GetUserMe)

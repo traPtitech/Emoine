@@ -7,8 +7,8 @@ func (repo *SqlxRepository) CreateComment(comment *Comment) error {
 	return err
 }
 
-func (repo *SqlxRepository) GetComments(id int) (*[]Comment, error) {
-	var comments []Comment
+func (repo *SqlxRepository) GetComments(id int) ([]*Comment, error) {
+	var comments []*Comment
 	rows, err := repo.db.Queryx("SELECT `userId`, `presentationId`, `text` FROM `comment` WHERE presentationId = ?", id)
 	if err != nil {
 		return nil, err
@@ -21,9 +21,11 @@ func (repo *SqlxRepository) GetComments(id int) (*[]Comment, error) {
 	}()
 
 	for rows.Next() {
-		if err := rows.StructScan(&comments); err != nil {
+		comment := Comment{}
+		if err := rows.StructScan(&comment); err != nil {
 			return nil, err
 		}
+		comments = append(comments, &comment)
 	}
-	return &comments, nil
+	return comments, nil
 }
