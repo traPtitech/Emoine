@@ -11,8 +11,8 @@ type Reaction struct {
 }
 
 type ReactionStatistics struct {
-	PresentationID int
-	Counts         []Count
+	PresentationID int `json:"presentationID"`
+	Counts         []Count `json:"counts"`
 }
 
 type Count struct {
