@@ -4,7 +4,7 @@
     <button :class="$style.toggle" @click="$emit('toggle-desc')">
       Toggle desc
     </button>
-    <button :class="$style.toggle" @click="emit('toggle')">
+    <button :class="$style.toggle" @click="$emit('toggle')">
       Toggle overlay
     </button>
   </div>
@@ -27,7 +27,7 @@ export default defineComponent({
       required: true
     }
   },
-  setup(_, { emit }) {
+  setup() {
     const store = useStore()
     const presentationId = computed(() => 1) //store.state.presentation?.id ?? null)
 
@@ -37,7 +37,7 @@ export default defineComponent({
       text.value = ''
     }
 
-    return { text, comment, emit }
+    return { text, comment }
   }
 })
 </script>
