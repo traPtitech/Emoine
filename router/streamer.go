@@ -77,6 +77,47 @@ func (s *Streamer) run() {
 	}
 }
 
+// getClient
+func (s *Streamer) getClient(c echo.Context) *client {
+	if s.IsClosed() {
+		http.Error(c.Response(), http.StatusText(http.StatusServiceUnavailable), http.StatusServiceUnavailable)
+		return nil
+	}
+	userID, err := getRequestUserID(c)
+	if err != nil {
+		return nil
+	}
+
+	conn, err := upgrader.Upgrade(c.Response(), c.Request(), c.Response().Header())
+	if err != nil {
+		return nil
+	}
+
+	client := &client{
+		key:      utils.RandAlphabetAndNumberString(20),
+		userID:   userID,
+		req:      c.Request(),
+		streamer: s,
+		conn:     conn,
+		open:     true,
+		send:     make(chan *rawMessage, messageBufferSize),
+	}
+	return client
+}
+
+// ServeHTTP http.Handlerインターフェイスの実装
+func (s *Streamer) ServeHTTPByClient(client * client) {
+	s.register <- client
+
+	client.write(websocket.BinaryMessage, stateData)
+
+	go client.listenWrite()
+	client.listenRead()
+
+	s.unregister <- client
+	client.close()
+}
+
 // ServeHTTP http.Handlerインターフェイスの実装
 func (s *Streamer) ServeHTTP(c echo.Context) {
 	if s.IsClosed() {
