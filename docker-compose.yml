@@ -10,6 +10,7 @@ services:
       - mysql
     environment:
       - CLIENT_ID=I62ZG0yeAZUFmFKgWAfFRRuA8blN5IxlnnJd
+      - ADMINS=e05f733f-dccc-47dc-9f56-c8eb38306284,132187b3-fae6-4c4c-9fe7-c1399c03e533,e05f733f-dccc-47dc-9f56-c8eb38306284
 
   mysql:
     image: mariadb:10.0.19
