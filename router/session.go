@@ -13,7 +13,7 @@ var sessionCache = cache.New(2*time.Hour, 3*time.Hour)
 
 type userResponse struct {
 	ID      uuid.UUID `json:"id"`
-	Name    string    `json:"name`
+	Name    string    `json:"name"`
 	IsAdmin bool      `json:"isAdmin"`
 }
 

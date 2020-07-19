@@ -46,15 +46,15 @@ func (h *Handlers) PostPresentationReview(c echo.Context) error {
 	if err := c.Bind(&posted); err != nil {
 		return c.NoContent(http.StatusBadRequest)
 	}
-	
+
 	userID := uuid.Nil
-	createReview := repository.Review {
-		UserId: userID,
+	createReview := repository.Review{
+		UserId:         userID,
 		PresentationId: presentationID,
 		Score: repository.Score{
-			Skill: posted.Skill,
-			Artistry: posted.Artistry,
-			Idea: posted.Idea,
+			Skill:        posted.Skill,
+			Artistry:     posted.Artistry,
+			Idea:         posted.Idea,
 			Presentation: posted.Presentation,
 		},
 	}
