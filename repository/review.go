@@ -18,8 +18,8 @@ type Score struct {
 }
 
 type ReviewStatistics struct {
-	PresentationId  int `db:"presentationId" json:"presentationId"`
-	Count           int `db:"COUNT(*)" json:"count"`
+	PresentationId  int     `db:"presentationId" json:"presentationId"`
+	Count           int     `db:"COUNT(*)" json:"count"`
 	AvgSkill        float64 `db:"AVG(skill)" json:"avgSkill"`
 	AvgArtistry     float64 `db:"AVG(artistry)" json:"avgArtistry"`
 	AvgIdea         float64 `db:"AVG(idea)" json:"avgIdea"`
