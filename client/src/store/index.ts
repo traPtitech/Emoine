@@ -38,6 +38,9 @@ const { store, rootActionContext } = createDirectStore({
     },
     setPresentation(state, presentation: Presentation) {
       state.presentation = presentation
+    },
+    setLiveId(state, liveId: string) {
+      state.liveId = liveId
     }
   },
   actions: {
@@ -46,6 +49,15 @@ const { store, rootActionContext } = createDirectStore({
       try {
         const { data } = await apis.getMe()
         commit.setMe(data)
+      } catch {
+        return
+      }
+    },
+    async fetchLive(context) {
+      const { commit } = rootActionContext(context)
+      try {
+        const { data } = await apis.getLiveId()
+        commit.setLiveId(data.liveId)
       } catch {
         return
       }

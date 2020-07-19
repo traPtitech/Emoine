@@ -29,6 +29,7 @@ export default defineComponent({
     const isReview = computed(
       () => store.state.state.status === Status.reviewing
     )
+    store.dispatch.fetchLive()
 
     const showDesc = ref(false)
     const toggleDesc = () => {
