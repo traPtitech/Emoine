@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.bottomControls">
-    <comment-sender v-show="show" :class="sender" />
+    <comment-sender v-show="show" />
     <button v-show="show" :class="$style.button" @click="$emit('toggle-desc')">
       説明
     </button>
