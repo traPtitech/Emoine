@@ -13,10 +13,14 @@ require (
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/labstack/echo-contrib v0.9.0
 	github.com/labstack/echo/v4 v4.1.16
+	github.com/leandro-lugaresi/hub v1.1.0
 	github.com/lib/pq v1.1.1 // indirect
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible
+	github.com/prometheus/client_golang v1.1.0
 	github.com/stretchr/testify v1.6.1 // indirect
+	github.com/traPtitech/traQ v1.0.0-rc.2
+	go.uber.org/zap v1.15.0
 	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899 // indirect
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381 // indirect
 	golang.org/x/sys v0.0.0-20200625212154-ddb9806d33ae // indirect

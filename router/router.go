@@ -6,20 +6,24 @@ import (
 	"strings"
 
 	"github.com/FujishigeTemma/Emoine/repository"
+	"github.com/FujishigeTemma/Emoine/router/ws"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/leandro-lugaresi/hub"
 )
 
 type Handlers struct {
 	Repo          repository.Repository
 	SessionOption sessions.Options
 	ClientID      string
+	WS             *ws.Streamer
+	Hub            *hub.Hub
 }
 
 func Setup(repo repository.Repository) *echo.Echo {
-	setDefaultStateData()
+	ws.SetDefaultStateData()
 
 	e := echo.New()
 	e.Use(middleware.Logger())
@@ -38,7 +42,7 @@ func Setup(repo repository.Repository) *echo.Echo {
 	}
 	e.Use(h.WatchCallbackMiddleware)
 
-	s := NewStreamer(repo)
+	s := ws.NewStreamer(h.Hub)
 
 	api := e.Group("/api", h.IsTraQUserMiddleware)
 	{
@@ -62,6 +66,7 @@ func Setup(repo repository.Repository) *echo.Echo {
 				apiPresentationsID.POST("/review", h.PostPresentationReview)
 			}
 		}
+		api.POST("/state", h.PostState)
 		api.GET("/users/me", h.GetUserMe)
 		api.GET("/ws", func(c echo.Context) error {
 			s.ServeHTTP(c)

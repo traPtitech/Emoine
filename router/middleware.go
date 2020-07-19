@@ -2,14 +2,15 @@ package router
 
 import (
 	"errors"
+	"net/http"
+	"os"
+	"strings"
+
 	"github.com/FujishigeTemma/Emoine/utils"
 	"github.com/gofrs/uuid"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/patrickmn/go-cache"
-	"net/http"
-	"os"
-	"strings"
 )
 
 type TokenResponse struct {
@@ -89,7 +90,7 @@ func (h *Handlers) IsTraQUserMiddleware(next echo.HandlerFunc) echo.HandlerFunc 
 	}
 }
 
-func getRequestUserID(c echo.Context) (uuid.UUID, error) {
+func GetRequestUserID(c echo.Context) (uuid.UUID, error) {
 	sess, err := session.Get("e_session", c)
 	if err != nil {
 		return uuid.Nil, err
@@ -97,7 +98,7 @@ func getRequestUserID(c echo.Context) (uuid.UUID, error) {
 	return uuid.FromString(sess.Values["userID"].(string))
 }
 
-func getRequestUserName(c echo.Context) (string, error) {
+func GetRequestUserName(c echo.Context) (string, error) {
 	sess, err := session.Get("e_session", c)
 	if err != nil {
 		return "", err
@@ -110,14 +111,14 @@ func getRequestUserName(c echo.Context) (string, error) {
 }
 
 func setRequestUserIsAdmin(c echo.Context) {
-	userID, _ := getRequestUserID(c)
+	userID, _ := GetRequestUserID(c)
 	c.Set("IsAdmin", strings.Contains(admins, userID.String()))
 }
 
 // AdminUserMiddleware 管理者ユーザーか判定するミドルウェア
 func (h *Handlers) AdminUserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		isAdmin := getRequestUserIsAdmin(c)
+		isAdmin := GetRequestUserIsAdmin(c)
 
 		// 判定
 		if !isAdmin {
@@ -132,11 +133,11 @@ func (h *Handlers) AdminUserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func getRequestUserIsAdmin(c echo.Context) bool {
+func GetRequestUserIsAdmin(c echo.Context) bool {
 	return c.Get("IsAdmin").(bool)
 }
 
-func getRequestUserToken(c echo.Context) (string, error) {
+func GetRequestUserToken(c echo.Context) (string, error) {
 	sess, err := session.Get("e_session", c)
 	if err != nil {
 		return "", err

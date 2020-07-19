@@ -1,4 +1,4 @@
-package router
+package ws
 
 import (
 	"github.com/gofrs/uuid"
@@ -25,6 +25,59 @@ type client struct {
 	sync.RWMutex
 }
 
+
+
+func (s *client) readLoop() {
+	s.conn.SetReadLimit(maxReadMessageSize)
+	_ = s.conn.SetReadDeadline(time.Now().Add(pongWait))
+	s.conn.SetPongHandler(func(string) error {
+		_ = s.conn.SetReadDeadline(time.Now().Add(pongWait))
+		return nil
+	})
+
+	for {
+		t, m, err := s.conn.ReadMessage()
+		if err != nil {
+			break
+		}
+
+		if t == websocket.TextMessage {
+			s.commandHandler(string(m))
+		}
+
+		if t == websocket.BinaryMessage {
+			// unsupported
+			_ = s.writeMessage(&rawMessage{t: websocket.CloseMessage, data: websocket.FormatCloseMessage(websocket.CloseUnsupportedData, "binary message is not supported.")})
+			break
+		}
+	}
+}
+
+func (s *client) writeLoop() {
+	ticker := time.NewTicker(pingPeriod)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case msg, ok := <-s.send:
+			if !ok {
+				return
+			}
+
+			if err := s.write(msg.t, msg.data); err != nil {
+				return
+			}
+
+			if msg.t == websocket.CloseMessage {
+				return
+			}
+
+		case <-ticker.C:
+			_ = s.write(websocket.PingMessage, []byte{})
+		}
+	}
+}
+
 // listenRead クライアントからの受信待受
 func (c *client) listenRead() {
 	c.conn.SetReadLimit(maxReadMessageSize)
@@ -41,9 +94,9 @@ func (c *client) listenRead() {
 		}
 
 		// カス
-		if err := c.MsgHandler(m); err != nil {
-			break
-		}
+		// if err := c.MsgHandler(m); err != nil {
+		// 	break
+		// }
 
 		if t == websocket.BinaryMessage {
 			for client := range c.streamer.clients {

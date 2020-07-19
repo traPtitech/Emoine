@@ -46,7 +46,7 @@ func (h *Handlers) PostPresentationReview(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	userID, err := getRequestUserID(c)
+	userID, err := GetRequestUserID(c)
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, err)
 	}

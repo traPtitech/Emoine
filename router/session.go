@@ -2,11 +2,12 @@ package router
 
 import (
 	"errors"
+	"net/http"
+	"time"
+
 	"github.com/gofrs/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/patrickmn/go-cache"
-	"net/http"
-	"time"
 )
 
 var sessionCache = cache.New(2*time.Hour, 3*time.Hour)
@@ -20,16 +21,16 @@ type userResponse struct {
 // HandleGetUserMe ヘッダー情報からuser情報を取得
 // 認証状態を確認
 func (h *Handlers) GetUserMe(c echo.Context) error {
-	userID, err := getRequestUserID(c)
+	userID, err := GetRequestUserID(c)
 	if err != nil {
 		return unauthorized(err)
 	}
-	userName, err := getRequestUserName(c)
+	userName, err := GetRequestUserName(c)
 	if err != nil {
 		return unauthorized(err)
 	}
 
-	token, err := getRequestUserToken(c)
+	token, err := GetRequestUserToken(c)
 	if err != nil {
 		return unauthorized(err)
 	}
@@ -45,7 +46,7 @@ func (h *Handlers) GetUserMe(c echo.Context) error {
 	data := &userResponse{
 		userID,
 		userName,
-		getRequestUserIsAdmin(c),
+		GetRequestUserIsAdmin(c),
 	}
 
 	return c.JSON(http.StatusOK, data)
