@@ -7,22 +7,12 @@ import (
 )
 
 func (repo *SqlxRepository) IsExistReview(userID uuid.UUID, presenID int) (bool, error) {
-	fmt.Println(userID)
-	fmt.Println(presenID)
-	type ReviewA struct {
-		UserId         uuid.UUID `db:"userId"`
-		PresentationId int       `db:"presentationId"`
-		Skill          int       `db:"skill"`
-		Artistry       int       `db:"artistry"`
-		Idea           int       `db:"idea"`
-		Presentation   int       `db:"presentation"`
-	}
-	review := ReviewA{}
-	if err := repo.db.Get(&review, "SELECT * FROM `review` WHERE `userId` = ? AND `presentationId` = ? LIMIT 1", userID, presenID); err != nil {
+	var count int
+	if err := repo.db.Get(&count, "SELECT COUNT(*) FROM `review` WHERE `userId` = ? AND `presentationId` = ? LIMIT 1", userID, presenID); err != nil {
+		fmt.Printf("%#v\n", err)
 		return false, nil
 	}
-	fmt.Println(review)
-	return &review != nil, nil
+	return count > 0, nil
 }
 
 func (repo *SqlxRepository) CreateReview(review *Review) error {
