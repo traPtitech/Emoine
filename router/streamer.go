@@ -2,12 +2,14 @@ package router
 
 import (
 	"errors"
+	"net/http"
+	"sync"
+
 	"github.com/FujishigeTemma/Emoine/repository"
 	"github.com/FujishigeTemma/Emoine/utils"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
-	"net/http"
-	"sync"
+	"google.golang.org/protobuf/proto"
 )
 
 var (
@@ -77,6 +79,39 @@ func (s *Streamer) run() {
 	}
 }
 
+// SendAll すべてのclientにメッセージを送る
+func (s *Streamer) SendAll(m *Message) {
+	byteMessage, err := proto.Marshal(m)
+	if err != nil {
+		return
+	}
+
+	for client := range s.clients {
+		client.write(websocket.BinaryMessage, byteMessage)
+	}
+}
+
+var stateData *State
+
+func setDefaultStateData() {
+	stateData = &State{
+		Status: Status_pause,
+		Info:   "準備中",
+		// nullと同義
+		PresentationId: 0,
+	}
+}
+
+// SendState すべてのclientに新しいstateを送る
+func (s *Streamer) SendState(st *State) {
+	s.SendAll(&Message{
+		Payload: &Message_State{
+			State: st,
+		},
+	})
+	stateData = st
+}
+
 // ServeHTTP http.Handlerインターフェイスの実装
 func (s *Streamer) ServeHTTP(c echo.Context) {
 	if s.IsClosed() {
@@ -105,7 +140,15 @@ func (s *Streamer) ServeHTTP(c echo.Context) {
 
 	s.register <- client
 
-	client.write(websocket.BinaryMessage, stateData)
+	m := &Message{
+		Payload: &Message_State{
+			State: stateData,
+		},
+	}
+	data, err := proto.Marshal(m)
+	if err == nil {
+		client.write(websocket.BinaryMessage, data)
+	}
 
 	go client.listenWrite()
 	client.listenRead()

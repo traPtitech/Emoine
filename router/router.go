@@ -14,6 +14,7 @@ import (
 
 type Handlers struct {
 	Repo          repository.Repository
+	stream *Streamer
 	SessionOption sessions.Options
 	ClientID      string
 }
@@ -25,6 +26,7 @@ func Setup(repo repository.Repository) *echo.Echo {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
+	s := NewStreamer(repo)
 
 	h := &Handlers{
 		Repo: repo,
@@ -35,10 +37,10 @@ func Setup(repo repository.Repository) *echo.Echo {
 			SameSite: http.SameSiteLaxMode,
 		},
 		ClientID: os.Getenv("CLIENT_ID"),
+		stream: s,
 	}
 	e.Use(h.WatchCallbackMiddleware)
 
-	s := NewStreamer(repo)
 
 	api := e.Group("/api", h.IsTraQUserMiddleware)
 	{
@@ -47,6 +49,8 @@ func Setup(repo repository.Repository) *echo.Echo {
 		// TODO: グループだと動かない
 		api.GET("/live-id", h.GetLiveID)
 		api.PUT("/live-id", h.PutLiveID, isAdmin)
+
+		api.POST("/state", h.PostState, isAdmin)
 
 		apiPresentations := api.Group("/presentations")
 		{
