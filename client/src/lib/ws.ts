@@ -10,7 +10,7 @@ export const getWs = (): ReconnectingWebSocket => {
 
 const connect = (): void => {
   const _ws = new ReconnectingWebSocket(
-    `ws://${import.meta.env.VITE_WS_HOST}/api/ws`
+    `wss://${import.meta.env.VITE_WS_HOST}/api/ws`
   )
   _ws.binaryType = 'arraybuffer'
   _ws.addEventListener('open', e => {
