@@ -16,8 +16,8 @@ type ReactionStatistics struct {
 }
 
 type Count struct {
-	Stamp int `db:"stamp"`
-	Count int `db:"COUNT(stamp)"`
+	Stamp int `db:"stamp" json:"stamp"`
+	Count int `db:"COUNT(stamp)" json:"count"`
 }
 
 type ReactionRepository interface {

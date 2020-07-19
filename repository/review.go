@@ -18,12 +18,12 @@ type Score struct {
 }
 
 type ReviewStatistics struct {
-	PresentationId  int `db:"presentationId"`
-	Count           int `db:"COUNT(*)"`
-	AvgSkill        float64 `db:"AVG(skill)"`
-	AvgArtistry     float64 `db:"AVG(artistry)"`
-	AvgIdea         float64 `db:"AVG(idea)"`
-	AvgPresentation float64 `db:"AVG(presentation)"`
+	PresentationId  int `db:"presentationId" json:"presentationId"`
+	Count           int `db:"COUNT(*)" json:"count"`
+	AvgSkill        float64 `db:"AVG(skill)" json:"avgSkill"`
+	AvgArtistry     float64 `db:"AVG(artistry)" json:"avgArtistry"`
+	AvgIdea         float64 `db:"AVG(idea)" json:"avgIdea"`
+	AvgPresentation float64 `db:"AVG(presentation)" json:"avgPresentation"`
 }
 
 type ReviewRepository interface {
