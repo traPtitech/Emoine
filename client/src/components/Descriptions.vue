@@ -5,7 +5,7 @@
       <p>{{ presentation.description }}</p>
     </template>
     <p v-else>No info</p>
-    <button @click="$emit('toggle')">Close</button>
+    <button :class="$style.button" @click="$emit('toggle')">Close</button>
   </div>
 </template>
 
@@ -31,5 +31,10 @@ export default defineComponent({
   padding: 24px;
   transform: translate(-50%, -50%);
   background: rgba(255, 255, 255, 0.8);
+}
+.button {
+  margin: 0 4px;
+  padding: 2px 4px;
+  border: solid 2px #333;
 }
 </style>
