@@ -5,7 +5,7 @@
       {{ presentationTitle }}
     </p>
     <button :class="$style.button" @click="next">この発表を終了</button>
-    <button v-if="!isPaused" :class="$style.button" @click="pause">
+    <button v-if="isSpeaking" :class="$style.button" @click="pause">
       発表を一時停止
     </button>
     <button v-if="isPaused" :class="$style.button" @click="resume">
@@ -28,6 +28,7 @@ export default defineComponent({
       () => store.state.presentation?.name ?? 'なし'
     )
     const status = computed(() => store.state.state.status ?? null)
+    const isSpeaking = computed(() => status.value === Status.speaking)
     const isPaused = computed(() => status.value === Status.pause)
 
     const next = async () => {
@@ -57,7 +58,7 @@ export default defineComponent({
       }
     }
 
-    return { presentationTitle, isPaused, next, pause, resume }
+    return { presentationTitle, isSpeaking, isPaused, next, pause, resume }
   }
 })
 </script>
