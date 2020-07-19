@@ -45,7 +45,7 @@ func (repo *SqlxRepository) GetPresentations() ([]*Presentation, error) {
 
 func (repo *SqlxRepository) GetFirstPresentation() (*Presentation, error) {
 	presentation := Presentation{}
-	if err := repo.db.Get(&presentation, "SELECT * FROM `presentation` WHERE `next` IS NULL LIMIT 1"); err != nil {
+	if err := repo.db.Get(&presentation, "SELECT * FROM `presentation` WHERE `prev` IS NULL LIMIT 1"); err != nil {
 		return nil, err
 	}
 	return &presentation, nil

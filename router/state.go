@@ -27,13 +27,13 @@ func (h *Handlers) PostState(c echo.Context) error {
 
 				newState = &State{
 					Status:         Status_speaking,
-					Info:           "",
+					Info:           "発表中",
 					PresentationId: uint32(presentation.ID),
 				}
 			} else {
 				newState = &State{
 					Status:         Status_speaking,
-					Info:           "",
+					Info:           "発表中",
 					PresentationId: stateData.GetPresentationId(),
 				}
 			}
@@ -52,13 +52,13 @@ func (h *Handlers) PostState(c echo.Context) error {
 			if presentation.Next.Valid {
 				newState = &State{
 					Status:         Status_pause,
-					Info:           "",
+					Info:           "発表開始前",
 					PresentationId: uint32(presentation.Next.Int64), //次のID
 				}
 			} else {
 				newState = &State{
 					Status:         Status_pause,
-					Info:           "",
+					Info:           "準備中",
 					PresentationId: 0, //空のID
 				}
 			}
@@ -69,7 +69,7 @@ func (h *Handlers) PostState(c echo.Context) error {
 		}
 		newState = &State{
 			Status:         Status_pause,
-			Info:           "",
+			Info:           "発表一時中断中",
 			PresentationId: stateData.GetPresentationId(),
 		}
 	} else if state == "resume" {
@@ -78,7 +78,7 @@ func (h *Handlers) PostState(c echo.Context) error {
 		}
 		newState = &State{
 			Status:         Status_speaking,
-			Info:           "",
+			Info:           "発表中",
 			PresentationId: stateData.GetPresentationId(),
 		}
 	} else {
