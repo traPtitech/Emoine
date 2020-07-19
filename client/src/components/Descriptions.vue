@@ -1,10 +1,11 @@
 <template>
-  <div v-if="presentation" :class="$style.desc">
-    <h1>{{ presentation.name }}</h1>
-    <p>{{ presentation.description }}</p>
-    <!--
-      - 統計情報(リアクション数とか)
-    -->
+  <div :class="$style.desc">
+    <template v-if="presentation">
+      <h1>{{ presentation.name }}</h1>
+      <p>{{ presentation.description }}</p>
+    </template>
+    <p v-else>No info</p>
+    <button @click="$emit('toggle')">Close</button>
   </div>
 </template>
 
@@ -25,8 +26,10 @@ export default defineComponent({
 <style lang="scss" module>
 .desc {
   position: absolute;
-  top: 0;
-  right: 0;
-  background: rgba(255, 255, 255, 0.3);
+  top: 50%;
+  left: 50%;
+  padding: 24px;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.8);
 }
 </style>

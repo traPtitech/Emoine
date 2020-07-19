@@ -1,6 +1,9 @@
 <template>
   <div :class="$style.bottomControls">
     <comment-sender v-show="show" />
+    <button :class="$style.toggle" @click="$emit('toggle-desc')">
+      Toggle desc
+    </button>
     <button :class="$style.toggle" @click="emit('toggle')">
       Toggle overlay
     </button>
