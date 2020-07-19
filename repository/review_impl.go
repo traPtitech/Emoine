@@ -12,10 +12,10 @@ func (repo *SqlxRepository) IsExistReview(userID uuid.UUID, presenID int) (bool,
 	type ReviewA struct {
 		UserId         uuid.UUID `db:"userId"`
 		PresentationId int       `db:"presentationId"`
-		Skill        int `db:"skill"`
-	Artistry     int `db:"artistry"`
-	Idea         int `db:"idea"`
-	Presentation int `db:"presentation"`
+		Skill          int       `db:"skill"`
+		Artistry       int       `db:"artistry"`
+		Idea           int       `db:"idea"`
+		Presentation   int       `db:"presentation"`
 	}
 	review := ReviewA{}
 	if err := repo.db.Get(&review, "SELECT * FROM `review` WHERE `userId` = ? AND `presentationId` = ? LIMIT 1", userID, presenID); err != nil {
