@@ -27,6 +27,7 @@ type ReviewStatistics struct {
 }
 
 type ReviewRepository interface {
+	IsExistReview(userID uuid.UUID, presenID int) (bool, error)
 	CreateReview(review *Review) error
 	UpdateReview(review *Review) error
 	GetReviewStatistics(id int) (*ReviewStatistics, error)

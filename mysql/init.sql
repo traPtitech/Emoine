@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS presentation
 CREATE TABLE IF NOT EXISTS reaction
 (
     id             SMALLINT UNSIGNED AUTO_INCREMENT,
-    userId         VARCHAR(32)       NOT NULL,
+    userId         VARCHAR(36)       NOT NULL,
     presentationId SMALLINT UNSIGNED NOT NULL,
     stamp          TINYINT,
     createdAt      DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS reaction
 CREATE TABLE IF NOT EXISTS comment
 (
     id             SMALLINT UNSIGNED AUTO_INCREMENT,
-    userId         VARCHAR(32)       NOT NULL,
+    userId         VARCHAR(36)       NOT NULL,
     presentationId SMALLINT UNSIGNED NOT NULL,
     text           TEXT,
     createdAt      DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS comment
 
 CREATE TABLE IF NOT EXISTS review
 (
-    userId         VARCHAR(32),
+    userId         VARCHAR(36),
     presentationId SMALLINT UNSIGNED NOT NULL,
     skill          TINYINT UNSIGNED  NOT NULL,
     artistry       TINYINT UNSIGNED  NOT NULL,

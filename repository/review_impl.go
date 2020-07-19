@@ -1,5 +1,20 @@
 package repository
 
+import (
+	"fmt"
+
+	"github.com/gofrs/uuid"
+)
+
+func (repo *SqlxRepository) IsExistReview(userID uuid.UUID, presenID int) (bool, error) {
+	var count int
+	if err := repo.db.Get(&count, "SELECT COUNT(*) FROM `review` WHERE `userId` = ? AND `presentationId` = ? LIMIT 1", userID, presenID); err != nil {
+		fmt.Printf("%#v\n", err)
+		return false, nil
+	}
+	return count > 0, nil
+}
+
 func (repo *SqlxRepository) CreateReview(review *Review) error {
 	_, err := repo.db.Exec("INSERT INTO `review` (`userId`, `presentationId`, `skill`, `artistry`, `idea`, `presentation`) VALUES (?, ?, ?, ?, ?, ?)",
 		review.UserId, review.PresentationId, review.Score.Skill, review.Score.Artistry, review.Score.Idea, review.Score.Presentation)
@@ -7,8 +22,9 @@ func (repo *SqlxRepository) CreateReview(review *Review) error {
 }
 
 func (repo *SqlxRepository) UpdateReview(review *Review) error {
-	_, err := repo.db.Exec("UPDATE `review` SET `presentationId` = ?, `skill` = ?, `artistry` = ?, `idea` = ?, `presentation` = ? WHERE `userId` = ?",
-		review.PresentationId, review.Score.Skill, review.Score.Artistry, review.Score.Idea, review.Score.Presentation, review.UserId)
+	fmt.Println(review)
+	_, err := repo.db.Exec("UPDATE `review` SET `skill` = ?, `artistry` = ?, `idea` = ?, `presentation` = ? WHERE `userId` = ? AND `presentationId` = ?",
+		review.Score.Skill, review.Score.Artistry, review.Score.Idea, review.Score.Presentation, review.UserId, review.PresentationId)
 	return err
 }
 
