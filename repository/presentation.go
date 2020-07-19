@@ -27,6 +27,7 @@ type PresentationRepository interface {
 	CreatePresentation(presentation *CreatePresentation) error
 	UpdatePresentation(presentation *Presentation) error
 	GetPresentations() ([]*Presentation, error)
+	GetFirstPresentation() (*Presentation, error)
 	GetPresentation(id int) (*Presentation, error)
 	DeletePresentation(id int) error
 }

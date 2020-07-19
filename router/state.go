@@ -19,22 +19,48 @@ func (h *Handlers) PostState(c echo.Context) error {
 	if state == "next" {
 		switch stateData.GetStatus() {
 		case Status_pause:
-			newState = &State{
-				Status: Status_speaking,
-				Info:   "",
-				PresentationId: stateData.GetPresentationId(),
+			if stateData.GetPresentationId() == 0 {
+				presentation, err := h.Repo.GetFirstPresentation()
+				if err != nil {
+					return err
+				}
+
+				newState = &State{
+					Status:         Status_speaking,
+					Info:           "",
+					PresentationId: uint32(presentation.ID),
+				}
+			} else {
+				newState = &State{
+					Status:         Status_speaking,
+					Info:           "",
+					PresentationId: stateData.GetPresentationId(),
+				}
 			}
 		case Status_speaking:
 			newState = &State{
-				Status: Status_reviewing,
-				Info:   "レビュー中",
+				Status:         Status_reviewing,
+				Info:           "レビュー中",
 				PresentationId: stateData.GetPresentationId(),
 			}
 		case Status_reviewing:
-			newState = &State{
-				Status: Status_pause,
-				Info:   "",
-				PresentationId: stateData.GetPresentationId(), //次のIDにする
+			presentation, err := h.Repo.GetPresentation(int(stateData.GetPresentationId()))
+			if err != nil {
+				return err
+			}
+
+			if presentation.Next.Valid {
+				newState = &State{
+					Status:         Status_pause,
+					Info:           "",
+					PresentationId: uint32(presentation.Next.Int64), //次のID
+				}
+			} else {
+				newState = &State{
+					Status:         Status_pause,
+					Info:           "",
+					PresentationId: 0, //空のID
+				}
 			}
 		}
 	} else if state == "pause" {
@@ -42,8 +68,8 @@ func (h *Handlers) PostState(c echo.Context) error {
 			return c.NoContent(http.StatusBadRequest)
 		}
 		newState = &State{
-			Status: Status_pause,
-			Info:   "",
+			Status:         Status_pause,
+			Info:           "",
 			PresentationId: stateData.GetPresentationId(),
 		}
 	} else if state == "resume" {
@@ -51,8 +77,8 @@ func (h *Handlers) PostState(c echo.Context) error {
 			return c.NoContent(http.StatusBadRequest)
 		}
 		newState = &State{
-			Status: Status_speaking,
-			Info:   "",
+			Status:         Status_speaking,
+			Info:           "",
 			PresentationId: stateData.GetPresentationId(),
 		}
 	} else {
