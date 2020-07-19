@@ -26,7 +26,9 @@ export default defineComponent({
   },
   setup() {
     const store = useStore()
-    const isReview = computed(() => store.state.state === Status.reviewing)
+    const isReview = computed(
+      () => store.state.state.status === Status.reviewing
+    )
 
     const showDesc = ref(false)
     const toggleDesc = () => {
