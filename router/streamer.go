@@ -91,6 +91,27 @@ func (s *Streamer) SendAll(m *Message) {
 	}
 }
 
+var stateData *State
+
+func setDefaultStateData() {
+	stateData = &State{
+		Status: Status_pause,
+		Info:   "準備中",
+		// nullと同義
+		PresentationId: 0,
+	}
+}
+
+// SendState すべてのclientに新しいstateを送る
+func (s *Streamer) SendState(st *State) {
+	s.SendAll(&Message{
+		Payload: &Message_State{
+			State: st,
+		},
+	})
+	stateData = st
+}
+
 // ServeHTTP http.Handlerインターフェイスの実装
 func (s *Streamer) ServeHTTP(c echo.Context) {
 	if s.IsClosed() {
