@@ -11,13 +11,13 @@ type Reaction struct {
 }
 
 type ReactionStatistics struct {
-	PresentationID int
-	Counts         []Count
+	PresentationID int     `json:"presentationID"`
+	Counts         []Count `json:"counts"`
 }
 
 type Count struct {
-	Stamp int `db:"stamp"`
-	Count int `db:"COUNT(stamp)"`
+	Stamp int `db:"stamp" json:"stamp"`
+	Count int `db:"COUNT(stamp)" json:"count"`
 }
 
 type ReactionRepository interface {
