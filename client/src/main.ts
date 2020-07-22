@@ -4,6 +4,9 @@ import store from './store'
 import App from './App.vue'
 import { setup } from '/@/lib/connect'
 
+import 'ress'
+import './index.scss'
+
 const app = createApp(App)
 app.use(router)
 app.use(store)

@@ -79,7 +79,7 @@ func Setup(repo repository.Repository) *echo.Echo {
 		Skipper: func(c echo.Context) bool {
 			return strings.HasPrefix(c.Request().URL.Path, "/api")
 		},
-		Root:  "client/dist",
+		Root:  "web/dist",
 		HTML5: true,
 	}))
 	return e
