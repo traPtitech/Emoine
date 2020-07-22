@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.topControls" :data-is-shown="show">
+  <div :class="$style.container" :data-is-shown="show">
     <reaction-button
       v-for="stamp in stamps"
       :key="stamp"
@@ -48,7 +48,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" module>
-.topControls {
+.container {
   display: flex;
   justify-content: space-around;
   background: rgba(255, 255, 255, 0.8);

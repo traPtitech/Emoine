@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.bottomControls">
+  <div :class="$style.container">
     <comment-sender v-show="show" />
     <button v-show="show" :class="$style.button" @click="$emit('toggle-desc')">
       説明
@@ -43,7 +43,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" module>
-.bottomControls {
+.container {
   display: flex;
   pointer-events: auto;
   background: rgba(255, 255, 255, 0.8);
