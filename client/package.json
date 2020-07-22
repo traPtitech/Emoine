@@ -37,7 +37,7 @@
     "sass": "^1.26.10",
     "ts-morph": "^7.1.2",
     "typescript": "^3.9.7",
-    "vite": "^1.0.0-rc.1"
+    "vite": "^1.0.0-rc.3"
   },
   "private": true
 }

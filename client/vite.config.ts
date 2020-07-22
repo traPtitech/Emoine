@@ -2,7 +2,6 @@ import { UserConfig } from 'vite'
 import path from 'path'
 
 const config: UserConfig = {
-  minify: false,
   alias: {
     '/@/': path.resolve(__dirname, 'src')
   },
