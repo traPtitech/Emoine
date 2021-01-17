@@ -2,7 +2,6 @@ FROM node:12-alpine AS client-build
 RUN apk add --update --no-cache openjdk8-jre-base
 WORKDIR /github.com/FujishigeTemma/Emoine/client
 COPY ./client/package*.json ./
-COPY ./client/patches ./patches
 COPY ./client/scripts ./scripts
 COPY ./docs ../docs
 RUN npm ci --unsafe-perm
