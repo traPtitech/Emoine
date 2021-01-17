@@ -1,7 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Index from '/@/pages/Index.vue'
-import Admin from '/@/pages/Admin.vue'
-import Null from '/@/pages/Null.vue'
 import { useStore } from '/@/store'
 
 export const routerHistory = createWebHistory()
@@ -12,16 +9,16 @@ const router = createRouter({
     {
       path: '/',
       name: 'index',
-      component: Index
+      component: () => import('/@/pages/Index.vue')
     },
     {
       path: '/admin',
       name: 'admin',
-      component: Admin
+      component: () => import('/@/pages/Admin.vue')
     },
     {
       path: '/:catchAll(.*)',
-      component: Null
+      component: () => import('/@/pages/Null.vue')
     }
   ]
 })
