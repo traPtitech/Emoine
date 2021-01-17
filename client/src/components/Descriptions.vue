@@ -15,6 +15,9 @@ import { useStore } from '/@/store'
 
 export default defineComponent({
   name: 'Descriptions',
+  emits: {
+    toggle: () => true
+  },
   setup() {
     const store = useStore()
     const presentation = computed(() => store.state.presentation)

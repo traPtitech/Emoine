@@ -29,6 +29,10 @@ export default defineComponent({
       required: true
     }
   },
+  emits: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    'update:value': (_v: number) => true
+  },
   setup(_, { emit }) {
     const onInput = (e: InputEvent) => {
       emit('update:value', (e.target as HTMLInputElement).valueAsNumber)
