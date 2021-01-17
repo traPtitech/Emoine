@@ -37,7 +37,6 @@ export default defineComponent({
 .nico {
   position: relative;
   color: white;
-  background: rgba(255, 0, 0, 0.1);
   pointer-events: auto;
   overflow: hidden;
   &:not([data-is-shown='true']) {
