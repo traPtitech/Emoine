@@ -11,11 +11,11 @@ const incrementCommentLine = () => {
 }
 
 export const addComment = (
-  $base: Ref<HTMLDivElement | undefined>,
+  baseEle: Ref<HTMLDivElement | undefined>,
   baseHeight: Ref<number>,
   text: string
 ): void => {
-  if (!$base.value) return
+  if (!baseEle.value) return
 
   const lineHeight = baseHeight.value / CommentLines
 
@@ -32,7 +32,7 @@ export const addComment = (
     },
     { once: true }
   )
-  $base.value.append($comment)
+  baseEle.value.append($comment)
 
   incrementCommentLine()
 }

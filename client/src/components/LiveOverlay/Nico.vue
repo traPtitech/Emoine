@@ -1,5 +1,5 @@
 <template>
-  <div ref="$base" :class="$style.nico" :data-is-shown="show" />
+  <div ref="baseEle" :class="$style.nico" :data-is-shown="show" />
 </template>
 
 <script lang="ts">
@@ -18,17 +18,17 @@ export default defineComponent({
     }
   },
   setup() {
-    const $base = ref<HTMLDivElement>()
-    const { height: baseHeight, width: baseWidth } = useElementSize($base)
+    const baseEle = ref<HTMLDivElement>()
+    const { height: baseHeight, width: baseWidth } = useElementSize(baseEle)
 
     connectTarget.addEventListener('reaction', e => {
-      addReaction($base, baseHeight, baseWidth, e.detail.stamp)
+      addReaction(baseEle, baseHeight, baseWidth, e.detail.stamp)
     })
     connectTarget.addEventListener('comment', e => {
-      addComment($base, baseHeight, e.detail.text)
+      addComment(baseEle, baseHeight, e.detail.text)
     })
 
-    return { $base }
+    return { baseEle }
   }
 })
 </script>

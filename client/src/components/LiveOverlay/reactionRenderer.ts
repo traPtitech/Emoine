@@ -6,12 +6,12 @@ const ReactionRatioSize = 8
 const random = (max: number): number => Math.random() * max
 
 export const addReaction = (
-  $base: Ref<HTMLDivElement | undefined>,
+  baseEle: Ref<HTMLDivElement | undefined>,
   baseHeight: Ref<number>,
   baseWidth: Ref<number>,
   stamp: Stamp
 ): void => {
-  if (!$base.value) return
+  if (!baseEle.value) return
 
   const size = baseHeight.value / ReactionRatioSize
 
@@ -36,7 +36,7 @@ export const addReaction = (
     },
     { once: true }
   )
-  $base.value.append($reaction)
+  baseEle.value.append($reaction)
 }
 
 export const stampToFileName = (stamp: Stamp): string => {
