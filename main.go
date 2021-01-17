@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/FujishigeTemma/Emoine/repository"
-	"github.com/FujishigeTemma/Emoine/router"
+	"github.com/traPtitech/Emoine/repository"
+	"github.com/traPtitech/Emoine/router"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"io/ioutil"

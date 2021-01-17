@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/FujishigeTemma/Emoine/repository"
-	"github.com/FujishigeTemma/Emoine/utils"
 	"github.com/labstack/echo/v4"
+	"github.com/traPtitech/Emoine/repository"
+	"github.com/traPtitech/Emoine/utils"
 )
 
 type PostPresentationsStruct struct {

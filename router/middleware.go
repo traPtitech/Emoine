@@ -2,7 +2,7 @@ package router
 
 import (
 	"errors"
-	"github.com/FujishigeTemma/Emoine/utils"
+	"github.com/traPtitech/Emoine/utils"
 	"github.com/gofrs/uuid"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"

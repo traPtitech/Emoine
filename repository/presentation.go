@@ -3,7 +3,7 @@ package repository
 import (
 	"time"
 
-	"github.com/FujishigeTemma/Emoine/utils"
+	"github.com/traPtitech/Emoine/utils"
 )
 
 type CreatePresentation struct {

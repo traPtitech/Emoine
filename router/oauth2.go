@@ -4,15 +4,16 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
-	"github.com/FujishigeTemma/Emoine/utils"
-	"github.com/labstack/echo-contrib/session"
-	"github.com/labstack/echo/v4"
-	"github.com/patrickmn/go-cache"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/labstack/echo-contrib/session"
+	"github.com/labstack/echo/v4"
+	"github.com/patrickmn/go-cache"
+	"github.com/traPtitech/Emoine/utils"
 )
 
 var verifierCache = cache.New(5*time.Minute, 10*time.Minute)

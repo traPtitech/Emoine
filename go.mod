@@ -1,4 +1,4 @@
-module github.com/FujishigeTemma/Emoine
+module github.com/traPtitech/Emoine
 
 go 1.15
 

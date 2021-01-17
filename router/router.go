@@ -5,16 +5,16 @@ import (
 	"os"
 	"strings"
 
-	"github.com/FujishigeTemma/Emoine/repository"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/traPtitech/Emoine/repository"
 )
 
 type Handlers struct {
 	Repo          repository.Repository
-	stream *Streamer
+	stream        *Streamer
 	SessionOption sessions.Options
 	ClientID      string
 }
@@ -37,10 +37,9 @@ func Setup(repo repository.Repository) *echo.Echo {
 			SameSite: http.SameSiteLaxMode,
 		},
 		ClientID: os.Getenv("CLIENT_ID"),
-		stream: s,
+		stream:   s,
 	}
 	e.Use(h.WatchCallbackMiddleware)
-
 
 	api := e.Group("/api", h.IsTraQUserMiddleware)
 	{
