@@ -1,4 +1,4 @@
-FROM node:12-alpine AS client-build
+FROM node:14-alpine AS client-build
 RUN apk add --update --no-cache openjdk8-jre-base
 WORKDIR /github.com/FujishigeTemma/Emoine/client
 COPY ./client/package*.json ./
@@ -8,7 +8,7 @@ RUN npm ci --unsafe-perm
 COPY ./client .
 RUN npm run build
 
-FROM golang:1.14-alpine AS server-build
+FROM golang:1.15-alpine AS server-build
 RUN apk add --update --no-cache git curl make protoc
 WORKDIR /go/src/github.com/FujishigeTemma/Emoine
 COPY ./go.* ./
@@ -19,7 +19,7 @@ COPY . .
 RUN make proto
 RUN go build
 
-FROM alpine:3.12.0
+FROM alpine:3.13.0
 WORKDIR /app
 RUN apk --update --no-cache add tzdata ca-certificates openssl && \
   cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
