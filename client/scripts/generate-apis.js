@@ -14,7 +14,7 @@ const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx'
 
 const generateCmd = [
   npx,
-  'openapi-generator',
+  'openapi-generator-cli',
   'generate',
   '-g',
   'typescript-axios',
