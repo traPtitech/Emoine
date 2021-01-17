@@ -49,10 +49,7 @@ export default defineComponent({
       if (!presentation.value) return
 
       try {
-        const res = await apis.postPresentationReview(
-          '' + presentation.value.id,
-          state
-        )
+        await apis.postPresentationReview('' + presentation.value.id, state)
         done.value = true
       } catch (e) {
         if (e.response.status === 409) {

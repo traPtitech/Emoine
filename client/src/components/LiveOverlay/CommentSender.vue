@@ -6,9 +6,7 @@
       type="text"
       @keydown.enter="comment"
     />
-    <button :class="$style.send" @click="comment">
-      送信
-    </button>
+    <button :class="$style.send" @click="comment">送信</button>
   </div>
 </template>
 

@@ -23,7 +23,7 @@ export const parse = (urlStr: string, parseQueryString: true): UrlObject => {
 export const format = (urlObject: UrlObject): string => {
   const url = urlObject.url
   url.search = ''
-  Object.entries(urlObject.query).forEach(([k,v]) => {
+  Object.entries(urlObject.query).forEach(([k, v]) => {
     url.searchParams.set(k, v)
   })
   return url.href.replace(baseReg, '')

@@ -30,12 +30,8 @@ interface CustomTarget<M> extends Omit<EventTarget, 'addEventListener'> {
   ): void
 }
 
-export const connectTarget = document.createDocumentFragment() as CustomTarget<
-  ConnectEventMap
->
-export const stateTarget = document.createDocumentFragment() as CustomTarget<
-  StateEventMap
->
+export const connectTarget = document.createDocumentFragment() as CustomTarget<ConnectEventMap>
+export const stateTarget = document.createDocumentFragment() as CustomTarget<StateEventMap>
 
 const onReaction = (m: Message) => {
   const reaction = m.reaction
@@ -86,6 +82,7 @@ export const setup = (): void => {
         break
       }
       default:
+        // eslint-disable-next-line no-console
         console.log(message)
     }
   })
