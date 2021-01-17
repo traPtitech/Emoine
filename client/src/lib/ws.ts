@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import ReconnectingWebSocket from 'reconnecting-websocket'
+import { HOST } from './define'
 
 let ws: ReconnectingWebSocket | undefined
 
@@ -9,8 +10,10 @@ export const getWs = (): ReconnectingWebSocket => {
 }
 
 const connect = (): void => {
+  const isHttps = location.protocol === 'https:'
+
   const _ws = new ReconnectingWebSocket(
-    `wss://${import.meta.env.VITE_WS_HOST}/api/ws`
+    `${isHttps ? 'wss' : 'ws'}://${HOST}/api/ws`
   )
   _ws.binaryType = 'arraybuffer'
   _ws.addEventListener('open', e => {
