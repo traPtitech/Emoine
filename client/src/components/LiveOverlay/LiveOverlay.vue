@@ -7,7 +7,7 @@
       :data-is-shown="show"
       :show="show"
       @toggle="toggle"
-      @toggle-desc="$emit('toggle-desc')"
+      @toggle-desc="$emit('toggleDesc')"
     />
   </div>
 </template>
@@ -24,6 +24,9 @@ export default defineComponent({
     Nico,
     TopControls,
     BottomControls
+  },
+  emits: {
+    toggleDesc: () => true
   },
   setup() {
     const show = ref(true)

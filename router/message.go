@@ -1,7 +1,7 @@
 package router
 
 import (
-	"github.com/FujishigeTemma/Emoine/repository"
+	"github.com/traPtitech/Emoine/repository"
 	"github.com/golang/protobuf/proto"
 )
 

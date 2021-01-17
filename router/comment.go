@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/FujishigeTemma/Emoine/repository"
+	"github.com/traPtitech/Emoine/repository"
 	"github.com/labstack/echo/v4"
 )
 

@@ -12,7 +12,9 @@
     <div>
       <div>
         コメント数 {{ state.comments.length }}
-        <button :class="$style.commentToggle" @click="toggleComments">コメント表示切替</button>
+        <button :class="$style.commentToggle" @click="toggleComments">
+          コメント表示切替
+        </button>
       </div>
       <div v-if="showComments" :class="$style.comments">
         <p v-for="c in state.comments" :key="c.id">{{ c.text }}</p>

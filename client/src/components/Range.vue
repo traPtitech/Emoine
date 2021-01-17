@@ -16,7 +16,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { useStore } from '/@/store'
 
 export default defineComponent({
   name: 'Range',
@@ -29,6 +28,10 @@ export default defineComponent({
       type: Number,
       required: true
     }
+  },
+  emits: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    'update:value': (_v: number) => true
   },
   setup(_, { emit }) {
     const onInput = (e: InputEvent) => {

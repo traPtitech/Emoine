@@ -1,7 +1,7 @@
 <template>
   <div :class="$style.container">
     <comment-sender v-show="show" />
-    <button v-show="show" :class="$style.button" @click="$emit('toggle-desc')">
+    <button v-show="show" :class="$style.button" @click="$emit('toggleDesc')">
       説明
     </button>
     <button :class="$style.button" @click="$emit('toggle')">
@@ -26,6 +26,10 @@ export default defineComponent({
       type: Boolean,
       required: true
     }
+  },
+  emits: {
+    toggle: () => true,
+    toggleDesc: () => true
   },
   setup() {
     const store = useStore()

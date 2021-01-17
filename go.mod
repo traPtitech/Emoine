@@ -1,4 +1,4 @@
-module github.com/FujishigeTemma/Emoine
+module github.com/traPtitech/Emoine
 
 go 1.15
 
@@ -13,7 +13,6 @@ require (
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/labstack/echo-contrib v0.9.0
 	github.com/labstack/echo/v4 v4.1.16
-	github.com/leandro-lugaresi/hub v1.1.0
 	github.com/lib/pq v1.1.1 // indirect
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible

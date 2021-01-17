@@ -43,6 +43,9 @@ export default defineComponent({
       required: true
     }
   },
+  emits: {
+    needUpdate: () => true
+  },
   setup(props, { emit }) {
     const state = reactive({
       name: props.presentation.name,
@@ -60,13 +63,13 @@ export default defineComponent({
         '' + props.presentation.id,
         data as Presentation
       )
-      emit('need-update')
+      emit('needUpdate')
     }
 
     const deleteThis = async () => {
       if (!window.confirm('本当に削除しますか？')) return
       await apis.deletePresentation('' + props.presentation.id)
-      emit('need-update')
+      emit('needUpdate')
     }
 
     return {

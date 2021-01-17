@@ -21,6 +21,7 @@ module.exports = {
   ],
   rules: {
     'no-console': 'warn',
-    'no-debugger': 'warn'
+    'no-debugger': 'warn',
+    'vue/custom-event-name-casing': ['error', 'camelCase']
   }
 }

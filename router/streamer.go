@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/FujishigeTemma/Emoine/repository"
-	"github.com/FujishigeTemma/Emoine/utils"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
+	"github.com/traPtitech/Emoine/repository"
+	"github.com/traPtitech/Emoine/utils"
 	"google.golang.org/protobuf/proto"
 )
 

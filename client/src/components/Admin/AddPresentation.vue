@@ -23,6 +23,9 @@ import apis from '/@/lib/apis'
 
 export default defineComponent({
   name: 'AddPresentation',
+  emits: {
+    needUpdate: () => true
+  },
   setup(_, { emit }) {
     const state = reactive({
       name: '',
@@ -37,7 +40,7 @@ export default defineComponent({
       state.name = ''
       state.description = ''
       state.speakers = ''
-      emit('need-update')
+      emit('needUpdate')
     }
 
     return { state, add }

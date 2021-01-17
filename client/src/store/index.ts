@@ -11,7 +11,7 @@ interface State {
 }
 
 const state: State = {
-  liveId: 'MXMCe6J3YA8',
+  liveId: 'pvu2mYY8tf4',
   state: {
     status: Status.pause,
     info: '準備中'

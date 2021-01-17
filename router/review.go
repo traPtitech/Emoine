@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/FujishigeTemma/Emoine/repository"
 	"github.com/labstack/echo/v4"
+	"github.com/traPtitech/Emoine/repository"
 )
 
 type PostReviewStruct struct {
