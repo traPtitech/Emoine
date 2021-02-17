@@ -26,9 +26,6 @@ const config: UserConfig = {
       }
     }
   },
-  optimizeDeps: {
-    include: ['protobufjs/minimal']
-  },
   plugins: [VuePlugin()]
 }
 
