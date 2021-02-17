@@ -14,6 +14,8 @@ import { defineComponent, computed } from 'vue'
 import { useStore } from '/@/store'
 import { Stamp } from '/@/lib/pb'
 import ReactionButton from './ReactionButton.vue'
+import useShortcut from '/@/use/shortcut'
+import { sendReaction } from '/@/lib/connect'
 
 export default defineComponent({
   name: 'TopControls',
@@ -41,6 +43,15 @@ export default defineComponent({
       Stamp.yosa,
       Stamp.kusa
     ]
+
+    for (const [i, stamp] of stamps.entries()) {
+      useShortcut({ key: '' + i, ctrlKey: true }, () => {
+        sendReaction({
+          presentationId: presentationId.value ?? null,
+          stamp
+        })
+      })
+    }
 
     return { presentationId, stamps }
   }
