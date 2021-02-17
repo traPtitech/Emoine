@@ -1,6 +1,7 @@
 <template>
   <div :class="$style.other">
     <input
+      ref="inputRef"
       v-model="text"
       :class="$style.input"
       type="text"
@@ -14,6 +15,7 @@
 import { defineComponent, computed, ref } from 'vue'
 import { useStore } from '/@/store'
 import { sendComment } from '/@/lib/connect'
+import useShortcut from '/@/use/shortcut'
 
 export default defineComponent({
   name: 'CommentSender',
@@ -28,7 +30,12 @@ export default defineComponent({
       text.value = ''
     }
 
-    return { text, comment }
+    const inputRef = ref<HTMLInputElement>()
+    useShortcut({ key: ' ', ctrlKey: true }, () => {
+      inputRef.value?.focus()
+    })
+
+    return { text, comment, inputRef }
   }
 })
 </script>

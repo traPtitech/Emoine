@@ -17,7 +17,7 @@ export const addReaction = (
 
   const $img = document.createElement('img')
   const fileName = stampToFileName(stamp)
-  $img.src = `/assets/${fileName}.png`
+  $img.src = `/assets/${fileName}.webp`
 
   const $reaction = document.createElement('div')
   $reaction.className = 'animation-reaction'

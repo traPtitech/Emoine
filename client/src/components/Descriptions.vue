@@ -1,10 +1,14 @@
 <template>
   <div :class="$style.desc">
-    <template v-if="presentation">
-      <h1>{{ presentation.name }}</h1>
-      <p>{{ presentation.description }}</p>
-    </template>
-    <p v-else>No info</p>
+    <h1>{{ presentation?.name ?? 'プレゼン情報' }}</h1>
+    <p>{{ presentation?.description ?? 'No info' }}</p>
+    <h2>ショートカットキー</h2>
+    <div :class="$style.shortcuts">
+      <div>Ctrl+Space</div>
+      <div>入力欄をフォーカス</div>
+      <div>Ctrl+0～8</div>
+      <div>スタンプを送信(左から0)</div>
+    </div>
     <button :class="$style.button" @click="$emit('toggle')">Close</button>
   </div>
 </template>
@@ -36,8 +40,13 @@ export default defineComponent({
   background: rgba(255, 255, 255, 0.8);
 }
 .button {
-  margin: 0 4px;
+  margin: 4px;
   padding: 2px 4px;
   border: solid 2px #333;
+}
+.shortcuts {
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  gap: 8px;
 }
 </style>

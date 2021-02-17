@@ -5,7 +5,7 @@
     <p>{{ presentation.speakers }}</p>
     <div v-if="state.reactions" :class="$style.reactions">
       <div v-for="reaction in reactions" :key="reaction.id">
-        <img :class="$style.img" :src="`/assets/${reaction.imgPath}.png`" />
+        <img :class="$style.img" :src="`/assets/${reaction.imgPath}.webp`" />
         {{ reaction.count }}
       </div>
     </div>
@@ -80,12 +80,13 @@ export default defineComponent({
       })
     })
 
-    const reactions = computed(() =>
-      state.reactions?.counts?.map(({ stamp, count }) => ({
-        id: stamp,
-        imgPath: stampToFileName(stamp),
-        count
-      }))
+    const reactions = computed(
+      () =>
+        state.reactions?.counts?.map(({ stamp, count }) => ({
+          id: stamp,
+          imgPath: stampToFileName(stamp),
+          count
+        })) ?? []
     )
 
     const showComments = ref(false)
