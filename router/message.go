@@ -1,62 +1,62 @@
 package router
 
 import (
-	"github.com/traPtitech/Emoine/repository"
+	"github.com/gofrs/uuid"
 	"github.com/golang/protobuf/proto"
+	"github.com/traPtitech/Emoine/repository"
 )
 
 type rawMessage struct {
-	t    int
-	data []byte
+	userID      uuid.UUID
+	messageType int
+	data        []byte
 }
 
-func (c *client) MsgHandler(b []byte) error {
-	m := &Message{}
-	if err := proto.Unmarshal(b, m); err != nil {
+func (s *Streamer) logger(m *rawMessage) error {
+	msg := &Message{}
+	if err := proto.Unmarshal(m.data, msg); err != nil {
 		return err
 	}
 
-	payload := m.GetPayload()
+	payload := msg.GetPayload()
 	switch payload.(type) {
 	case *Message_State:
-		// do nothing
+		if err := s.stateLogger(msg.GetState()); err != nil {
+			return err
+		}
 	case *Message_Reaction:
-		if err := c.reactionMsgHandler(m.GetReaction()); err != nil {
+		if err := s.reactionLogger(m.userID, msg.GetReaction()); err != nil {
 			return err
 		}
 	case *Message_Comment:
-		if err := c.commentMsgHandler(m.GetComment()); err != nil {
+		if err := s.commentLogger(m.userID, msg.GetComment()); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (c *client) stateMsgHandler(m *State) error {
-	// TODO Validate message
-	// アカン
-	state := repository.State{string(m.Status), m.Info}
-	if err := c.streamer.repo.UpdateState(&state); err != nil {
+// TODO: repositoryの型をいい感じにする
+
+func (s *Streamer) stateLogger(data *State) error {
+	state := repository.State{Status: data.Status.String(), Info: data.Info}
+	if err := s.repo.UpdateState(&state); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c *client) reactionMsgHandler(m *Reaction) error {
-	// TODO Validate message
-	// カス
-	reaction := repository.Reaction{c.userID, int(m.PresentationId), int(m.Stamp)}
-	if err := c.streamer.repo.CreateReaction(&reaction); err != nil {
+func (s *Streamer) reactionLogger(userID uuid.UUID, data *Reaction) error {
+	reaction := repository.Reaction{UserID: userID, PresentationID: int(data.PresentationId), Stamp: int(data.Stamp)}
+	if err := s.repo.CreateReaction(&reaction); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c *client) commentMsgHandler(m *Comment) error {
-	// TODO Validate message
-	// ダメ
-	comment := repository.Comment{c.userID, int(m.PresentationId), m.Text}
-	if err := c.streamer.repo.CreateComment(&comment); err != nil {
+func (s *Streamer) commentLogger(userID uuid.UUID, data *Comment) error {
+	comment := repository.Comment{UserID: userID, PresentationID: int(data.PresentationId), Text: data.Text}
+	if err := s.repo.CreateComment(&comment); err != nil {
 		return err
 	}
 	return nil

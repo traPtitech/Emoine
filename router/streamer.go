@@ -1,7 +1,9 @@
 package router
 
 import (
+	"context"
 	"errors"
+	"log"
 	"net/http"
 	"sync"
 
@@ -14,32 +16,29 @@ import (
 
 var (
 	// ErrAlreadyClosed 既に閉じられています
-	ErrAlreadyClosed = errors.New("already closed")
+	ErrAlreadyClosed = errors.New("already IsClosed")
 	// ErrBufferIsFull 送信バッファが溢れました
 	ErrBufferIsFull = errors.New("buffer is full")
 )
 
-// やっぱhub必要かも
 // Streamer WebSocketストリーマー
 type Streamer struct {
-	repo       repository.Repository // これキモい
-	clients    map[*client]struct{}
-	register   chan *client
-	unregister chan *client
-	stop       chan struct{}
-	open       bool
-	mu         sync.RWMutex
+	repo          repository.Repository
+	clients       map[string]*client
+	registry      chan *client
+	messageBuffer chan *rawMessage
+	active        bool
+	sync.RWMutex
 }
 
 // NewStreamer WebSocketストリーマーを生成し起動します
 func NewStreamer(repo repository.Repository) *Streamer {
 	s := &Streamer{
-		repo:       repo, // これ
-		clients:    make(map[*client]struct{}),
-		register:   make(chan *client),
-		unregister: make(chan *client),
-		stop:       make(chan struct{}),
-		open:       true,
+		repo:          repo,
+		clients:       make(map[string]*client),
+		registry:      make(chan *client),
+		messageBuffer: make(chan *rawMessage),
+		active:        true,
 	}
 
 	go s.run()
@@ -49,45 +48,26 @@ func NewStreamer(repo repository.Repository) *Streamer {
 func (s *Streamer) run() {
 	for {
 		select {
-		case client := <-s.register:
-			s.mu.Lock()
-			s.clients[client] = struct{}{}
-			s.mu.Unlock()
-
-		case client := <-s.unregister:
-			if _, ok := s.clients[client]; !ok {
-				s.mu.Lock()
-				delete(s.clients, client)
-				s.mu.Unlock()
+		case client := <-s.registry:
+			if client.active {
+				s.clients[client.Key()] = client
+			} else {
+				if _, ok := s.clients[client.Key()]; !ok {
+					delete(s.clients, client.Key())
+				}
 			}
-
-		case <-s.stop:
-			s.mu.Lock()
-			m := &rawMessage{
-				t:    websocket.CloseMessage,
-				data: websocket.FormatCloseMessage(websocket.CloseServiceRestart, "Server is stopping..."),
-			}
-			for client := range s.clients {
-				_ = client.writeMessage(m)
-				delete(s.clients, client)
-				client.close()
-			}
-			s.open = false
-			s.mu.Unlock()
-			return
+		case m := <-s.messageBuffer:
+			s.SendAll(m)
 		}
 	}
 }
 
 // SendAll すべてのclientにメッセージを送る
-func (s *Streamer) SendAll(m *Message) {
-	byteMessage, err := proto.Marshal(m)
-	if err != nil {
-		return
-	}
-
-	for client := range s.clients {
-		client.write(websocket.BinaryMessage, byteMessage)
+func (s *Streamer) SendAll(m *rawMessage) {
+	for _, client := range s.clients {
+		if err := client.PushMessage(m); err != nil {
+			log.Printf("error: %v", err)
+		}
 	}
 }
 
@@ -104,11 +84,22 @@ func setDefaultStateData() {
 
 // SendState すべてのclientに新しいstateを送る
 func (s *Streamer) SendState(st *State) {
-	s.SendAll(&Message{
+	msg := &Message{
 		Payload: &Message_State{
 			State: st,
 		},
-	})
+	}
+	data, err := proto.Marshal(msg)
+	if err != nil {
+		log.Printf("error: %v", err)
+		return
+	}
+	for _, client := range s.clients {
+		m := &rawMessage{client.UserID(), websocket.BinaryMessage, data}
+		if err := client.PushMessage(m); err != nil {
+			log.Printf("error: %v", err)
+		}
+	}
 	stateData = st
 }
 
@@ -120,56 +111,93 @@ func (s *Streamer) ServeHTTP(c echo.Context) {
 	}
 	userID, err := getRequestUserID(c)
 	if err != nil {
+		log.Printf("error: %v", err)
 		return
 	}
 
 	conn, err := upgrader.Upgrade(c.Response(), c.Request(), c.Response().Header())
 	if err != nil {
+		log.Printf("error: %v", err)
 		return
 	}
+
+	var wg sync.WaitGroup
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
 	client := &client{
 		key:      utils.RandAlphabetAndNumberString(20),
 		userID:   userID,
-		req:      c.Request(),
-		streamer: s,
 		conn:     conn,
-		open:     true,
-		send:     make(chan *rawMessage, messageBufferSize),
+		receiver: &s.messageBuffer,
+		sender:   make(chan *rawMessage, messageBufferSize),
+		wg:       &wg,
+		active:   true,
 	}
 
-	s.register <- client
+	s.registry <- client
+	defer func() {
+		if !client.IsClosed() {
+			if err := client.Close(); err != nil {
+				log.Printf("error: %v", err)
+			}
+		}
+		s.registry <- client
+	}()
 
-	m := &Message{
+	wg.Add(1)
+	go client.ListenWrite(ctx)
+	go client.ListenRead(ctx)
+
+	msg := &Message{
 		Payload: &Message_State{
 			State: stateData,
 		},
 	}
-	data, err := proto.Marshal(m)
-	if err == nil {
-		client.write(websocket.BinaryMessage, data)
+	data, err := proto.Marshal(msg)
+	if err != nil {
+		log.Printf("error: %v", err)
+	}
+	m := &rawMessage{client.UserID(), websocket.BinaryMessage, data}
+
+	if err := client.PushMessage(m); err != nil {
+		log.Printf("error: %v", err)
 	}
 
-	go client.listenWrite()
-	client.listenRead()
-
-	s.unregister <- client
-	client.close()
+	wg.Wait()
 }
 
 // IsClosed ストリーマーが停止しているかどうか
 func (s *Streamer) IsClosed() bool {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
+	s.RLock()
+	defer s.RUnlock()
 
-	return !s.open
+	return !s.active
 }
 
 // Close ストリーマーを停止します
 func (s *Streamer) Close() error {
+	s.Lock()
+	defer s.Unlock()
+
 	if s.IsClosed() {
 		return ErrAlreadyClosed
 	}
-	s.stop <- struct{}{}
+
+	m := &rawMessage{
+		messageType: websocket.CloseMessage,
+		data:        websocket.FormatCloseMessage(websocket.CloseServiceRestart, "Server is stopping..."),
+	}
+	for _, client := range s.clients {
+		if err := client.PushMessage(m); err != nil {
+			log.Printf("error: %v", err)
+		}
+		delete(s.clients, client.Key())
+		if err := client.Close(); err != nil {
+			log.Printf("error: %v", err)
+		}
+	}
+	s.active = false
+
 	return nil
 }

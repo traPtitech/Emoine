@@ -1,17 +1,27 @@
 package router
 
 import (
-	"github.com/gorilla/websocket"
 	"net/http"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
 
 const (
-	writeWait          = 10 * time.Second
-	pongWait           = 60 * time.Second
-	pingPeriod         = (pongWait * 9) / 10
+	// Time allowed to write a message to the peer.
+	writeWait = 10 * time.Second
+
+	// Time allowed to read the next pong message from the peer.
+	pongWait = 60 * time.Second
+
+	// Send pings to peer with this period. Must be less than pongWait.
+	pingPeriod = (pongWait * 9) / 10
+
+	// Maximum message size allowed from peer.
 	maxReadMessageSize = 1 << 9 // 512B
-	messageBufferSize  = 256
+
+	// Maximum buffered message length.
+	messageBufferSize = 256
 )
 
 var (
