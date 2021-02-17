@@ -75,13 +75,7 @@ func (h *Handlers) IsTraQUserMiddleware(next echo.HandlerFunc) echo.HandlerFunc 
 			return unauthorized(err)
 		}
 		auth, ok := sess.Values["accessToken"].(string)
-		if !ok {
-			sess.Options = &h.SessionOption
-			sess.Values["ID"] = utils.RandAlphabetAndNumberString(10)
-			sess.Save(c.Request(), c.Response())
-			return unauthorized(err)
-		}
-		if auth == "" {
+		if !ok || auth == "" {
 			return unauthorized(err)
 		}
 		setRequestUserIsAdmin(c)
