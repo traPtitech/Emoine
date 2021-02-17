@@ -80,12 +80,13 @@ export default defineComponent({
       })
     })
 
-    const reactions = computed(() =>
-      state.reactions?.counts?.map(({ stamp, count }) => ({
-        id: stamp,
-        imgPath: stampToFileName(stamp),
-        count
-      }))
+    const reactions = computed(
+      () =>
+        state.reactions?.counts?.map(({ stamp, count }) => ({
+          id: stamp,
+          imgPath: stampToFileName(stamp),
+          count
+        })) ?? []
     )
 
     const showComments = ref(false)
