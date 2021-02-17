@@ -3,7 +3,7 @@
     <img
       draggable="false"
       :class="$style.img"
-      :src="`/assets/${fileName}.png`"
+      :src="`/assets/${fileName}.webp`"
     />
   </button>
 </template>

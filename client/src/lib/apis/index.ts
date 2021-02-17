@@ -1,6 +1,6 @@
-import { Apis } from './generated'
+import { Apis, Configuration } from './generated'
 
-const apis = new Apis({ basePath: '/api' })
+const apis = new Apis(new Configuration({ basePath: '/api' }))
 
 export default apis
 export * from './generated'
