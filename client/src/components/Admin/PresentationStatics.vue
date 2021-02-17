@@ -5,7 +5,7 @@
     <p>{{ presentation.speakers }}</p>
     <div v-if="state.reactions" :class="$style.reactions">
       <div v-for="reaction in reactions" :key="reaction.id">
-        <img :class="$style.img" :src="`/assets/${reaction.imgPath}.png`" />
+        <img :class="$style.img" :src="`/assets/${reaction.imgPath}.webp`" />
         {{ reaction.count }}
       </div>
     </div>
