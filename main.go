@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -21,6 +22,8 @@ var (
 )
 
 func main() {
+	log.SetFlags(log.Llongfile)
+
 	// connect to db
 	db := sqlx.MustConnect("mysql", fmt.Sprintf(
 		"%s:%s@tcp(%s)/%s?parseTime=true",
