@@ -10,11 +10,13 @@ const devHost = 'localhost:3050'
 const prodHost = 'emoine20.trap.jp'
 
 const config: UserConfig = {
-  alias: {
-    '/@': path.resolve(__dirname, 'src')
+  resolve: {
+    alias: {
+      '/@': path.resolve(__dirname, 'src')
+    }
   },
   define: {
-    __HOST__: process.env.NODE_ENV === 'production' ? prodHost : devHost
+    __HOST__: `"${process.env.NODE_ENV === 'production' ? prodHost : devHost}"`
   },
   server: {
     proxy: {
