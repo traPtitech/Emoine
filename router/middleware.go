@@ -2,14 +2,14 @@ package router
 
 import (
 	"errors"
-	"github.com/traPtitech/Emoine/utils"
-	"github.com/gofrs/uuid"
-	"github.com/labstack/echo-contrib/session"
-	"github.com/labstack/echo/v4"
-	"github.com/patrickmn/go-cache"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/gofrs/uuid"
+	"github.com/labstack/echo-contrib/session"
+	"github.com/labstack/echo/v4"
+	"github.com/traPtitech/Emoine/utils"
 )
 
 type TokenResponse struct {
@@ -51,12 +51,9 @@ func (h *Handlers) WatchCallbackMiddleware(next echo.HandlerFunc) echo.HandlerFu
 			return err
 		}
 
-		sess.Values["accessToken"] = token
 		sess.Values["userID"] = userMe.Id.String()
 		sess.Values["userName"] = userMe.Name
 		sess.Options = &h.SessionOption
-
-		sessionCache.Add(userMe.Id.String(), token, cache.DefaultExpiration)
 
 		err = sess.Save(c.Request(), c.Response())
 		if err != nil {
@@ -70,12 +67,8 @@ func (h *Handlers) WatchCallbackMiddleware(next echo.HandlerFunc) echo.HandlerFu
 // TraQUserMiddleware traQユーザーか判定するミドルウェア
 func (h *Handlers) IsTraQUserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		sess, err := session.Get("e_session", c)
+		_, err := getRequestUserID(c)
 		if err != nil {
-			return unauthorized(err)
-		}
-		auth, ok := sess.Values["accessToken"].(string)
-		if !ok || auth == "" {
 			return unauthorized(err)
 		}
 		setRequestUserIsAdmin(c)
@@ -128,17 +121,4 @@ func (h *Handlers) AdminUserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 func getRequestUserIsAdmin(c echo.Context) bool {
 	return c.Get("IsAdmin").(bool)
-}
-
-func getRequestUserToken(c echo.Context) (string, error) {
-	sess, err := session.Get("e_session", c)
-	if err != nil {
-		return "", err
-	}
-	token, ok := sess.Values["accessToken"].(string)
-	if !ok {
-		return "", errors.New("error")
-	}
-
-	return token, nil
 }
