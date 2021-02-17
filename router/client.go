@@ -1,125 +1,142 @@
 package router
 
 import (
-	"github.com/gofrs/uuid"
-	"github.com/gorilla/websocket"
-	"net/http"
+	"context"
+	"log"
 	"sync"
 	"time"
+
+	"github.com/gofrs/uuid"
+	"github.com/gorilla/websocket"
 )
 
 type Client interface {
 	Key() string
-	// UserID このセッションのUserID
 	UserID() uuid.UUID
+	ListenRead()
+	ListenWrite()
+	PushMessage(*rawMessage) error
+	IsClosed() bool
+	Close() error
 }
 
 type client struct {
 	key      string
 	userID   uuid.UUID
-	req      *http.Request
-	streamer *Streamer
 	conn     *websocket.Conn
-	open     bool
-	send     chan *rawMessage
+	receiver *chan *rawMessage
+	sender   chan *rawMessage
+	wg       *sync.WaitGroup
+	active   bool
 	sync.RWMutex
 }
 
-// listenRead クライアントからの受信待受
-func (c *client) listenRead() {
+// ListenRead クライアントからの受信待受
+func (c *client) ListenRead(ctx context.Context) {
 	c.conn.SetReadLimit(maxReadMessageSize)
-	_ = c.conn.SetReadDeadline(time.Now().Add(pongWait))
+	c.conn.SetReadDeadline(time.Now().Add(pongWait))
 	c.conn.SetPongHandler(func(string) error {
-		_ = c.conn.SetReadDeadline(time.Now().Add(pongWait))
+		c.conn.SetReadDeadline(time.Now().Add(pongWait))
 		return nil
 	})
 
 	for {
-		t, m, err := c.conn.ReadMessage()
+		t, d, err := c.conn.ReadMessage()
 		if err != nil {
-			break
-		}
-
-		// カス
-		if err := c.MsgHandler(m); err != nil {
-			break
-		}
-
-		if t == websocket.BinaryMessage {
-			for client := range c.streamer.clients {
-				_ = client.write(t, m)
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
+				log.Printf("error: %v", err)
 			}
+			break
+		}
+		*c.receiver <- &rawMessage{c.userID, t, d}
+		if ctx.Err() == context.Canceled {
+			return
 		}
 	}
 }
 
-// listenWrite クライアントへの送信待受
-func (c *client) listenWrite() {
+// ListenWrite クライアントへの送信待受
+func (c *client) ListenWrite(ctx context.Context) {
 	ticker := time.NewTicker(pingPeriod)
-	defer ticker.Stop()
+	defer func() {
+		ticker.Stop()
+		if err := c.Close(); err != nil {
+			log.Printf("error: %v", err)
+			return
+		}
+	}()
 
 	for {
 		select {
-		case msg, ok := <-c.send:
-			if !ok {
+		case m := <-c.sender:
+			if err := c.writeMessage(m.messageType, m.data); err != nil {
+				break
+			}
+			if m.messageType == websocket.CloseMessage {
 				return
 			}
-
-			if err := c.write(msg.t, msg.data); err != nil {
-				return
-			}
-
-			if msg.t == websocket.CloseMessage {
-				return
-			}
-
 		case <-ticker.C:
-			_ = c.write(websocket.PingMessage, []byte{})
+			if err := c.writeMessage(websocket.PingMessage, []byte{}); err != nil {
+				log.Printf("error: %v", err)
+				return
+			}
+		case <-ctx.Done():
+			return
 		}
 	}
 }
 
-func (c *client) writeMessage(msg *rawMessage) error {
-	if c.closed() {
+// PushMessage メッセージを送信キューに追加
+func (c *client) PushMessage(m *rawMessage) error {
+	if c.IsClosed() {
 		return ErrAlreadyClosed
 	}
-
 	select {
-	case c.send <- msg:
+	case c.sender <- m:
 	default:
 		return ErrBufferIsFull
 	}
 	return nil
 }
 
-func (c *client) write(messageType int, data []byte) error {
-	_ = c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+func (c *client) writeMessage(messageType int, data []byte) error {
+	c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 	return c.conn.WriteMessage(messageType, data)
 }
 
-func (c *client) close() {
-	if !c.closed() {
-		c.Lock()
-		c.open = false
-		c.conn.Close()
-		close(c.send)
-		c.Unlock()
-	}
-}
-
-func (c *client) closed() bool {
+// IsClosed コネクションの接続状態
+func (c *client) IsClosed() bool {
 	c.RLock()
 	defer c.RUnlock()
 
-	return !c.open
+	return !c.active
 }
 
-// Key implements Client interface.
+// Close WebSocketコネクションを切断
+func (c *client) Close() error {
+	c.Lock()
+	defer c.Unlock()
+
+	if c.IsClosed() {
+		return ErrAlreadyClosed
+	}
+	if err := c.conn.Close(); err != nil {
+		log.Printf("error: %v", err)
+	}
+	close(c.sender)
+	c.active = false
+
+	c.wg.Done()
+
+	return nil
+}
+
+// Key クライアントの識別子
 func (c *client) Key() string {
 	return c.key
 }
 
-// UserID implements Client interface.
+// UserID ユーザーID
 func (c *client) UserID() uuid.UUID {
 	return c.userID
 }
