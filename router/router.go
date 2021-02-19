@@ -39,7 +39,6 @@ func Setup(repo repository.Repository) *echo.Echo {
 		ClientID: os.Getenv("CLIENT_ID"),
 		stream:   s,
 	}
-	e.Use(h.WatchCallbackMiddleware)
 
 	api := e.Group("/api", h.IsTraQUserMiddleware)
 	{
@@ -74,6 +73,7 @@ func Setup(repo repository.Repository) *echo.Echo {
 		})
 	}
 	e.GET("/api/oauth2/code", h.GetGeneratedCode)
+	e.GET("/api/callback", h.CallbackHandler)
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Skipper: func(c echo.Context) bool {
 			return strings.HasPrefix(c.Request().URL.Path, "/api")

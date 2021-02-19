@@ -78,7 +78,7 @@ func (c *client) ListenWrite(ctx context.Context) {
 		case <-ticker.C:
 			if err := c.writeMessage(websocket.PingMessage, []byte{}); err != nil {
 				log.Printf("error: %v", err)
-				return
+				break
 			}
 		case <-ctx.Done():
 			return

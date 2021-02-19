@@ -8,11 +8,6 @@ import (
 
 // PostState POST /state
 func (h *Handlers) PostState(c echo.Context) error {
-	isAdmin := getRequestUserIsAdmin(c)
-	if !isAdmin {
-		return c.NoContent(http.StatusForbidden)
-	}
-
 	var newState *State
 
 	state := c.QueryParam("state")
