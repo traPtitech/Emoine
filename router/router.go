@@ -67,10 +67,7 @@ func Setup(repo repository.Repository) *echo.Echo {
 			}
 		}
 		api.GET("/users/me", h.GetUserMe)
-		api.GET("/ws", func(c echo.Context) error {
-			s.ServeHTTP(c)
-			return nil
-		})
+		api.GET("/ws", s.ServeHTTP)
 	}
 	e.GET("/api/oauth2/code", h.GetGeneratedCode)
 	e.GET("/api/callback", h.CallbackHandler)
