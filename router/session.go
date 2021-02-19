@@ -18,17 +18,27 @@ type userResponse struct {
 func (h *Handlers) GetUserMe(c echo.Context) error {
 	userID, err := getRequestUserID(c)
 	if err != nil {
-		return unauthorized(err)
+		return echo.ErrInternalServerError
+	}
+	if userID == uuid.Nil {
+		return echo.ErrUnauthorized
 	}
 	userName, err := getRequestUserName(c)
 	if err != nil {
-		return unauthorized(err)
+		return echo.ErrInternalServerError
+	}
+	if userName == "" {
+		return echo.ErrUnauthorized
+	}
+	isAdmin, err := getRequestUserIsAdmin(c)
+	if err != nil {
+		return echo.ErrInternalServerError
 	}
 
 	data := &userResponse{
 		userID,
 		userName,
-		getRequestUserIsAdmin(c),
+		isAdmin,
 	}
 
 	return c.JSON(http.StatusOK, data)

@@ -1,7 +1,7 @@
 package router
 
 import (
-	"errors"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -9,7 +9,6 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
-	"github.com/traPtitech/Emoine/utils"
 )
 
 type TokenResponse struct {
@@ -23,55 +22,33 @@ type TokenResponse struct {
 
 var admins = os.Getenv("ADMINS")
 
-// WatchCallbackMiddleware /callback?code= を監視
-func (h *Handlers) WatchCallbackMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		path := c.Request().URL.Path
-		if path != "/api/callback" {
-			return next(c)
-		}
-		code := c.QueryParam("code")
-		sess, _ := session.Get("e_session", c)
-		sessionID, ok := sess.Values["ID"].(string)
-		if !ok {
-			return errors.New("session_id cannot be parsed as a string")
-		}
-		codeVerifier, ok := verifierCache.Get(sessionID)
-		if !ok {
-			return errors.New("code_verifier is not found")
-		}
-
-		token, err := requestToken(h.ClientID, code, codeVerifier.(string))
-		if err != nil {
-			return err
-		}
-
-		userMe, err := utils.GetUserMe(token)
-		if err != nil {
-			return err
-		}
-
-		sess.Values["userID"] = userMe.Id.String()
-		sess.Values["userName"] = userMe.Name
-		sess.Options = &h.SessionOption
-
-		err = sess.Save(c.Request(), c.Response())
-		if err != nil {
-			return internalServerError(err)
-		}
-
-		return c.Redirect(http.StatusFound, "/")
-	}
-}
-
 // TraQUserMiddleware traQユーザーか判定するミドルウェア
 func (h *Handlers) IsTraQUserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		_, err := getRequestUserID(c)
+		userID, err := getRequestUserID(c)
 		if err != nil {
-			return unauthorized(err)
+			return echo.ErrInternalServerError
 		}
-		setRequestUserIsAdmin(c)
+		if userID == uuid.Nil {
+			return echo.ErrUnauthorized
+		}
+		return next(c)
+	}
+}
+
+// AdminUserMiddleware 管理者ユーザーか判定するミドルウェア
+func (h *Handlers) AdminUserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		isAdmin, err := getRequestUserIsAdmin(c)
+		if err != nil {
+			log.Printf("error: %v", err)
+			return echo.ErrInternalServerError
+		}
+		if !isAdmin {
+			log.Printf("error: %v", err)
+			return echo.NewHTTPError(http.StatusForbidden, "You are not admin user.")
+		}
+
 		return next(c)
 	}
 }
@@ -81,7 +58,11 @@ func getRequestUserID(c echo.Context) (uuid.UUID, error) {
 	if err != nil {
 		return uuid.Nil, err
 	}
-	return uuid.FromString(sess.Values["userID"].(string))
+	userID, ok := sess.Values["userID"]
+	if !ok {
+		return uuid.Nil, nil
+	}
+	return uuid.FromString(userID.(string))
 }
 
 func getRequestUserName(c echo.Context) (string, error) {
@@ -89,36 +70,17 @@ func getRequestUserName(c echo.Context) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	userName := sess.Values["userName"]
-	if userName == nil {
+	userName, ok := sess.Values["userName"]
+	if !ok {
 		return "", nil
 	}
 	return userName.(string), nil
 }
 
-func setRequestUserIsAdmin(c echo.Context) {
-	userID, _ := getRequestUserID(c)
-	c.Set("IsAdmin", strings.Contains(admins, userID.String()))
-}
-
-// AdminUserMiddleware 管理者ユーザーか判定するミドルウェア
-func (h *Handlers) AdminUserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		isAdmin := getRequestUserIsAdmin(c)
-
-		// 判定
-		if !isAdmin {
-			return forbidden(
-				errors.New("not admin"),
-				message("You are not admin user."),
-				specification("Only admin user can request."),
-			)
-		}
-
-		return next(c)
+func getRequestUserIsAdmin(c echo.Context) (bool, error) {
+	userID, err := getRequestUserID(c)
+	if err != nil {
+		return false, err
 	}
-}
-
-func getRequestUserIsAdmin(c echo.Context) bool {
-	return c.Get("IsAdmin").(bool)
+	return strings.Contains(admins, userID.String()), nil
 }

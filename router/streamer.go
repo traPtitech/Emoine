@@ -103,22 +103,21 @@ func (s *Streamer) SendState(st *State) {
 	stateData = st
 }
 
-// ServeHTTP http.Handlerインターフェイスの実装
-func (s *Streamer) ServeHTTP(c echo.Context) {
+// ServeHTTP GET /ws
+func (s *Streamer) ServeHTTP(c echo.Context) error {
 	if s.IsClosed() {
-		http.Error(c.Response(), http.StatusText(http.StatusServiceUnavailable), http.StatusServiceUnavailable)
-		return
+		return echo.ErrServiceUnavailable
 	}
 	userID, err := getRequestUserID(c)
 	if err != nil {
 		log.Printf("error: %v", err)
-		return
+		return echo.ErrInternalServerError
 	}
 
 	conn, err := upgrader.Upgrade(c.Response(), c.Request(), c.Response().Header())
 	if err != nil {
 		log.Printf("error: %v", err)
-		return
+		return echo.ErrInternalServerError
 	}
 
 	var wg sync.WaitGroup
@@ -165,6 +164,8 @@ func (s *Streamer) ServeHTTP(c echo.Context) {
 	}
 
 	wg.Wait()
+
+	return c.NoContent(http.StatusOK)
 }
 
 // IsClosed ストリーマーが停止しているかどうか
