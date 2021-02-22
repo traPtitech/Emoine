@@ -17,6 +17,7 @@ const useShortcut = (
   }
   const onUp = (e: KeyboardEvent) => {
     if (!isTargetKey(e)) return
+    e.preventDefault()
     pressing = false
   }
 
