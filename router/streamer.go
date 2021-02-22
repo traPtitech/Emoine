@@ -57,6 +57,7 @@ func (s *Streamer) run() {
 				}
 			}
 		case m := <-s.messageBuffer:
+			s.logger(m)
 			s.SendAll(m)
 		}
 	}
