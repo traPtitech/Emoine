@@ -4,9 +4,7 @@
     <button v-show="show" :class="$style.button" @click="$emit('toggleDesc')">
       説明
     </button>
-    <button :class="$style.button" @click="$emit('toggle')">
-      オーバーレイ
-    </button>
+    <button :class="$style.button" @click="$emit('toggle')">表示/非表示</button>
   </div>
 </template>
 
