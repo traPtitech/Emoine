@@ -1,15 +1,11 @@
-import { UserConfig } from 'vite'
+import { defineConfig } from 'vite'
 import VuePlugin from '@vitejs/plugin-vue'
-// @ts-expect-error prevent installing @types/node
 import path from 'path'
-
-declare const __dirname: string
-declare const process: { env: Record<string, string> }
 
 const devHost = 'localhost:3050'
 const prodHost = 'emoine20.trap.jp'
 
-const config: UserConfig = {
+export default defineConfig({
   resolve: {
     alias: {
       '/@': path.resolve(__dirname, 'src')
@@ -27,6 +23,4 @@ const config: UserConfig = {
     }
   },
   plugins: [VuePlugin()]
-}
-
-export default config
+})
