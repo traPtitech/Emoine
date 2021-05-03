@@ -9,6 +9,7 @@
       @toggle="toggle"
       @toggle-desc="$emit('toggleDesc')"
     />
+    <viewer />
   </div>
 </template>
 
@@ -17,13 +18,15 @@ import { defineComponent, ref } from 'vue'
 import Nico from './Nico.vue'
 import TopControls from './TopControls.vue'
 import BottomControls from './BottomControls.vue'
+import Viewer from './Viewer.vue'
 
 export default defineComponent({
   name: 'LiveOverlay',
   components: {
     Nico,
     TopControls,
-    BottomControls
+    BottomControls,
+    Viewer
   },
   emits: {
     toggleDesc: () => true
