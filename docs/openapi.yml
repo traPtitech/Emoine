@@ -49,6 +49,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
 
+  '/viewer':
+      get:
+        operationId: getViewer
+        summary: 自身のユーザー詳細情報を取得
+        tags:
+          - viewer
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Viewer'
+
   '/state':
     parameters:
       - name: state
@@ -312,6 +326,14 @@ components:
         - id
         - name
       description: ユーザー
+    Viewer:
+      type: object
+      properties:
+        count:
+          type: number
+      required:
+        - count
+      description: ビューワー
     CreatePresentation:
       type: object
       properties:
