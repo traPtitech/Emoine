@@ -27,8 +27,7 @@ export default defineComponent({
   display: inline-block;
   color: rgba(255, 255, 255, 0.8); /* 文字の色 */
   font-size: 36pt; /* 文字のサイズ */
-  text-shadow: 2px 2px 1px #333, -2px 2px 1px #333, 2px -2px 1px #333,
-    -2px -2px 1px #333, 2px 0px 1px #333, 0px 2px 1px #333, -2px 0px 1px #333,
-    0px -2px 1px #333;
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: #333;
 }
 </style>
