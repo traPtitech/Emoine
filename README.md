@@ -3,5 +3,5 @@
 download https://github.com/protocolbuffers/protobuf/releases
 
 ```shell
-$ go install github.com/golang/protobuf/protoc-gen-go
+$ go install google.golang.org/protobuf/cmd/protoc-gen-go
 ```

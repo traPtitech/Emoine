@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = ".;router";
+option go_package = "./router;router";
 
 message Reaction {
   uint32 presentationId = 1;
