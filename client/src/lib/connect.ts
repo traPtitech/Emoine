@@ -68,7 +68,7 @@ const onState = (m: Message) => {
   if (state.status === undefined || state.status === null) return
   const stateSafe = state as CommentSafe
 
-  stateTarget.dispatchEvent(new CustomEvent('viewer', { detail: stateSafe }))
+  stateTarget.dispatchEvent(new CustomEvent('state', { detail: stateSafe }))
 }
 
 const onViewer = (m: Message) => {
