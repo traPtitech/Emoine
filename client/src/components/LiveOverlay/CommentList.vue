@@ -10,21 +10,34 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import { connectTarget } from '/@/lib/connect'
+import apis from '/@/lib/apis'
+import { useStore } from '/@/store'
 
 export default defineComponent({
   name: 'CommentList',
   setup() {
+    const store = useStore()
+    const presentationId = computed(() => store.state.presentation?.id ?? null)
+
     const isCommentsShown = ref(true)
     const toggleIsCommentsShown = () => {
       isCommentsShown.value = !isCommentsShown.value
     }
 
-    const comments = reactive<string[]>([])
-    connectTarget.addEventListener('comment', e => {
-      if (!e.detail) return
-      comments.unshift(e.detail.text)
+    const comments = ref<string[]>([])
+    onMounted(async () => {
+      if (!presentationId.value) return
+      const { data } = await apis.getPresentationComments(
+        '' + presentationId.value
+      )
+      comments.value = data.map(c => c.text).reverse()
+
+      connectTarget.addEventListener('comment', e => {
+        if (!e.detail) return
+        comments.value.unshift(e.detail.text)
+      })
     })
 
     return { isCommentsShown, toggleIsCommentsShown, comments }
