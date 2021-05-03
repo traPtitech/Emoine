@@ -1,8 +1,13 @@
 <template>
   <div :class="$style.container">
-    <ul v-if="isCommentsShown" :class="$style.list">
+    <transition-group
+      v-if="isCommentsShown"
+      name="transition"
+      tag="ul"
+      :class="$style.list"
+    >
       <li v-for="c in comments" :key="c">{{ c }}</li>
-    </ul>
+    </transition-group>
     <button :class="$style.button" @click="toggleIsCommentsShown">
       コメントパネル切替
     </button>

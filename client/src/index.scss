@@ -60,3 +60,7 @@ li {
     transform: scale(1);
   }
 }
+
+.transition-move {
+  transition: transform 0.2s ease-out;
+}
