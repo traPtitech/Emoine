@@ -71,6 +71,11 @@ jobs:
           key: ${{ runner.os }}-gomod-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-gomod-
+      - name: Install protoc-gen-go
+        run: go get github.com/golang/protobuf/protoc-gen-go
+      - name: Install protoc
+        run: sudo apt-get install protobuf-compiler
+      - run: make proto
       - name: golangci-lint
         run: golangci-lint run --out-format=line-number | reviewdog -f=golangci-lint -name=golangci-lint -reporter=github-check
         env:
