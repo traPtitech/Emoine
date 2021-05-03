@@ -53,9 +53,7 @@ func (s *Streamer) run() {
 			if client.active {
 				s.clients[client.Key()] = client
 			} else {
-				if _, ok := s.clients[client.Key()]; !ok {
-					delete(s.clients, client.Key())
-				}
+				delete(s.clients, client.Key())
 			}
 
 			m, err := getViewerMessage(len(s.clients), client.UserID())
@@ -199,14 +197,19 @@ func (s *Streamer) IsClosed() bool {
 	return !s.active
 }
 
+// IsClosedWithoutLock ストリーマーが停止しているかどうか
+func (s *Streamer) IsClosedWithoutLock() bool {
+	return !s.active
+}
+
 // Close ストリーマーを停止します
 func (s *Streamer) Close() error {
-	s.Lock()
-	defer s.Unlock()
-
-	if s.IsClosed() {
+	if s.IsClosedWithoutLock() {
 		return ErrAlreadyClosed
 	}
+
+	s.Lock()
+	defer s.Unlock()
 
 	m := &rawMessage{
 		messageType: websocket.CloseMessage,
