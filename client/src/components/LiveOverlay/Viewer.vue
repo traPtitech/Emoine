@@ -5,8 +5,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 import { viewerTarget } from '/@/lib/connect'
+import apis from '/@/lib/apis'
 
 export default defineComponent({
   name: 'Viewer',
@@ -14,6 +15,9 @@ export default defineComponent({
     const viewer = ref(0)
     viewerTarget.addEventListener('viewer', e => {
       viewer.value = e.detail.count
+    })
+    onMounted(async () => {
+      viewer.value = (await apis.getViewer()).data.count
     })
     return { viewer }
   }
