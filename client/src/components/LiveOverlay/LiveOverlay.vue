@@ -4,6 +4,7 @@
     <div :class="$style.overlayWrapper">
       <nico :show="show" :class="$style.overlay" />
       <comment-panel v-show="show" :class="$style.commentPanel" />
+      <viewer-counter :class="$style.viewerCounter" />
     </div>
     <bottom-controls
       :class="$style.bottomControls"
@@ -21,14 +22,16 @@ import Nico from './Nico.vue'
 import TopControls from './TopControls.vue'
 import CommentPanel from './CommentPanel.vue'
 import BottomControls from './BottomControls.vue'
+import ViewerCounter from './ViewerCounter.vue'
 
 export default defineComponent({
   name: 'LiveOverlay',
   components: {
     Nico,
     TopControls,
-    CommentPanel,
-    BottomControls
+    BottomControls,
+    ViewerCounter,
+    CommentPanel
   },
   emits: {
     toggleDesc: () => true
@@ -68,6 +71,11 @@ export default defineComponent({
   position: absolute;
   right: 0;
   bottom: 0;
+}
+.viewerCounter {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 .bottomControls {
   &:not([data-is-shown='true']) {

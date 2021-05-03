@@ -6,12 +6,14 @@ import {
   IComment,
   Stamp,
   IState,
-  Status
+  Status,
+  IViewer
 } from '/@/lib/pb'
 
 type ReactionSafe = Omit<IReaction, 'stamp'> & { stamp: Stamp }
 type CommentSafe = Omit<IComment, 'text'> & { text: string }
 type StateSafe = Omit<IState, 'status'> & { status: Status }
+type ViewerSafe = Omit<IViewer, 'count'> & { count: number }
 
 interface ConnectEventMap {
   reaction: CustomEvent<ReactionSafe>
@@ -20,6 +22,10 @@ interface ConnectEventMap {
 
 interface StateEventMap {
   state: CustomEvent<StateSafe>
+}
+
+interface ViewerEventMap {
+  viewer: CustomEvent<ViewerSafe>
 }
 
 interface CustomTarget<M> extends Omit<EventTarget, 'addEventListener'> {
@@ -32,6 +38,7 @@ interface CustomTarget<M> extends Omit<EventTarget, 'addEventListener'> {
 
 export const connectTarget = document.createDocumentFragment() as CustomTarget<ConnectEventMap>
 export const stateTarget = document.createDocumentFragment() as CustomTarget<StateEventMap>
+export const viewerTarget = document.createDocumentFragment() as CustomTarget<ViewerEventMap>
 
 const onReaction = (m: Message) => {
   const reaction = m.reaction
@@ -64,6 +71,15 @@ const onState = (m: Message) => {
   stateTarget.dispatchEvent(new CustomEvent('state', { detail: stateSafe }))
 }
 
+const onViewer = (m: Message) => {
+  const viewer = m.viewer
+  if (!viewer) return
+  if (!viewer.count) return
+  const viewerSafe = viewer as ViewerSafe
+
+  viewerTarget.dispatchEvent(new CustomEvent('viewer', { detail: viewerSafe }))
+}
+
 export const setup = (): void => {
   const ws = getWs()
   ws.addEventListener('message', e => {
@@ -79,6 +95,10 @@ export const setup = (): void => {
       }
       case 'state': {
         onState(message)
+        break
+      }
+      case 'viewer': {
+        onViewer(message)
         break
       }
       default:

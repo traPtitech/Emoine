@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/gofrs/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 	"github.com/traPtitech/Emoine/repository"
@@ -52,10 +53,15 @@ func (s *Streamer) run() {
 			if client.active {
 				s.clients[client.Key()] = client
 			} else {
-				if _, ok := s.clients[client.Key()]; !ok {
-					delete(s.clients, client.Key())
-				}
+				delete(s.clients, client.Key())
 			}
+
+			m, err := getViewerMessage(len(s.clients), client.UserID())
+			if err != nil {
+				log.Printf("error: %v", err)
+				break
+			}
+			s.SendAll(m)
 		case m := <-s.messageBuffer:
 			s.logger(m)
 			s.SendAll(m)
@@ -81,6 +87,20 @@ func setDefaultStateData() {
 		// nullと同義
 		PresentationId: 0,
 	}
+}
+
+func getViewerMessage(length int, userID uuid.UUID) (*rawMessage, error) {
+	msg := &Message{
+		Payload: &Message_Viewer{
+			&Viewer{ Count: uint32(length) },
+		},
+	}
+	data, err := proto.Marshal(msg)
+	if err != nil {
+		return nil, err
+	}
+	m := &rawMessage{userID, websocket.BinaryMessage, data}
+	return m, nil
 }
 
 // SendState すべてのclientに新しいstateを送る
@@ -177,14 +197,19 @@ func (s *Streamer) IsClosed() bool {
 	return !s.active
 }
 
+// IsClosedWithoutLock ストリーマーが停止しているかどうか
+func (s *Streamer) IsClosedWithoutLock() bool {
+	return !s.active
+}
+
 // Close ストリーマーを停止します
 func (s *Streamer) Close() error {
-	s.Lock()
-	defer s.Unlock()
-
-	if s.IsClosed() {
+	if s.IsClosedWithoutLock() {
 		return ErrAlreadyClosed
 	}
+
+	s.Lock()
+	defer s.Unlock()
 
 	m := &rawMessage{
 		messageType: websocket.CloseMessage,

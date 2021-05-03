@@ -1,4 +1,4 @@
-PROTO_TARGETS = comment reaction state message
+PROTO_TARGETS = comment reaction state viewer message
 
 .PHONY: proto
 proto:

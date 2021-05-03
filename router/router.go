@@ -47,6 +47,7 @@ func Setup(repo repository.Repository) *echo.Echo {
 		// TODO: グループだと動かない
 		api.GET("/live-id", h.GetLiveID)
 		api.PUT("/live-id", h.PutLiveID, isAdmin)
+		api.GET("/viewer", h.GetViewer)
 
 		api.POST("/state", h.PostState, isAdmin)
 

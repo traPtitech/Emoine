@@ -5,7 +5,7 @@ const path = require('path')
 const { exec: _exec } = require('child_process')
 const { promisify } = require('util')
 
-const protoTargets = ['comment', 'reaction', 'state', 'message']
+const protoTargets = ['comment', 'reaction', 'state', 'viewer', 'message']
 
 const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx'
 const exec = promisify(_exec)
