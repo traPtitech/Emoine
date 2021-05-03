@@ -31,8 +31,7 @@ export default defineComponent({
     TopControls,
     BottomControls,
     Viewer,
-    CommentPanel,
-    BottomControls
+    CommentPanel
   },
   emits: {
     toggleDesc: () => true
