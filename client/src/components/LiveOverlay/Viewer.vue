@@ -5,14 +5,16 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
-import { useStore } from '/@/store'
+import { defineComponent, ref } from 'vue'
+import { viewerTarget } from '/@/lib/connect'
 
 export default defineComponent({
   name: 'Viewer',
   setup() {
-    const store = useStore()
-    const viewer = computed(() => store.state.viewer)
+    const viewer = ref(0)
+    viewerTarget.addEventListener('viewer', e => {
+      viewer.value = e.detail.count
+    })
     return { viewer }
   }
 })
