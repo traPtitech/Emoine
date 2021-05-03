@@ -22,9 +22,13 @@ export default defineComponent({
     const { height: baseHeight, width: baseWidth } = useElementSize(baseEle)
 
     connectTarget.addEventListener('reaction', e => {
+      if (document.visibilityState === 'hidden') return
+
       addReaction(baseEle, baseHeight, baseWidth, e.detail.stamp)
     })
     connectTarget.addEventListener('comment', e => {
+      if (document.visibilityState === 'hidden') return
+
       addComment(baseEle, baseHeight, e.detail.text)
     })
 
