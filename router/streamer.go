@@ -56,18 +56,6 @@ func (s *Streamer) run() {
 					delete(s.clients, client.Key())
 				}
 			}
-
-			msg := &Message{
-				Payload: &Message_Viewer{
-					&Viewer{ Count: uint32(len(s.clients)) },
-				},
-			}
-			data, err := proto.Marshal(msg)
-			if err != nil {
-				log.Printf("error: %v", err)
-			}
-			m := &rawMessage{client.UserID(), websocket.BinaryMessage, data}
-			s.SendAll(m)
 		case m := <-s.messageBuffer:
 			s.logger(m)
 			s.SendAll(m)
@@ -171,6 +159,21 @@ func (s *Streamer) ServeHTTP(c echo.Context) error {
 		log.Printf("error: %v", err)
 	}
 	m := &rawMessage{client.UserID(), websocket.BinaryMessage, data}
+
+	if err := client.PushMessage(m); err != nil {
+		log.Printf("error: %v", err)
+	}
+
+	msg = &Message{
+		Payload: &Message_Viewer{
+			&Viewer{ Count: uint32(len(s.clients)) },
+		},
+	}
+	data, err = proto.Marshal(msg)
+	if err != nil {
+		log.Printf("error: %v", err)
+	}
+	m = &rawMessage{client.UserID(), websocket.BinaryMessage, data}
 
 	if err := client.PushMessage(m); err != nil {
 		log.Printf("error: %v", err)
