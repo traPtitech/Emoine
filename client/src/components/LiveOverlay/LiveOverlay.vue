@@ -3,7 +3,7 @@
     <top-controls :show="show" />
     <div :class="$style.overlayWrapper">
       <nico :show="show" :class="$style.overlay" />
-      <comment-list v-show="show" :class="$style.commentList" />
+      <comment-panel v-show="show" :class="$style.commentPanel" />
     </div>
     <bottom-controls
       :class="$style.bottomControls"
@@ -19,7 +19,7 @@
 import { defineComponent, ref } from 'vue'
 import Nico from './Nico.vue'
 import TopControls from './TopControls.vue'
-import CommentList from './CommentList.vue'
+import CommentPanel from './CommentPanel.vue'
 import BottomControls from './BottomControls.vue'
 
 export default defineComponent({
@@ -27,7 +27,7 @@ export default defineComponent({
   components: {
     Nico,
     TopControls,
-    CommentList,
+    CommentPanel,
     BottomControls
   },
   emits: {
@@ -64,7 +64,7 @@ export default defineComponent({
   height: 100%;
   width: 100%;
 }
-.commentList {
+.commentPanel {
   position: absolute;
   right: 0;
   bottom: 0;

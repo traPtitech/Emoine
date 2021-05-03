@@ -1,17 +1,7 @@
 <template>
-  <div :class="$style.container">
-    <transition-group
-      v-if="isCommentsShown"
-      name="transition"
-      tag="ul"
-      :class="$style.list"
-    >
-      <li v-for="c in comments" :key="c">{{ c }}</li>
-    </transition-group>
-    <button :class="$style.button" @click="toggleIsCommentsShown">
-      コメントパネル切替
-    </button>
-  </div>
+  <transition-group name="transition" tag="ul" :class="$style.list">
+    <li v-for="c in comments" :key="c">{{ c }}</li>
+  </transition-group>
 </template>
 
 <script lang="ts">
@@ -25,11 +15,6 @@ export default defineComponent({
   setup() {
     const store = useStore()
     const presentationId = computed(() => store.state.presentation?.id ?? null)
-
-    const isCommentsShown = ref(true)
-    const toggleIsCommentsShown = () => {
-      isCommentsShown.value = !isCommentsShown.value
-    }
 
     const comments = ref<string[]>([])
     onMounted(async () => {
@@ -45,23 +30,14 @@ export default defineComponent({
       })
     })
 
-    return { isCommentsShown, toggleIsCommentsShown, comments }
+    return { comments }
   }
 })
 </script>
 
 <style lang="scss" module>
-.container {
-  display: flex;
-  flex-direction: column;
-  width: min(20vw, 20rem);
-  background: rgba(255, 255, 255, 0.8);
-  pointer-events: auto;
-}
 .list {
-  height: min(30vh, 30rem);
   padding: 0.5rem;
-  overflow-y: scroll;
   word-break: break-all;
 }
 </style>
