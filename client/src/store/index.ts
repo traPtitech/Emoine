@@ -1,13 +1,14 @@
 import { createDirectStore } from 'direct-vuex'
-import { IState, Status } from '/@/lib/pb'
+import { IState, IViewer, Status } from '/@/lib/pb'
 import apis, { User, Presentation } from '/@/lib/apis'
-import { stateTarget } from '/@/lib/connect'
+import { stateTarget, viewerTarget } from '/@/lib/connect'
 
 interface State {
   liveId: string
   state: IState
   presentation: Presentation | null
   me: User | null
+  viewer: number
 }
 
 const state: State = {
@@ -17,7 +18,8 @@ const state: State = {
     info: '準備中'
   },
   presentation: null,
-  me: null
+  me: null,
+  viewer: 0
 }
 
 const { store, rootActionContext } = createDirectStore({
@@ -41,6 +43,9 @@ const { store, rootActionContext } = createDirectStore({
     },
     setLiveId(state, liveId: string) {
       state.liveId = liveId
+    },
+    setViewer(state, viewer: IViewer) {
+      state.viewer = viewer.count ?? 0
     }
   },
   actions: {
@@ -86,6 +91,10 @@ const { store, rootActionContext } = createDirectStore({
 
 stateTarget.addEventListener('state', e => {
   store.dispatch.setState(e.detail)
+})
+
+viewerTarget.addEventListener('viewer', e => {
+  store.commit.setViewer(e.detail)
 })
 
 export default store.original
