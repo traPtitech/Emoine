@@ -1,7 +1,10 @@
 <template>
   <div :class="$style.container">
     <top-controls :show="show" />
-    <nico :show="show" :class="$style.overlay" />
+    <div :class="$style.overlayWrapper">
+      <nico :show="show" :class="$style.overlay" />
+      <comment-panel v-show="show" :class="$style.commentPanel" />
+    </div>
     <bottom-controls
       :class="$style.bottomControls"
       :data-is-shown="show"
@@ -16,6 +19,7 @@
 import { defineComponent, ref } from 'vue'
 import Nico from './Nico.vue'
 import TopControls from './TopControls.vue'
+import CommentPanel from './CommentPanel.vue'
 import BottomControls from './BottomControls.vue'
 
 export default defineComponent({
@@ -23,6 +27,7 @@ export default defineComponent({
   components: {
     Nico,
     TopControls,
+    CommentPanel,
     BottomControls
   },
   emits: {
@@ -50,9 +55,19 @@ export default defineComponent({
   flex-direction: column;
   pointer-events: none;
 }
-.overlay {
+.overlayWrapper {
+  position: relative;
   width: 100%;
   flex: 1;
+}
+.overlay {
+  height: 100%;
+  width: 100%;
+}
+.commentPanel {
+  position: absolute;
+  right: 0;
+  bottom: 0;
 }
 .bottomControls {
   &:not([data-is-shown='true']) {

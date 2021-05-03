@@ -17,6 +17,11 @@ const router = createRouter({
       component: () => import('/@/pages/Admin.vue')
     },
     {
+      path: '/popup-comment-list',
+      name: 'popup-comment-list',
+      component: () => import('/@/pages/PopupCommentList.vue')
+    },
+    {
       path: '/:catchAll(.*)',
       component: () => import('/@/pages/Null.vue')
     }
