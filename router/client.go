@@ -78,7 +78,7 @@ func (c *client) ListenWrite(ctx context.Context) {
 		case <-ticker.C:
 			if err := c.writeMessage(websocket.PingMessage, []byte{}); err != nil {
 				log.Printf("error: %v", err)
-				break
+				return
 			}
 		case <-ctx.Done():
 			return
@@ -112,12 +112,17 @@ func (c *client) IsClosed() bool {
 	return !c.active
 }
 
+// IsClosedWithoutLock コネクションの接続状態
+func (c *client) IsClosedWithoutLock() bool {
+	return !c.active
+}
+
 // Close WebSocketコネクションを切断
 func (c *client) Close() error {
 	c.Lock()
 	defer c.Unlock()
 
-	if c.IsClosed() {
+	if c.IsClosedWithoutLock() {
 		return ErrAlreadyClosed
 	}
 	if err := c.conn.Close(); err != nil {
