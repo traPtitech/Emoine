@@ -4,7 +4,7 @@ const path = require('path')
 const { Project } = require('ts-morph')
 
 const GENERATED = 'src/lib/pb'
-const protoTargets = ['comment', 'reaction', 'state', 'message']
+const protoTargets = ['comment', 'reaction', 'state', 'viewer', 'message']
 
 const fixImport = async project => {
   const sourceFile = project.getSourceFileOrThrow('message.js')
