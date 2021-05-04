@@ -63,7 +63,11 @@ func (s *Streamer) run() {
 			}
 			s.SendAll(m)
 		case m := <-s.messageBuffer:
-			s.logger(m)
+			err := s.logger(m)
+			if err != nil {
+				log.Printf("error: %v", err)
+			}
+
 			s.SendAll(m)
 		}
 	}

@@ -34,9 +34,17 @@ type client struct {
 // ListenRead クライアントからの受信待受
 func (c *client) ListenRead(ctx context.Context) {
 	c.conn.SetReadLimit(maxReadMessageSize)
-	c.conn.SetReadDeadline(time.Now().Add(pongWait))
+
+	err := c.conn.SetReadDeadline(time.Now().Add(pongWait))
+	if err != nil {
+		log.Printf("error: %v", err)
+	}
+
 	c.conn.SetPongHandler(func(string) error {
-		c.conn.SetReadDeadline(time.Now().Add(pongWait))
+		err := c.conn.SetReadDeadline(time.Now().Add(pongWait))
+		if err != nil {
+			log.Printf("error: %v", err)
+		}
 		return nil
 	})
 
@@ -100,7 +108,11 @@ func (c *client) PushMessage(m *rawMessage) error {
 }
 
 func (c *client) writeMessage(messageType int, data []byte) error {
-	c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+	err := c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+	if err != nil {
+		log.Printf("error: %v", err)
+	}
+
 	return c.conn.WriteMessage(messageType, data)
 }
 
