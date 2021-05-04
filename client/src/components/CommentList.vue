@@ -18,11 +18,12 @@ export default defineComponent({
 
     const comments = ref<string[]>([])
     onMounted(async () => {
-      if (!presentationId.value) return
-      const { data } = await apis.getPresentationComments(
-        '' + presentationId.value
-      )
-      comments.value = data.map(c => c.text).reverse()
+      if (presentationId.value !== null) {
+        const { data } = await apis.getPresentationComments(
+          '' + presentationId.value
+        )
+        comments.value = data.map(c => c.text).reverse()
+      }
 
       connectTarget.addEventListener('comment', e => {
         if (!e.detail) return
