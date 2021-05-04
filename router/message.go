@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/gofrs/uuid"
-	"github.com/golang/protobuf/proto"
+	"google.golang.org/protobuf/proto"
 	"github.com/traPtitech/Emoine/repository"
 )
 
