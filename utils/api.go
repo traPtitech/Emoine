@@ -13,7 +13,7 @@ const baseURL = "https://q.trap.jp/api/v3"
 
 type UserMe struct {
 	Id   uuid.UUID `json:"id"`
-	Name string    `json:"name`
+	Name string    `json:"name"`
 }
 
 func GetUserMe(token string) (*UserMe, error) {
