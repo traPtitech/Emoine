@@ -36,9 +36,12 @@ interface CustomTarget<M> extends Omit<EventTarget, 'addEventListener'> {
   ): void
 }
 
-export const connectTarget = document.createDocumentFragment() as CustomTarget<ConnectEventMap>
-export const stateTarget = document.createDocumentFragment() as CustomTarget<StateEventMap>
-export const viewerTarget = document.createDocumentFragment() as CustomTarget<ViewerEventMap>
+export const connectTarget =
+  document.createDocumentFragment() as CustomTarget<ConnectEventMap>
+export const stateTarget =
+  document.createDocumentFragment() as CustomTarget<StateEventMap>
+export const viewerTarget =
+  document.createDocumentFragment() as CustomTarget<ViewerEventMap>
 
 const onReaction = (m: Message) => {
   const reaction = m.reaction
