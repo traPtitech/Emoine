@@ -35,7 +35,7 @@
     "eslint-plugin-vue": "^7.9.0",
     "prettier": "^2.2.1",
     "protobufjs": "^6.11.2",
-    "sass": "^1.32.12",
+    "sass": "^1.34.0",
     "ts-morph": "^11.0.0",
     "typescript": "^4.2.4",
     "vite": "^2.3.4"
