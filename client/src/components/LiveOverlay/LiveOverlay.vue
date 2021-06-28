@@ -1,11 +1,7 @@
 <template>
   <div :class="$style.container">
     <top-controls :show="show" />
-    <div :class="$style.overlayWrapper">
-      <nico :show="show" :class="$style.overlay" />
-      <comment-panel v-show="show" :class="$style.commentPanel" />
-      <viewer-counter :class="$style.viewerCounter" />
-    </div>
+    <live-overlay-view :show="show" />
     <bottom-controls
       :class="$style.bottomControls"
       :data-is-shown="show"
@@ -18,20 +14,16 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import Nico from './Nico.vue'
 import TopControls from './TopControls.vue'
-import CommentPanel from './CommentPanel.vue'
 import BottomControls from './BottomControls.vue'
-import ViewerCounter from './ViewerCounter.vue'
+import LiveOverlayView from './LiveOverlayView.vue'
 
 export default defineComponent({
   name: 'LiveOverlay',
   components: {
-    Nico,
     TopControls,
-    BottomControls,
-    ViewerCounter,
-    CommentPanel
+    LiveOverlayView,
+    BottomControls
   },
   emits: {
     toggleDesc: () => true
@@ -57,25 +49,6 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   pointer-events: none;
-}
-.overlayWrapper {
-  position: relative;
-  width: 100%;
-  flex: 1;
-}
-.overlay {
-  height: 100%;
-  width: 100%;
-}
-.commentPanel {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-}
-.viewerCounter {
-  position: absolute;
-  top: 0;
-  right: 0;
 }
 .bottomControls {
   &:not([data-is-shown='true']) {

@@ -17,6 +17,11 @@ const router = createRouter({
       component: () => import('/@/pages/Admin.vue')
     },
     {
+      path: '/overlay-viewer',
+      name: 'overlay-viewer',
+      component: () => import('/@/pages/OverlayViewer.vue')
+    },
+    {
       path: '/popup-comment-list',
       name: 'popup-comment-list',
       component: () => import('/@/pages/PopupCommentList.vue')
