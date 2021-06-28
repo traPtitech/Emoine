@@ -20,6 +20,7 @@ module.exports = {
   rules: {
     'no-console': 'warn',
     'no-debugger': 'warn',
-    'vue/custom-event-name-casing': ['error', 'camelCase']
+    'vue/custom-event-name-casing': ['error', 'camelCase'],
+    'vue/require-emit-validator': 'error'
   }
 }
