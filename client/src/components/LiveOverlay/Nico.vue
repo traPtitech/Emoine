@@ -6,7 +6,7 @@
 import { defineComponent, ref } from 'vue'
 import { connectTarget } from '/@/lib/connect'
 import useElementSize from '/@/use/elementSize'
-import { addComment } from './commentRenderer'
+import { useCommentRenderer } from './commentRenderer'
 import { addReaction } from './reactionRenderer'
 
 export default defineComponent({
@@ -20,6 +20,7 @@ export default defineComponent({
   setup() {
     const baseEle = ref<HTMLDivElement>()
     const { height: baseHeight, width: baseWidth } = useElementSize(baseEle)
+    const {addComment} = useCommentRenderer(baseEle, baseHeight)
 
     connectTarget.addEventListener('reaction', e => {
       if (document.visibilityState === 'hidden') return
@@ -29,7 +30,7 @@ export default defineComponent({
     connectTarget.addEventListener('comment', e => {
       if (document.visibilityState === 'hidden') return
 
-      addComment(baseEle, baseHeight, e.detail.text)
+      addComment(e.detail.text)
     })
 
     return { baseEle }
