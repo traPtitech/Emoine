@@ -10,6 +10,11 @@ const CommentLines = 10
 const MinimumFontSize = 20
 const LineHeight = 1.5
 
+const indexOfMin = (arr: number[]): number => {
+  const minCount = Math.min(...arr)
+  return arr.findIndex(o => o === minCount)
+}
+
 export const useCommentRenderer = (
   baseEle: Ref<HTMLDivElement | undefined>,
   baseHeight: Ref<number>
@@ -28,10 +33,8 @@ export const useCommentRenderer = (
   const addComment = (text: string) => {
     if (!baseEle.value) return
 
-    // 重なるコメントが少ない行を選ぶ
-    const countPerLine = countPerLineAll.value.slice(0, lineCount.value)
-    const minCount = Math.min(...countPerLine)
-    const index = countPerLine.findIndex(o => o === minCount)
+    const linesInScreen = countPerLineAll.value.slice(0, lineCount.value)
+    const index = indexOfMin(linesInScreen)
     const top = index * lineHeight.value
 
     countPerLineAll.value[index]++

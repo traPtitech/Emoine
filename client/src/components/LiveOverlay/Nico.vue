@@ -20,7 +20,7 @@ export default defineComponent({
   setup() {
     const baseEle = ref<HTMLDivElement>()
     const { height: baseHeight, width: baseWidth } = useElementSize(baseEle)
-    const {addComment} = useCommentRenderer(baseEle, baseHeight)
+    const { addComment } = useCommentRenderer(baseEle, baseHeight)
 
     connectTarget.addEventListener('reaction', e => {
       if (document.visibilityState === 'hidden') return
