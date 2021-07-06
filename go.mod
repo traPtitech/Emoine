@@ -1,6 +1,6 @@
 module github.com/traPtitech/Emoine
 
-go 1.15
+go 1.16
 
 require (
 	github.com/go-sql-driver/mysql v1.6.0
@@ -9,7 +9,6 @@ require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/json-iterator/go v1.1.11
-	github.com/kr/pretty v0.2.0 // indirect
 	github.com/labstack/echo-contrib v0.9.0
 	github.com/labstack/echo/v4 v4.1.16
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
@@ -18,5 +17,4 @@ require (
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381 // indirect
 	golang.org/x/sys v0.0.0-20200625212154-ddb9806d33ae // indirect
 	google.golang.org/protobuf v1.25.0
-	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 )
