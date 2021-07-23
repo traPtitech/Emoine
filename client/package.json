@@ -6,8 +6,8 @@
     "build": "vite build",
     "lint": "eslint --ext .ts,.vue src",
     "type-check": "tsc",
-    "gen-apis": "node scripts/generate-apis.js",
-    "gen-pb": "node scripts/generate-pb.js && node scripts/fix-pb.js",
+    "gen-apis": "node scripts/generate-apis.mjs",
+    "gen-pb": "node scripts/generate-pb.mjs && node scripts/fix-pb.mjs",
     "postinstall": "npm run gen-apis && npm run gen-pb"
   },
   "dependencies": {

@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable no-undef */
-const path = require('path')
-const { Project } = require('ts-morph')
+import { Project } from 'ts-morph'
+import { fileURLToPath } from 'url'
 
 const GENERATED = 'src/lib/pb'
 const protoTargets = ['comment', 'reaction', 'state', 'viewer', 'message']
@@ -36,7 +34,7 @@ const addImport = async project => {
 }
 
 ;(async () => {
-  const dir = path.resolve(__dirname, '../', GENERATED)
+  const dir = fileURLToPath(new URL(`../${GENERATED}`, import.meta.url))
 
   const project = new Project()
   project.addSourceFilesAtPaths(`${dir}/**/*.{js,ts}`)

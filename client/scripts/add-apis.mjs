@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable no-undef */
-const { Project } = require('ts-morph')
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { Project } from 'ts-morph'
 
 const generateBaseAPI = async sourceFile => {
   const classes = sourceFile.getClasses()
@@ -38,4 +37,4 @@ const addApis = async dir => {
   await generateBaseAPI(sourceFile)
 }
 
-module.exports = addApis
+export default addApis
