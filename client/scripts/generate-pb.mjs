@@ -12,10 +12,9 @@ await fs.mkdir(new URL(`../src/lib/pb`, import.meta.url), {
   recursive: true
 })
 
-const promises = protoTargets.map(async p => {
+for (const p of protoTargets) {
   await exec(
     `${npx} pbjs -t static-module -w es6 ../docs/${p}.proto -o src/lib/pb/${p}.js`
   )
   await exec(`${npx} pbts src/lib/pb/${p}.js -o src/lib/pb/${p}.d.ts`)
-})
-await Promise.all(promises)
+}
