@@ -1,4 +1,4 @@
-FROM node:14-alpine AS client-build
+FROM node:16-alpine AS client-build
 RUN apk add --update --no-cache openjdk8-jre-base
 WORKDIR /github.com/traPtitech/Emoine/client
 COPY ./client/package*.json ./

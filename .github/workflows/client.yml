@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 16.x
       - uses: actions/checkout@v2
       - run: npm ci
   build:
@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 16.x
       - uses: actions/checkout@v2
       - run: npm ci
       - run: npm run build
@@ -40,7 +40,7 @@ jobs:
     steps:
       - uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 16.x
       - uses: actions/checkout@v2
       - run: npm ci
       - run: npm run lint
@@ -51,7 +51,7 @@ jobs:
     steps:
       - uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 16.x
       - uses: actions/checkout@v2
       - run: npm ci
       - run: npm run type-check
