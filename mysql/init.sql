@@ -56,3 +56,11 @@ CREATE TABLE IF NOT EXISTS review
     updatedAt      DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`userId`, `presentationId`)
 );
+
+CREATE TABLE IF NOT EXISTS token
+(
+    token          CHAR(44),
+    userId         VARCHAR(36),
+    createdAt      DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`token`)
+);
