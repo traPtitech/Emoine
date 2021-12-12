@@ -9,35 +9,26 @@ import (
 
 type userResponse struct {
 	ID      uuid.UUID `json:"id"`
-	Name    string    `json:"name"`
 	IsAdmin bool      `json:"isAdmin"`
 }
 
 // HandleGetUserMe ヘッダー情報からuser情報を取得
 // 認証状態を確認
 func (h *Handlers) GetUserMe(c echo.Context) error {
-	userID, err := getRequestUserID(c)
+	userID, err := getUserID(c)
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
 	if userID == uuid.Nil {
 		return echo.ErrUnauthorized
 	}
-	userName, err := getRequestUserName(c)
-	if err != nil {
-		return echo.ErrInternalServerError
-	}
-	if userName == "" {
-		return echo.ErrUnauthorized
-	}
-	isAdmin, err := getRequestUserIsAdmin(c)
+	isAdmin, err := getIsAdmin(c)
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
 
 	data := &userResponse{
 		userID,
-		userName,
 		isAdmin,
 	}
 

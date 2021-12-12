@@ -3,6 +3,7 @@
     <state-settings :class="$style.settings" />
     <live-id-settings :class="$style.settings" />
     <presentations-settings :class="$style.settings" />
+    <generate-token :class="$style.settings" />
   </div>
 </template>
 
@@ -11,13 +12,15 @@ import { defineComponent } from 'vue'
 import StateSettings from './StateSettings.vue'
 import LiveIdSettings from './LiveIdSettings.vue'
 import PresentationsSettings from './PresentationsSettings.vue'
+import GenerateToken from './GenerateToken.vue'
 
 export default defineComponent({
   name: 'Settings',
   components: {
     StateSettings,
     LiveIdSettings,
-    PresentationsSettings
+    PresentationsSettings,
+    GenerateToken
   }
 })
 </script>

@@ -74,7 +74,6 @@ func (h *Handlers) CallbackHandler(c echo.Context) error {
 	}
 
 	sess.Values["userID"] = userMe.Id.String()
-	sess.Values["userName"] = userMe.Name
 	sess.Options = &h.SessionOption
 
 	err = sess.Save(c.Request(), c.Response())
