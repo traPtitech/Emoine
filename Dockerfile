@@ -19,7 +19,7 @@ COPY . .
 RUN make proto
 RUN go build
 
-FROM alpine:3.13.0
+FROM alpine:3.15.0
 WORKDIR /app
 RUN apk --update --no-cache add tzdata ca-certificates openssl && \
   cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
