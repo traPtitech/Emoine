@@ -1,24 +1,30 @@
 package repository
 
-import "database/sql"
+import (
+	"database/sql"
+
+	"github.com/gofrs/uuid"
+)
 
 func (repo *SqlxRepository) CreateToken(token *Token) error {
 	_, err := repo.db.Exec("INSERT INTO `token` (token, userId) VALUES (?, ?)", token.Token, token.UserID)
 	return err
 }
 
-func (repo *SqlxRepository) IsTokenValid(tokenString string) (bool, error) {
-	err := repo.db.Select("SELECT 1 FROM `token` WHERE `token` = ? AND `created_at` >= NOW() - INTERVAL 1 DAY", tokenString)
+func (repo *SqlxRepository) GetTokenUserID(tokenString string) (uuid.UUID, error) {
+	var userID uuid.UUID
+
+	err := repo.db.Get(&userID, "SELECT `userID` FROM `token` WHERE `token` = ? AND `createdAt` >= NOW() - INTERVAL 1 DAY", tokenString)
 	if err == sql.ErrNoRows {
-		return false, nil
+		return uuid.Nil, nil
 	} else if err != nil {
-		return false, err
+		return uuid.Nil, err
 	}
-	return true, nil
+	return userID, nil
 }
 
 func (repo *SqlxRepository) CleanupExpiredTokens() (int64, error) {
-	res, err := repo.db.Exec("DELETE FROM `token` WHERE `created_at` < NOW() - INTERVAL 1 DAY")
+	res, err := repo.db.Exec("DELETE FROM `token` WHERE `createdAt` < NOW() - INTERVAL 1 DAY")
 	if err != nil {
 		return 0, err
 	}

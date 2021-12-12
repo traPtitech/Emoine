@@ -558,3 +558,9 @@ components:
           type: string
       required:
         - token
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - BearerAuth: []

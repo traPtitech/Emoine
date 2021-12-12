@@ -14,7 +14,7 @@ type ResponseToken struct {
 }
 
 func (h *Handlers) PostToken(c echo.Context) error {
-	userID, err := getRequestUserID(c)
+	userID, err := getUserID(c)
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, err)
 	}

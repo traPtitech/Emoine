@@ -14,6 +14,6 @@ type Token struct {
 
 type TokenRepository interface {
 	CreateToken(token *Token) error
-	IsTokenValid(tokenString string) (bool, error)
+	GetTokenUserID(tokenString string) (uuid.UUID, error)
 	CleanupExpiredTokens() (int64, error)
 }

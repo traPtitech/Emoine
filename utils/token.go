@@ -21,10 +21,10 @@ func GenerateToken() (string, error) {
 	return TOKEN_PREFIX + token, nil
 }
 
-func ParseToken(token string) (string, error) {
+func CheckTokenPrefix(token string) error {
 	if !strings.HasPrefix(token, TOKEN_PREFIX) {
-		return "", errors.New("token: Invalid prefix")
+		return errors.New("token: Invalid prefix")
 	}
 
-	return strings.TrimPrefix(token, TOKEN_PREFIX), nil
+	return nil
 }

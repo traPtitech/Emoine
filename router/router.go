@@ -40,9 +40,11 @@ func Setup(repo repository.Repository) *echo.Echo {
 		stream:   s,
 	}
 
+	e.Use(h.TraQUserMiddleware)
+
 	api := e.Group("/api", h.IsTraQUserMiddleware)
 	{
-		isAdmin := h.AdminUserMiddleware
+		isAdmin := h.IsAdminUserMiddleware
 
 		// TODO: グループだと動かない
 		api.GET("/live-id", h.GetLiveID)

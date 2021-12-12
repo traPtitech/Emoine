@@ -132,7 +132,7 @@ func (s *Streamer) ServeHTTP(c echo.Context) error {
 	if s.IsClosed() {
 		return echo.ErrServiceUnavailable
 	}
-	userID, err := getRequestUserID(c)
+	userID, err := getUserID(c)
 	if err != nil {
 		log.Printf("error: %v", err)
 		return echo.ErrInternalServerError

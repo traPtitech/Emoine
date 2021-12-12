@@ -15,14 +15,14 @@ type userResponse struct {
 // HandleGetUserMe ヘッダー情報からuser情報を取得
 // 認証状態を確認
 func (h *Handlers) GetUserMe(c echo.Context) error {
-	userID, err := getRequestUserID(c)
+	userID, err := getUserID(c)
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
 	if userID == uuid.Nil {
 		return echo.ErrUnauthorized
 	}
-	isAdmin, err := getRequestUserIsAdmin(c)
+	isAdmin, err := getIsAdmin(c)
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
