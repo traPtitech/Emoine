@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"log"
-	"net/http"
 	"sync"
 
 	"github.com/gofrs/uuid"
@@ -96,7 +95,7 @@ func setDefaultStateData() {
 func getViewerMessage(length int, userID uuid.UUID) (*rawMessage, error) {
 	msg := &Message{
 		Payload: &Message_Viewer{
-			&Viewer{ Count: uint32(length) },
+			&Viewer{Count: uint32(length)},
 		},
 	}
 	data, err := proto.Marshal(msg)
@@ -190,7 +189,7 @@ func (s *Streamer) ServeHTTP(c echo.Context) error {
 
 	wg.Wait()
 
-	return c.NoContent(http.StatusOK)
+	return nil
 }
 
 // IsClosed ストリーマーが停止しているかどうか
