@@ -8,7 +8,7 @@ RUN npm ci --unsafe-perm
 COPY ./client .
 RUN npm run build
 
-FROM golang:1.16-alpine AS server-build
+FROM golang:1.17-alpine AS server-build
 RUN apk add --update --no-cache git curl make protoc
 WORKDIR /go/src/github.com/traPtitech/Emoine
 COPY ./go.* ./
