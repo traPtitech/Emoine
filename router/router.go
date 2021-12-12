@@ -67,6 +67,9 @@ func Setup(repo repository.Repository) *echo.Echo {
 				apiPresentationsID.GET("/comments", h.GetPresentationComments, isAdmin)
 			}
 		}
+
+		api.POST("/tokens", h.PostToken, isAdmin)
+
 		api.GET("/users/me", h.GetUserMe)
 		api.GET("/ws", s.ServeHTTP)
 	}

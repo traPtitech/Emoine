@@ -7,9 +7,9 @@ import (
 )
 
 type Token struct {
-	Token     string    `db:"token" json:"token"`
-	UserID    uuid.UUID `db:"userId" json:"userId"`
-	CreatedAt time.Time `db:"createdAt" json:"createdAt"`
+	Token     string    `db:"token"`
+	UserID    uuid.UUID `db:"userId"`
+	CreatedAt time.Time `db:"createdAt"`
 }
 
 type TokenRepository interface {
