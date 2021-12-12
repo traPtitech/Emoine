@@ -54,7 +54,7 @@ func (h *Handlers) AdminUserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 }
 
 func getRequestUserID(c echo.Context) (uuid.UUID, error) {
-	sess, err := session.Get("e_session", c)
+	sess, err := session.Get("emoine_session", c)
 	if err != nil {
 		return uuid.Nil, err
 	}
@@ -66,7 +66,7 @@ func getRequestUserID(c echo.Context) (uuid.UUID, error) {
 }
 
 func getRequestUserName(c echo.Context) (string, error) {
-	sess, err := session.Get("e_session", c)
+	sess, err := session.Get("emoine_session", c)
 	if err != nil {
 		return "", err
 	}

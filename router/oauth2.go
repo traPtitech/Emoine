@@ -17,7 +17,7 @@ import (
 
 // GetGeneratedCode GET /oauth2/generate/code
 func (h *Handlers) GetGeneratedCode(c echo.Context) error {
-	sess, err := session.Get("e_session", c)
+	sess, err := session.Get("emoine_session", c)
 	if err != nil {
 		log.Printf("error: %v", err)
 		return echo.ErrInternalServerError
@@ -44,7 +44,7 @@ func (h *Handlers) GetGeneratedCode(c echo.Context) error {
 
 // CallbackHandler GET /api/callback
 func (h *Handlers) CallbackHandler(c echo.Context) error {
-	sess, err := session.Get("e_session", c)
+	sess, err := session.Get("emoine_session", c)
 	if err != nil {
 		log.Printf("error: %v", err)
 		return echo.ErrInternalServerError
