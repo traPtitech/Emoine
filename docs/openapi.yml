@@ -339,12 +339,8 @@ components:
         id:
           type: string
           format: uuid
-        name:
-          type: string
-          description: traP ID
       required:
         - id
-        - name
       description: ユーザー
     Viewer:
       type: object

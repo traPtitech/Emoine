@@ -65,18 +65,6 @@ func getRequestUserID(c echo.Context) (uuid.UUID, error) {
 	return uuid.FromString(userID.(string))
 }
 
-func getRequestUserName(c echo.Context) (string, error) {
-	sess, err := session.Get("emoine_session", c)
-	if err != nil {
-		return "", err
-	}
-	userName, ok := sess.Values["userName"]
-	if !ok {
-		return "", nil
-	}
-	return userName.(string), nil
-}
-
 func getRequestUserIsAdmin(c echo.Context) (bool, error) {
 	userID, err := getRequestUserID(c)
 	if err != nil {

@@ -9,7 +9,6 @@ import (
 
 type userResponse struct {
 	ID      uuid.UUID `json:"id"`
-	Name    string    `json:"name"`
 	IsAdmin bool      `json:"isAdmin"`
 }
 
@@ -23,13 +22,6 @@ func (h *Handlers) GetUserMe(c echo.Context) error {
 	if userID == uuid.Nil {
 		return echo.ErrUnauthorized
 	}
-	userName, err := getRequestUserName(c)
-	if err != nil {
-		return echo.ErrInternalServerError
-	}
-	if userName == "" {
-		return echo.ErrUnauthorized
-	}
 	isAdmin, err := getRequestUserIsAdmin(c)
 	if err != nil {
 		return echo.ErrInternalServerError
@@ -37,7 +29,6 @@ func (h *Handlers) GetUserMe(c echo.Context) error {
 
 	data := &userResponse{
 		userID,
-		userName,
 		isAdmin,
 	}
 
