@@ -290,6 +290,26 @@ paths:
         '404':
           description: Not Found
 
+  '/tokens':
+    post:
+      operationId: createToken
+      summary: アクセストークンの生成
+      description: アクセストークンの生成をします。生成したトークンの有効期限は1日です。
+      tags:
+        - token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateToken'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+
 components:
   parameters:
     sessions:
@@ -532,3 +552,13 @@ components:
           type: string
       required:
         - liveId
+    CreateToken:
+      type: object
+      properties: {}
+    Token:
+      type: object
+      properties:
+        token:
+          type: string
+      required:
+        - token
