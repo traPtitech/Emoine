@@ -16,7 +16,7 @@
     "reconnecting-websocket": "^4.4.0",
     "ress": "^4.0.0",
     "throttle-debounce": "^3.0.1",
-    "vue": "^3.2.13",
+    "vue": "^3.2.26",
     "vue-router": "^4.0.12",
     "vuex": "^4.0.2"
   },
