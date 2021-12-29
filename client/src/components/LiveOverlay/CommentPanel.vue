@@ -73,6 +73,6 @@ export default defineComponent({
 }
 .list {
   height: min(30vh, 30rem);
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 </style>
