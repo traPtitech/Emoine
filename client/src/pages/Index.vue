@@ -1,7 +1,14 @@
 <template>
   <div :class="$style.container">
-    <live :class="$style.live" />
-    <live-overlay :class="$style.overlay" @toggle-desc="toggleDesc" />
+    <top-controls :show="show" :class="$style.topControls" />
+    <div ref="baseEle" :class="$style.liveContainer">
+      <live />
+      <bottom-controls
+        :class="$style.bottomControls"
+        :data-is-shown="show"
+        @toggle="toggle"
+      />
+    </div>
     <review v-if="isReview" :class="$style.review" />
     <descriptions v-if="showDesc" :class="$style.desc" @toggle="toggleDesc" />
   </div>
@@ -9,18 +16,24 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue'
+import TopControls from '/@/components/LiveOverlay/TopControls.vue'
+import BottomControls from '/@/components/LiveOverlay/BottomControls.vue'
 import Live from '/@/components/Live.vue'
-import LiveOverlay from '/@/components/LiveOverlay/LiveOverlay.vue'
 import Review from '/@/components/Review.vue'
 import Descriptions from '/@/components/Descriptions.vue'
 import { useStore } from '/@/store'
 import { Status } from '/@/lib/pb'
+import { connectTarget } from '/@/lib/connect'
+import useElementSize from '/@/use/elementSize'
+import { useCommentRenderer } from '/@/components/LiveOverlay/commentRenderer'
+import { addReaction } from '/@/components/LiveOverlay/reactionRenderer'
 
 export default defineComponent({
   name: 'Index',
   components: {
+    TopControls,
+    BottomControls,
     Live,
-    LiveOverlay,
     Review,
     Descriptions
   },
@@ -31,12 +44,32 @@ export default defineComponent({
     )
     store.dispatch.fetchLive()
 
+    const show = ref(true)
+    const toggle = () => {
+      show.value = !show.value
+    }
+
     const showDesc = ref(false)
     const toggleDesc = () => {
       showDesc.value = !showDesc.value
     }
 
-    return { isReview, showDesc, toggleDesc }
+    const baseEle = ref<HTMLDivElement>()
+    const { height: baseHeight, width: baseWidth } = useElementSize(baseEle)
+    const { addComment } = useCommentRenderer(baseEle, baseHeight)
+
+    connectTarget.addEventListener('reaction', e => {
+      if (document.visibilityState === 'hidden' || !show.value) return
+
+      addReaction(baseEle, baseHeight, baseWidth, e.detail.stamp)
+    })
+    connectTarget.addEventListener('comment', e => {
+      if (document.visibilityState === 'hidden' || !show.value) return
+
+      addComment(e.detail.text)
+    })
+
+    return { isReview, show, showDesc, toggle, toggleDesc }
   }
 })
 </script>
@@ -47,11 +80,20 @@ export default defineComponent({
   height: 100%;
   width: 100%;
 }
-.live {
-  z-index: 1;
-}
-.overlay {
+.topControls {
   z-index: 2;
+}
+.liveContainer {
+  z-index: 1;
+  height: 100vh;
+}
+.bottomControls {
+  position: absolute;
+  height: 24px;
+  bottom: 0;
+  &:not([data-is-shown='true']) {
+    align-self: flex-end;
+  }
 }
 .review {
   z-index: 3;

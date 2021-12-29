@@ -1,9 +1,7 @@
 <template>
   <div :class="$style.container">
-    <comment-sender v-show="show" />
-    <button v-show="show" :class="$style.button" @click="$emit('toggleDesc')">
-      説明
-    </button>
+    <comment-sender />
+    <button :class="$style.button" @click="$emit('toggleDesc')">説明</button>
     <button :class="$style.button" @click="$emit('toggle')">表示/非表示</button>
   </div>
 </template>
@@ -18,12 +16,6 @@ export default defineComponent({
   name: 'BottomControls',
   components: {
     CommentSender
-  },
-  props: {
-    show: {
-      type: Boolean,
-      required: true
-    }
   },
   emits: {
     toggle: () => true,
@@ -48,6 +40,7 @@ export default defineComponent({
 .container {
   display: flex;
   pointer-events: auto;
+  width: 100%;
   background: rgba(255, 255, 255, 0.8);
 }
 .button {
