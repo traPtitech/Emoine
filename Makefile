@@ -4,7 +4,7 @@ PROTO_TARGETS = comment reaction state viewer message
 proto:
 	@rm -rf router/pb
 	@mkdir -p router/pb
-	@protoc -I ./docs/ --go_out=router/pb --go_opt=paths=source_relative ./docs/*.proto
+	@protoc -I=./docs --go_out=. ./docs/message.proto
 
 .PHONY: build
 build:
