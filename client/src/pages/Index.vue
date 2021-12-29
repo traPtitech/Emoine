@@ -3,7 +3,7 @@
     <div :class="$style.containerMain">
       <top-controls :show="show" :class="$style.topControls" />
       <div ref="baseEle" :class="$style.liveContainer">
-        <live :class="$style.live" />
+        <live />
       </div>
       <comment-panel v-show="show" :class="$style.commentPanel" />
       <review v-if="isReview" :class="$style.review" />
@@ -74,7 +74,7 @@ export default defineComponent({
       addComment(e.detail.text)
     })
 
-    return { isReview, show, showDesc, toggle, toggleDesc }
+    return { baseEle, isReview, show, showDesc, toggle, toggleDesc }
   }
 })
 </script>
@@ -89,26 +89,26 @@ export default defineComponent({
   height: calc(100vh - 24px);
 }
 .topControls {
-  z-index: 3;
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  width: 100%;
 }
 .liveContainer {
-  z-index: 2;
+  z-index: 1;
   height: 85%;
 }
-.live {
-  z-index: 1;
-}
 .commentPanel {
-  z-index: 3;
+  z-index: 2;
   position: absolute;
   right: 0;
   bottom: 0;
 }
 .review {
-  z-index: 4;
+  z-index: 3;
 }
 .desc {
-  z-index: 5;
+  z-index: 4;
 }
 .bottomControls {
   position: absolute;
