@@ -2,7 +2,7 @@
   <div :class="$style.container">
     <comment-list v-if="isCommentsShown" :class="$style.list" />
     <button @click="popupCommentsList">コメントパネルポップアップ</button>
-    <button @click="toggleIsCommentsShown">コメントパネル表示切替</button>
+    <!-- <button @click="toggleIsCommentsShown">コメントパネル表示切替</button> -->
   </div>
 </template>
 

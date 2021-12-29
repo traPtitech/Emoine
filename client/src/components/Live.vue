@@ -25,7 +25,7 @@ export default defineComponent({
   position: absolute;
   top: 0;
   left: 0;
-  bottom: 24px;
+  bottom: 0;
   right: 0;
 }
 .iframe {

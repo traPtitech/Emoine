@@ -1,16 +1,19 @@
 <template>
   <div :class="$style.container">
-    <top-controls :show="show" :class="$style.topControls" />
-    <div ref="baseEle" :class="$style.liveContainer">
-      <live />
-      <bottom-controls
-        :class="$style.bottomControls"
-        :data-is-shown="show"
-        @toggle="toggle"
-      />
+    <div :class="$style.containerMain">
+      <top-controls :show="show" :class="$style.topControls" />
+      <div ref="baseEle" :class="$style.liveContainer">
+        <live :class="$style.live" />
+      </div>
+      <comment-panel v-show="show" :class="$style.commentPanel" />
+      <review v-if="isReview" :class="$style.review" />
+      <descriptions v-if="showDesc" :class="$style.desc" @toggle="toggleDesc" />
     </div>
-    <review v-if="isReview" :class="$style.review" />
-    <descriptions v-if="showDesc" :class="$style.desc" @toggle="toggleDesc" />
+    <bottom-controls
+      :class="$style.bottomControls"
+      :data-is-shown="show"
+      @toggle="toggle"
+    />
   </div>
 </template>
 
@@ -18,6 +21,7 @@
 import { defineComponent, computed, ref } from 'vue'
 import TopControls from '/@/components/LiveOverlay/TopControls.vue'
 import BottomControls from '/@/components/LiveOverlay/BottomControls.vue'
+import CommentPanel from '/@/components/LiveOverlay/CommentPanel.vue'
 import Live from '/@/components/Live.vue'
 import Review from '/@/components/Review.vue'
 import Descriptions from '/@/components/Descriptions.vue'
@@ -33,6 +37,7 @@ export default defineComponent({
   components: {
     TopControls,
     BottomControls,
+    CommentPanel,
     Live,
     Review,
     Descriptions
@@ -76,16 +81,34 @@ export default defineComponent({
 
 <style lang="scss" module>
 .container {
-  position: relative;
   height: 100%;
   width: 100%;
 }
+.containerMain {
+  position: relative;
+  height: calc(100vh - 24px);
+}
 .topControls {
-  z-index: 2;
+  z-index: 3;
 }
 .liveContainer {
+  z-index: 2;
+  height: 85%;
+}
+.live {
   z-index: 1;
-  height: 100vh;
+}
+.commentPanel {
+  z-index: 3;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+.review {
+  z-index: 4;
+}
+.desc {
+  z-index: 5;
 }
 .bottomControls {
   position: absolute;
@@ -94,11 +117,5 @@ export default defineComponent({
   &:not([data-is-shown='true']) {
     align-self: flex-end;
   }
-}
-.review {
-  z-index: 3;
-}
-.desc {
-  z-index: 4;
 }
 </style>
