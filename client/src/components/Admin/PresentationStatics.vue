@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.presentaionStatics">
+  <div :class="$style.presentationStatics">
     <h3>{{ presentation.name }}</h3>
     <p>{{ presentation.description }}</p>
     <p>{{ presentation.speakers }}</p>
