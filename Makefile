@@ -2,9 +2,10 @@ PROTO_TARGETS = comment reaction state viewer message
 
 .PHONY: proto
 proto:
-	@rm -rf router/pb
-	@mkdir -p router/pb
-	@protoc -I=./docs --go_out=. ./docs/message.proto
+	for t in $(PROTO_TARGETS); do \
+		echo "protobuf build ... $$t"; \
+		protoc -I=./docs --go_out=. ./docs/$$t.proto; \
+	done
 
 .PHONY: build
 build:
