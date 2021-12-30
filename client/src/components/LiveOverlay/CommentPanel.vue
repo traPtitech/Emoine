@@ -1,8 +1,7 @@
 <template>
   <div :class="$style.container">
-    <comment-list v-if="isCommentsShown" :class="$style.list" />
+    <comment-list :class="$style.list" />
     <button @click="popupCommentsList">コメントパネルポップアップ</button>
-    <!-- <button @click="toggleIsCommentsShown">コメントパネル表示切替</button> -->
   </div>
 </template>
 
@@ -21,11 +20,6 @@ export default defineComponent({
   setup() {
     const store = useStore()
     const presentationId = computed(() => store.state.presentation?.id ?? null)
-
-    const isCommentsShown = ref(true)
-    const toggleIsCommentsShown = () => {
-      isCommentsShown.value = !isCommentsShown.value
-    }
 
     const comments = ref<string[]>([])
     onMounted(async () => {
@@ -54,8 +48,6 @@ export default defineComponent({
     }
 
     return {
-      isCommentsShown,
-      toggleIsCommentsShown,
       comments,
       popupCommentsList
     }

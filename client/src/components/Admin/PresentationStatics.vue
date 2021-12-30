@@ -45,7 +45,7 @@ import apis, {
   Comment,
   ReviewStatistics
 } from '/@/lib/apis'
-import { stampToFileName } from '/@/components/LiveOverlay/reactionRenderer'
+import { stampToFileName } from '/@/use/reactionRenderer'
 
 interface State {
   reactions: ReactionStatistics | null

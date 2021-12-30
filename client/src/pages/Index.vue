@@ -2,6 +2,7 @@
   <div :class="$style.container">
     <div :class="$style.containerMain">
       <top-controls :show="show" :class="$style.topControls" />
+      <viewer-counter v-show="show" :class="$style.viewerCounter" />
       <div ref="baseEle" :class="$style.liveContainer">
         <live />
       </div>
@@ -20,6 +21,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue'
 import TopControls from '/@/components/LiveOverlay/TopControls.vue'
+import ViewerCounter from '/@/components/LiveOverlay/ViewerCounter.vue'
 import BottomControls from '/@/components/LiveOverlay/BottomControls.vue'
 import CommentPanel from '/@/components/LiveOverlay/CommentPanel.vue'
 import Live from '/@/components/Live.vue'
@@ -29,13 +31,14 @@ import { useStore } from '/@/store'
 import { Status } from '/@/lib/pb'
 import { connectTarget } from '/@/lib/connect'
 import useElementSize from '/@/use/elementSize'
-import { useCommentRenderer } from '/@/components/LiveOverlay/commentRenderer'
-import { addReaction } from '/@/components/LiveOverlay/reactionRenderer'
+import { useCommentRenderer } from '/@/use/commentRenderer'
+import { addReaction } from '/@/use/reactionRenderer'
 
 export default defineComponent({
   name: 'Index',
   components: {
     TopControls,
+    ViewerCounter,
     BottomControls,
     CommentPanel,
     Live,
@@ -93,6 +96,11 @@ export default defineComponent({
   position: absolute;
   top: 0;
   width: 100%;
+}
+.viewerCounter {
+  z-index: 2;
+  position: absolute;
+  right: 0;
 }
 .liveContainer {
   z-index: 1;
