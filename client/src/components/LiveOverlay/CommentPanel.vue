@@ -1,7 +1,8 @@
 <template>
   <div :class="$style.container">
-    <comment-list :class="$style.list" />
+    <comment-list v-if="isCommentsShown" :class="$style.list" />
     <button @click="popupCommentsList">コメントパネルポップアップ</button>
+    <button @click="toggleIsCommentsShown">コメントパネル表示切替</button>
   </div>
 </template>
 
@@ -47,8 +48,15 @@ export default defineComponent({
       )
     }
 
+    const isCommentsShown = ref(true)
+    const toggleIsCommentsShown = () => {
+      isCommentsShown.value = !isCommentsShown.value
+    }
+
     return {
       comments,
+      isCommentsShown,
+      toggleIsCommentsShown,
       popupCommentsList
     }
   }
@@ -65,6 +73,6 @@ export default defineComponent({
 }
 .list {
   height: min(30vh, 30rem);
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 </style>

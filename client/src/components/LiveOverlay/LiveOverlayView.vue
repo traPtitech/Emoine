@@ -3,15 +3,17 @@
     <div :class="$style.containerMain">
       <top-controls :show="show" :class="$style.topControls" />
       <viewer-counter v-show="show" :class="$style.viewerCounter" />
-      <div ref="baseEle" :class="$style.liveContainer">
-        <slot />
-      </div>
+
+      <nico :show="show" :class="$style.liveContainer">
+        <slot :class="$style.liveContent" />
+      </nico>
+
       <comment-panel v-show="show" :class="$style.commentPanel" />
       <descriptions v-if="showDesc" :class="$style.desc" @toggle="toggleDesc" />
     </div>
+
     <bottom-controls
       :class="$style.bottomControls"
-      :data-is-shown="show"
       @toggle="toggle"
       @toggle-desc="toggleDesc"
     />
@@ -25,10 +27,7 @@ import ViewerCounter from '/@/components/LiveOverlay/ViewerCounter.vue'
 import BottomControls from '/@/components/LiveOverlay/BottomControls.vue'
 import CommentPanel from '/@/components/LiveOverlay/CommentPanel.vue'
 import Descriptions from '/@/components/Descriptions.vue'
-import { connectTarget } from '/@/lib/connect'
-import useElementSize from '/@/use/elementSize'
-import { useCommentRenderer } from '/@/use/commentRenderer'
-import { addReaction } from '/@/use/reactionRenderer'
+import Nico from '/@/components/LiveOverlay/Nico.vue'
 
 export default defineComponent({
   name: 'LiveOverlayView',
@@ -37,7 +36,8 @@ export default defineComponent({
     ViewerCounter,
     BottomControls,
     CommentPanel,
-    Descriptions
+    Descriptions,
+    Nico
   },
   setup() {
     const show = ref(true)
@@ -50,22 +50,7 @@ export default defineComponent({
       showDesc.value = !showDesc.value
     }
 
-    const baseEle = ref<HTMLDivElement>()
-    const { height: baseHeight, width: baseWidth } = useElementSize(baseEle)
-    const { addComment } = useCommentRenderer(baseEle, baseHeight)
-
-    connectTarget.addEventListener('reaction', e => {
-      if (document.visibilityState === 'hidden' || !show.value) return
-
-      addReaction(baseEle, baseHeight, baseWidth, e.detail.stamp)
-    })
-    connectTarget.addEventListener('comment', e => {
-      if (document.visibilityState === 'hidden' || !show.value) return
-
-      addComment(e.detail.text)
-    })
-
-    return { baseEle, show, showDesc, toggleDesc, toggle }
+    return { show, showDesc, toggleDesc, toggle }
   }
 })
 </script>
@@ -77,7 +62,7 @@ export default defineComponent({
 }
 .containerMain {
   position: relative;
-  height: calc(100vh - 24px);
+  height: calc(100% - 24px);
 }
 .topControls {
   z-index: 2;
@@ -88,12 +73,18 @@ export default defineComponent({
 .viewerCounter {
   z-index: 2;
   position: absolute;
-  top: 70px;
   right: 0;
 }
 .liveContainer {
   z-index: 1;
-  height: 85%;
+  height: 80vh;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  overflow-y: visible;
+}
+.liveContent {
+  top: 0;
 }
 .desc {
   z-index: 3;
@@ -107,8 +98,5 @@ export default defineComponent({
 .bottomControls {
   position: absolute;
   bottom: 0;
-  &:not([data-is-shown='true']) {
-    align-self: flex-end;
-  }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div :class="$style.container">
     <live-overlay-view :class="$style.overlay">
-      <live />
+      <live :class="$style.liveContent" />
     </live-overlay-view>
     <review v-if="isReview" :class="$style.review" />
   </div>
@@ -42,6 +42,9 @@ export default defineComponent({
 }
 .overlay {
   z-index: 1;
+}
+.liveContent {
+  height: calc(100vh - 24px);
 }
 .review {
   z-index: 2;
