@@ -1,6 +1,6 @@
 <template>
   <div ref="baseEle" :class="$style.nico">
-    <slot :class="$style.liveContent" />
+    <slot />
   </div>
 </template>
 
@@ -44,11 +44,6 @@ export default defineComponent({
 .nico {
   position: relative;
   color: white;
-  pointer-events: auto;
   overflow-y: visible;
-}
-.liveContent {
-  position: absolute;
-  bottom: 0;
 }
 </style>

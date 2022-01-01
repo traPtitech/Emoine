@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.container">
-    <live-overlay-view :class="$style.overlay" />
+    <live-overlay-view :class="$style.overlay" not-show-comment-panel />
   </div>
 </template>
 

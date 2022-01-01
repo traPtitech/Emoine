@@ -8,7 +8,10 @@
         <slot :class="$style.liveContent" />
       </nico>
 
-      <comment-panel v-show="show" :class="$style.commentPanel" />
+      <comment-panel
+        v-show="show && !notShowCommentPanel"
+        :class="$style.commentPanel"
+      />
       <descriptions v-if="showDesc" :class="$style.desc" @toggle="toggleDesc" />
     </div>
 
@@ -39,6 +42,12 @@ export default defineComponent({
     Descriptions,
     Nico
   },
+  props: {
+    notShowCommentPanel: {
+      type: Boolean,
+      default: false
+    }
+  },
   setup() {
     const show = ref(true)
     const toggle = () => {
@@ -59,32 +68,34 @@ export default defineComponent({
 .container {
   height: 100%;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 .containerMain {
+  flex: 1;
   position: relative;
-  height: calc(100% - 24px);
+  display: grid;
+  grid-template-rows: 75px 1fr;
 }
 .topControls {
   z-index: 2;
-  position: absolute;
-  top: 0;
   width: 100%;
+  position: absolute;
+  grid-row: 1;
 }
 .viewerCounter {
   z-index: 2;
   position: absolute;
   right: 0;
+  grid-row: 2;
 }
 .liveContainer {
   z-index: 1;
-  height: 80vh;
-  width: 100%;
-  position: absolute;
-  bottom: 0;
+  grid-row: 2;
   overflow-y: visible;
 }
 .liveContent {
-  top: 0;
+  grid-row: 1 / 3;
 }
 .desc {
   z-index: 3;
@@ -96,7 +107,6 @@ export default defineComponent({
   bottom: 0;
 }
 .bottomControls {
-  position: absolute;
-  bottom: 0;
+  height: fit-content;
 }
 </style>

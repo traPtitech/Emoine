@@ -35,7 +35,7 @@ export const useCommentRenderer = (
 
     const linesInScreen = countPerLineAll.value.slice(0, lineCount.value)
     const index = indexOfMin(linesInScreen)
-    const top = index * lineHeight.value + 80
+    const top = index * lineHeight.value
 
     countPerLineAll.value[index]++
 

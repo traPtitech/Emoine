@@ -43,9 +43,6 @@ export default defineComponent({
 .overlay {
   z-index: 1;
 }
-.liveContent {
-  height: calc(100vh - 24px);
-}
 .review {
   z-index: 2;
 }
