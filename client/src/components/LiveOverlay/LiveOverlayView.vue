@@ -5,7 +5,7 @@
       <viewer-counter v-show="show" :class="$style.viewerCounter" />
 
       <nico :show="show" :class="$style.liveContainer">
-        <slot :class="$style.liveContent" />
+        <live v-show="!notShowLive" :class="$style.live" />
       </nico>
 
       <comment-panel
@@ -27,23 +27,29 @@
 import { defineComponent, ref } from 'vue'
 import TopControls from '/@/components/LiveOverlay/TopControls.vue'
 import ViewerCounter from '/@/components/LiveOverlay/ViewerCounter.vue'
-import BottomControls from '/@/components/LiveOverlay/BottomControls.vue'
 import CommentPanel from '/@/components/LiveOverlay/CommentPanel.vue'
-import Descriptions from '/@/components/Descriptions.vue'
 import Nico from '/@/components/LiveOverlay/Nico.vue'
+import Live from '/@/components/Live.vue'
+import Descriptions from '/@/components/Descriptions.vue'
+import BottomControls from '/@/components/LiveOverlay/BottomControls.vue'
 
 export default defineComponent({
   name: 'LiveOverlayView',
   components: {
     TopControls,
     ViewerCounter,
-    BottomControls,
     CommentPanel,
+    Nico,
+    Live,
     Descriptions,
-    Nico
+    BottomControls
   },
   props: {
     notShowCommentPanel: {
+      type: Boolean,
+      default: false
+    },
+    notShowLive: {
       type: Boolean,
       default: false
     }
@@ -59,7 +65,7 @@ export default defineComponent({
       showDesc.value = !showDesc.value
     }
 
-    return { show, showDesc, toggleDesc, toggle }
+    return { show, showDesc, toggle, toggleDesc }
   }
 })
 </script>
@@ -94,11 +100,11 @@ export default defineComponent({
   grid-row: 2;
   overflow-y: visible;
 }
-.liveContent {
-  grid-row: 1 / 3;
-}
-.desc {
-  z-index: 3;
+.live {
+  width: 100%;
+  position: absolute;
+  top: -75px;
+  bottom: 0;
 }
 .commentPanel {
   z-index: 2;
@@ -106,7 +112,10 @@ export default defineComponent({
   right: 0;
   bottom: 0;
 }
+.desc {
+  z-index: 3;
+}
 .bottomControls {
-  height: fit-content;
+  width: 100%;
 }
 </style>

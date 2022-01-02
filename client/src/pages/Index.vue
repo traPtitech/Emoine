@@ -1,8 +1,7 @@
 <template>
   <div :class="$style.container">
-    <live-overlay-view :class="$style.overlay">
-      <live :class="$style.liveContent" />
-    </live-overlay-view>
+    <live-overlay-view :class="$style.overlay" />
+
     <review v-if="isReview" :class="$style.review" />
   </div>
 </template>
@@ -10,7 +9,6 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import LiveOverlayView from '/@/components/LiveOverlay/LiveOverlayView.vue'
-import Live from '/@/components/Live.vue'
 import Review from '/@/components/Review.vue'
 import { useStore } from '/@/store'
 import { Status } from '/@/lib/pb'
@@ -19,7 +17,6 @@ export default defineComponent({
   name: 'Index',
   components: {
     LiveOverlayView,
-    Live,
     Review
   },
   setup() {
@@ -42,6 +39,8 @@ export default defineComponent({
 }
 .overlay {
   z-index: 1;
+  height: 100%;
+  width: 100%;
 }
 .review {
   z-index: 2;
