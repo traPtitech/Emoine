@@ -11,7 +11,7 @@ services:
     environment:
       - CLIENT_ID=I62ZG0yeAZUFmFKgWAfFRRuA8blN5IxlnnJd
       - SECRET=secret
-      - ADMINS=e05f733f-dccc-47dc-9f56-c8eb38306284,132187b3-fae6-4c4c-9fe7-c1399c03e533,e05f733f-dccc-47dc-9f56-c8eb38306284,62aea407-1df4-426a-82a9-c5d26686b860
+      - ADMINS=e05f733f-dccc-47dc-9f56-c8eb38306284,132187b3-fae6-4c4c-9fe7-c1399c03e533,e05f733f-dccc-47dc-9f56-c8eb38306284,62aea407-1df4-426a-82a9-c5d26686b860, 88bbac6b-decc-42af-ab06-31a96e992028
 
   mysql:
     image: mariadb:10.6.4
