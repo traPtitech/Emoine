@@ -1,7 +1,5 @@
 <template>
-  <div ref="baseEle" :class="$style.nico">
-    <slot />
-  </div>
+  <div ref="baseEle" :class="$style.nico" />
 </template>
 
 <script lang="ts">
@@ -44,6 +42,6 @@ export default defineComponent({
 .nico {
   position: relative;
   color: white;
-  overflow-y: visible;
+  pointer-events: none;
 }
 </style>
