@@ -58,8 +58,12 @@ export default defineComponent({
   background: rgba(255, 255, 255, 0.8);
 }
 .input {
+  width: 90%;
   border-radius: 10px;
-  background-color: #c9c1b1;
+  border: medium solid #c9c1b1;
+  &:focus {
+    border-color: #fff344;
+  }
 }
 .bottomContents {
   display: flex;
