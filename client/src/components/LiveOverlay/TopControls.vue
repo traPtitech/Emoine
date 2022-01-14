@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.container" :data-is-shown="show">
+  <div :class="$style.container">
     <reaction-button
       v-for="stamp in stamps"
       :key="stamp"
@@ -21,12 +21,6 @@ export default defineComponent({
   name: 'TopControls',
   components: {
     ReactionButton
-  },
-  props: {
-    show: {
-      type: Boolean,
-      required: true
-    }
   },
   setup() {
     const store = useStore()
@@ -64,9 +58,5 @@ export default defineComponent({
   justify-content: space-around;
   background: rgba(255, 255, 255, 0.8);
   pointer-events: auto;
-  &:not([data-is-shown='true']) {
-    visibility: hidden;
-    pointer-events: none;
-  }
 }
 </style>

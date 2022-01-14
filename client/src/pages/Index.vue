@@ -74,7 +74,7 @@ export default defineComponent({
   right: 0;
   display: grid;
   grid-template-rows: 1fr min-content;
-  grid-template-columns: 1fr minmax(1fr, 15rem);
+  grid-template-columns: 1fr min-content;
 }
 .overlay {
   grid-row: 1;
