@@ -2,7 +2,7 @@
   <div :class="$style.container">
     <div :class="$style.main">
       <live-overlay-view :class="$style.overlay" :show="show" />
-      <top-controls :class="$style.topControls" />
+      <stamp-controls :class="$style.stampControls" />
       <comment-panel :class="$style.commentPanel" />
       <bottom-controls
         :class="$style.bottomControls"
@@ -21,7 +21,7 @@ import { defineComponent, computed, ref } from 'vue'
 import LiveOverlayView from '/@/components/LiveOverlay/LiveOverlayView.vue'
 import Review from '/@/components/Review.vue'
 import Descriptions from '/@/components/Descriptions.vue'
-import TopControls from '/@/components/LiveOverlay/TopControls.vue'
+import StampControls from '../components/LiveOverlay/StampControls.vue'
 import CommentPanel from '/@/components/LiveOverlay/CommentPanel.vue'
 import BottomControls from '/@/components/LiveOverlay/BottomControls.vue'
 import { useStore } from '/@/store'
@@ -33,7 +33,7 @@ export default defineComponent({
     LiveOverlayView,
     Review,
     Descriptions,
-    TopControls,
+    StampControls,
     CommentPanel,
     BottomControls
   },
@@ -80,7 +80,7 @@ export default defineComponent({
   grid-row: 1;
   grid-column: 1;
 }
-.topControls {
+.stampControls {
   grid-row: 2;
   grid-column: 1;
 }

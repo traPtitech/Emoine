@@ -18,7 +18,7 @@ import useShortcut from '/@/use/shortcut'
 import { sendReaction } from '/@/lib/connect'
 
 export default defineComponent({
-  name: 'TopControls',
+  name: 'StampControls',
   components: {
     ReactionButton
   },
