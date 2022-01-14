@@ -11,24 +11,18 @@ import { addReaction } from '/@/use/reactionRenderer'
 
 export default defineComponent({
   name: 'Nico',
-  props: {
-    show: {
-      type: Boolean,
-      required: true
-    }
-  },
-  setup(props) {
+  setup() {
     const baseEle = ref<HTMLDivElement>()
     const { height: baseHeight, width: baseWidth } = useElementSize(baseEle)
     const { addComment } = useCommentRenderer(baseEle, baseHeight)
 
     connectTarget.addEventListener('reaction', e => {
-      if (!props.show) return
+      if (document.visibilityState === 'hidden') return
 
       addReaction(baseEle, baseHeight, baseWidth, e.detail.stamp)
     })
     connectTarget.addEventListener('comment', e => {
-      if (!props.show) return
+      if (document.visibilityState === 'hidden') return
 
       addComment(e.detail.text)
     })
@@ -40,8 +34,12 @@ export default defineComponent({
 
 <style lang="scss" module>
 .nico {
-  position: relative;
   color: white;
   pointer-events: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 </style>

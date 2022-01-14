@@ -1,7 +1,7 @@
 <template>
   <div :class="$style.container">
     <viewer-counter v-show="show" :class="$style.viewerCounter" />
-    <nico :show="show" :class="$style.nico" />
+    <nico v-show="show" :class="$style.nico" />
     <live v-show="!hideLive" :class="$style.live" />
   </div>
 </template>
@@ -37,27 +37,18 @@ export default defineComponent({
   height: 100%;
   width: 100%;
   position: relative;
+  overflow: hidden;
 }
 .viewerCounter {
-  z-index: 3;
+  z-index: 2;
   position: absolute;
   right: 0;
   top: 0;
 }
 .nico {
-  z-index: 2;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  z-index: 1;
 }
 .live {
-  z-index: 1;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  z-index: 0;
 }
 </style>
