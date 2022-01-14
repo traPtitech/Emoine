@@ -72,7 +72,7 @@ export default defineComponent({
   pointer-events: auto;
 }
 .list {
-  height: min(30vh, 30rem);
+  flex: 1;
   overflow-y: scroll;
 }
 </style>
