@@ -10,7 +10,7 @@
     />
 
     <div :class="$style.bottomContents">
-      <button :class="$style.send" @click="comment">送信</button>
+      <button :class="$style.button" @click="comment">送信</button>
       <button :class="$style.button" @click="$emit('toggleDesc')">説明</button>
       <button :class="$style.button" @click="$emit('toggle')">
         表示/非表示
@@ -77,6 +77,5 @@ export default defineComponent({
 }
 .button {
   margin: 0 8px;
-  padding: 0 8px;
 }
 </style>
