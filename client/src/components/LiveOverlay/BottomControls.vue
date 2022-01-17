@@ -55,7 +55,6 @@ export default defineComponent({
 <style lang="scss" module>
 .container {
   pointer-events: auto;
-  width: 100%;
   height: fit-content;
   background: white;
   text-align: center;
