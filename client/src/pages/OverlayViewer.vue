@@ -25,8 +25,8 @@ export default defineComponent({
 
 <style lang="scss" module>
 .container {
-  display: flex;
   height: 100%;
   width: 100%;
+  background-color: black;
 }
 </style>

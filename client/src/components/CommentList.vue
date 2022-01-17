@@ -45,7 +45,7 @@ export default defineComponent({
 .comment {
   background-color: white;
   border-radius: 10px;
-  line-height: 2.5rem;
+  padding: 0.5rem 10px;
   margin: 5px 0;
 }
 </style>
