@@ -56,7 +56,7 @@ export default defineComponent({
 .container {
   display: flex;
   justify-content: space-around;
-  background: rgba(255, 255, 255, 0.8);
+  background: #fff9ed;
   pointer-events: auto;
 }
 </style>

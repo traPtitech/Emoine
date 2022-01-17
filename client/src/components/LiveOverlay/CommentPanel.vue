@@ -1,8 +1,7 @@
 <template>
   <div :class="$style.container">
-    <comment-list v-if="isCommentsShown" :class="$style.list" />
+    <comment-list :class="$style.list" />
     <button @click="popupCommentsList">コメントパネルポップアップ</button>
-    <button @click="toggleIsCommentsShown">コメントパネル表示切替</button>
   </div>
 </template>
 
@@ -48,15 +47,8 @@ export default defineComponent({
       )
     }
 
-    const isCommentsShown = ref(true)
-    const toggleIsCommentsShown = () => {
-      isCommentsShown.value = !isCommentsShown.value
-    }
-
     return {
       comments,
-      isCommentsShown,
-      toggleIsCommentsShown,
       popupCommentsList
     }
   }
@@ -68,7 +60,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   width: min(20vw, 20rem);
-  background: rgba(255, 255, 255, 0.8);
+  background: #fff9ed;
   pointer-events: auto;
 }
 .list {

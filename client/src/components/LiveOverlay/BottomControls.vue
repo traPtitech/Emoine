@@ -5,6 +5,7 @@
       v-model="text"
       :class="$style.input"
       type="text"
+      placeholder="コメント"
       @keydown.enter="comment"
     />
 
@@ -55,12 +56,16 @@ export default defineComponent({
 .container {
   pointer-events: auto;
   width: 100%;
-  background: rgba(255, 255, 255, 0.8);
+  height: fit-content;
+  background: white;
+  text-align: center;
+  padding: 10px 0;
 }
 .input {
   width: 90%;
-  border-radius: 10px;
-  border: medium solid #c9c1b1;
+  line-height: 2rem;
+  border-radius: 20px;
+  border: 2px solid #c9c1b1;
   &:focus {
     border-color: #fff344;
   }
@@ -68,6 +73,7 @@ export default defineComponent({
 .bottomContents {
   display: flex;
   flex-direction: row-reverse;
+  justify-content: center;
 }
 .button {
   margin: 0 8px;
