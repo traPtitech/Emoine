@@ -12,7 +12,7 @@
     </div>
 
     <review v-if="isReview" :class="$style.review" />
-    <descriptions v-show="showDesc" :class="$style.desc" @toggle="toggleDesc" />
+    <descriptions v-if="showDesc" :class="$style.desc" @toggle="toggleDesc" />
   </div>
 </template>
 
@@ -67,14 +67,10 @@ export default defineComponent({
 }
 .main {
   z-index: 0;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  height: 100%;
+  width: 100%;
   display: grid;
-  grid-template-rows: 1fr min-content;
-  grid-template-columns: 1fr min-content;
+  grid-template: 1fr min-content / 1fr min-content;
 }
 .overlay {
   grid-row: 1;
@@ -87,6 +83,7 @@ export default defineComponent({
 .commentPanel {
   grid-row: 1;
   grid-column: 2;
+  min-height: 0;
 }
 .bottomControls {
   grid-row: 2;

@@ -10,11 +10,11 @@
     />
 
     <div :class="$style.bottomContents">
-      <button :class="$style.button" @click="comment">送信</button>
-      <button :class="$style.button" @click="$emit('toggleDesc')">説明</button>
       <button :class="$style.button" @click="$emit('toggle')">
         表示/非表示
       </button>
+      <button :class="$style.button" @click="$emit('toggleDesc')">説明</button>
+      <button :class="$style.button" @click="comment">送信</button>
     </div>
   </div>
 </template>
@@ -55,14 +55,13 @@ export default defineComponent({
 <style lang="scss" module>
 .container {
   pointer-events: auto;
-  height: fit-content;
   background: white;
   text-align: center;
-  padding: 10px 0;
+  padding: 10px 5%;
 }
 .input {
-  width: 90%;
-  line-height: 2rem;
+  width: 100%;
+  height: 2rem;
   border-radius: 20px;
   border: 2px solid #c9c1b1;
   &:focus {
@@ -71,7 +70,7 @@ export default defineComponent({
 }
 .bottomContents {
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: row;
   justify-content: center;
 }
 .button {
