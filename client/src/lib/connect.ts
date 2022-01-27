@@ -3,6 +3,7 @@ import {
   Message,
   IMessage,
   IReaction,
+  ICreateComment,
   IComment,
   Stamp,
   IState,
@@ -121,6 +122,6 @@ export const sendReaction = (reaction: Required<IReaction>): void => {
   send({ reaction })
 }
 
-export const sendComment = (comment: Required<IComment>): void => {
+export const sendComment = (comment: Required<ICreateComment>): void => {
   send({ comment })
 }

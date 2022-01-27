@@ -2,14 +2,14 @@ package repository
 
 import "log"
 
-func (repo *SqlxRepository) CreateComment(comment *Comment) error {
+func (repo *SqlxRepository) CreateComment(comment *CreateComment) error {
 	_, err := repo.db.Exec("INSERT INTO `comment` (userId, presentationId, text) VALUES (?, ?, ?)", comment.UserID, comment.PresentationID, comment.Text)
 	return err
 }
 
 func (repo *SqlxRepository) GetComments(id int) ([]*Comment, error) {
 	var comments []*Comment
-	rows, err := repo.db.Queryx("SELECT `userId`, `presentationId`, `text` FROM `comment` WHERE presentationId = ?", id)
+	rows, err := repo.db.Queryx("SELECT `id`, `userId`, `presentationId`, `text` FROM `comment` WHERE presentationId = ?", id)
 	if err != nil {
 		return nil, err
 	}

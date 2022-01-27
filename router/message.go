@@ -2,8 +2,8 @@ package router
 
 import (
 	"github.com/gofrs/uuid"
-	"google.golang.org/protobuf/proto"
 	"github.com/traPtitech/Emoine/repository"
+	"google.golang.org/protobuf/proto"
 )
 
 type rawMessage struct {
@@ -55,7 +55,7 @@ func (s *Streamer) reactionLogger(userID uuid.UUID, data *Reaction) error {
 }
 
 func (s *Streamer) commentLogger(userID uuid.UUID, data *Comment) error {
-	comment := repository.Comment{UserID: userID, PresentationID: int(data.PresentationId), Text: data.Text}
+	comment := repository.CreateComment{UserID: userID, PresentationID: int(data.PresentationId), Text: data.Text}
 	if err := s.repo.CreateComment(&comment); err != nil {
 		return err
 	}

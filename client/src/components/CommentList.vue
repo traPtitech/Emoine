@@ -1,6 +1,6 @@
 <template>
   <transition-group name="transition" tag="ul" :class="$style.list">
-    <li v-for="c in comments" :key="c.id">{{ c.text }}</li>
+    <li v-for="c in comments" :key="c.id">{{ c.id }}</li>
   </transition-group>
 </template>
 

@@ -10,7 +10,8 @@ message Message {
   oneof payload {
     State state = 1;
     Reaction reaction = 2;
-    Comment comment = 3;
-    Viewer viewer = 4;
+    CreateComment ceate_comment = 3;
+    Comment comment = 4;
+    Viewer viewer = 5;
   }
 }
