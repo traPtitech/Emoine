@@ -1,5 +1,5 @@
 <template>
-  <div ref="baseEle" :class="$style.nico" />
+  <div ref="baseEle" :class="$style.nico" :data-is-shown="show" />
 </template>
 
 <script lang="ts">
@@ -11,6 +11,12 @@ import { addReaction } from '/@/use/reactionRenderer'
 
 export default defineComponent({
   name: 'Nico',
+  props: {
+    show: {
+      type: Boolean,
+      required: true
+    }
+  },
   setup() {
     const baseEle = ref<HTMLDivElement>()
     const { height: baseHeight, width: baseWidth } = useElementSize(baseEle)
@@ -41,5 +47,9 @@ export default defineComponent({
   bottom: 0;
   left: 0;
   right: 0;
+  &:not([data-is-shown='true']) {
+    visibility: hidden;
+    pointer-events: none;
+  }
 }
 </style>

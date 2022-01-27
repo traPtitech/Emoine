@@ -46,7 +46,6 @@ export default defineComponent({
   position: relative;
 }
 .main {
-  z-index: 0;
   height: 100%;
   width: 100%;
   display: grid;

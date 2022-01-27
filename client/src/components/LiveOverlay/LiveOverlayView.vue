@@ -1,7 +1,7 @@
 <template>
   <div :class="$style.container">
     <viewer-counter v-show="show" :class="$style.viewerCounter" />
-    <nico v-show="show" :class="$style.nico" />
+    <nico :show="show" :class="$style.nico" />
     <live v-if="!hideLive" :class="$style.live" />
   </div>
 </template>
