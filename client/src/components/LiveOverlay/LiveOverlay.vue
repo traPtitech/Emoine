@@ -48,6 +48,8 @@ export default defineComponent({
 .container {
   height: 100%;
   width: 100%;
+  display: grid;
+  grid-template: 1fr min-content / 1fr min-content;
 }
 .overlay {
   grid-row: 1;

@@ -48,8 +48,6 @@ export default defineComponent({
 .main {
   height: 100%;
   width: 100%;
-  display: grid;
-  grid-template: 1fr min-content / 1fr min-content;
 }
 .review {
   z-index: 1;
