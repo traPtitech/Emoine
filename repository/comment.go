@@ -5,9 +5,9 @@ import (
 )
 
 type CreateComment struct {
-	UserID         uuid.UUID `db:"userId" json:"userId"`
-	PresentationID int       `db:"presentationId" json:"presentationId"`
-	Text           string    `db:"text" json:"text"`
+	UserID         uuid.UUID `db:"userId"`
+	PresentationID int       `db:"presentationId"`
+	Text           string    `db:"text"`
 }
 
 type Comment struct {
