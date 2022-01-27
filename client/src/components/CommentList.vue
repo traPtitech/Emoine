@@ -1,6 +1,6 @@
 <template>
   <transition-group name="transition" tag="ul" :class="$style.list">
-    <li v-for="c in comments" :key="c">{{ c }}</li>
+    <li v-for="c in comments" :key="c.id">{{ c.text }}</li>
   </transition-group>
 </template>
 
@@ -9,6 +9,7 @@ import { computed, defineComponent, onMounted, ref } from 'vue'
 import { connectTarget } from '/@/lib/connect'
 import apis from '/@/lib/apis'
 import { useStore } from '/@/store'
+import { IComment } from '/@/lib/pb/comment'
 
 export default defineComponent({
   name: 'CommentList',
@@ -16,18 +17,18 @@ export default defineComponent({
     const store = useStore()
     const presentationId = computed(() => store.state.presentation?.id ?? null)
 
-    const comments = ref<string[]>([])
+    const comments = ref<IComment[]>([])
     onMounted(async () => {
       if (presentationId.value !== null) {
         const { data } = await apis.getPresentationComments(
           '' + presentationId.value
         )
-        comments.value = data.map(c => c.text).reverse()
+        comments.value = data.reverse()
       }
 
       connectTarget.addEventListener('comment', e => {
         if (!e.detail) return
-        comments.value.unshift(e.detail.text)
+        comments.value.unshift(e.detail)
       })
     })
 
