@@ -1,4 +1,5 @@
 <template>
+  <!-- コメントの描画位置がリセットされないように visibility-hidden で表示を切り替え -->
   <div ref="baseEle" :class="$style.nico" :data-is-shown="show" />
 </template>
 
