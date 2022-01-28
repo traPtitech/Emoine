@@ -29,7 +29,7 @@ func (s *Streamer) logger(m *rawMessage) error {
 			return err
 		}
 	case *Message_Comment:
-		if err := s.commentLogger(m.userID, msg.GetComment()); err != nil {
+		if err := s.commentLogger(m.userID, msg.GetCreateComment()); err != nil {
 			return err
 		}
 	}
@@ -54,7 +54,7 @@ func (s *Streamer) reactionLogger(userID uuid.UUID, data *Reaction) error {
 	return nil
 }
 
-func (s *Streamer) commentLogger(userID uuid.UUID, data *Comment) error {
+func (s *Streamer) commentLogger(userID uuid.UUID, data *CreateComment) error {
 	comment := repository.CreateComment{UserID: userID, PresentationID: int(data.PresentationId), Text: data.Text}
 	if err := s.repo.CreateComment(&comment); err != nil {
 		return err
