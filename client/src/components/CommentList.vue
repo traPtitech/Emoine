@@ -9,7 +9,7 @@ import { computed, defineComponent, onMounted, ref } from 'vue'
 import { connectTarget } from '/@/lib/connect'
 import apis from '/@/lib/apis'
 import { useStore } from '/@/store'
-import { IComment } from '/@/lib/pb/comment'
+import { IComment } from '/@/lib/pb'
 
 export default defineComponent({
   name: 'CommentList',
