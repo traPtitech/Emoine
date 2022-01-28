@@ -122,6 +122,6 @@ export const sendReaction = (reaction: Required<IReaction>): void => {
   send({ reaction })
 }
 
-export const sendComment = (comment: Required<ICreateComment>): void => {
-  send({ comment })
+export const sendComment = (createComment: Required<ICreateComment>): void => {
+  send({ createComment })
 }
