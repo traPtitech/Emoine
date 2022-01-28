@@ -28,7 +28,7 @@ func (s *Streamer) logger(m *rawMessage) error {
 		if err := s.reactionLogger(m.userID, msg.GetReaction()); err != nil {
 			return err
 		}
-	case *Message_Comment:
+	case *Message_CreateComment:
 		if err := s.commentLogger(m.userID, msg.GetCreateComment()); err != nil {
 			return err
 		}
