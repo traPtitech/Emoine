@@ -4,12 +4,6 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-type CreateComment struct {
-	UserID         uuid.UUID `db:"userId"`
-	PresentationID int       `db:"presentationId"`
-	Text           string    `db:"text"`
-}
-
 type Comment struct {
 	ID             int       `db:"id" json:"id"`
 	UserID         uuid.UUID `db:"userId" json:"userId"`
@@ -18,6 +12,6 @@ type Comment struct {
 }
 
 type CommentRepository interface {
-	CreateComment(comment *CreateComment) error
+	CreateComment(comment *Comment) error
 	GetComments(id int) ([]*Comment, error)
 }

@@ -2,9 +2,22 @@ package repository
 
 import "log"
 
-func (repo *SqlxRepository) CreateComment(comment *CreateComment) error {
-	_, err := repo.db.Exec("INSERT INTO `comment` (userId, presentationId, text) VALUES (?, ?, ?)", comment.UserID, comment.PresentationID, comment.Text)
-	return err
+func (repo *SqlxRepository) CreateComment(comment *Comment) error {
+	result, err := repo.db.Exec("INSERT INTO `comment` (userId, presentationId, text) VALUES (?, ?, ?)", comment.UserID, comment.PresentationID, comment.Text)
+
+	if err != nil {
+		return err
+	}
+
+	res, err := result.LastInsertId()
+
+	if err != nil {
+		return err
+	}
+
+	comment.ID = int(res)
+
+	return nil
 }
 
 func (repo *SqlxRepository) GetComments(id int) ([]*Comment, error) {
