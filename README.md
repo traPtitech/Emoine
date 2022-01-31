@@ -18,15 +18,6 @@ $ cd client
 $ npm i
 ```
 
-Windowsの場合、`make proto`が実行できないので、代わりに以下を実行する
-```shell
-protoc -I=./docs --go_out=. ./docs/comment.proto
-protoc -I=./docs --go_out=. ./docs/reaction.proto
-protoc -I=./docs --go_out=. ./docs/state.proto
-protoc -I=./docs --go_out=. ./docs/viewer.proto
-protoc -I=./docs --go_out=. ./docs/message.proto
-```
-
 起動
 
 ```shell
