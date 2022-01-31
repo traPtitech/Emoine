@@ -9,7 +9,8 @@ func (repo *SqlxRepository) CreateComment(comment *Comment) error {
 		return err
 	}
 
-	res, err := result.LastInsertId()
+	var res int64
+	res, err = result.LastInsertId()
 
 	if err != nil {
 		return err

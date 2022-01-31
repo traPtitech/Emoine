@@ -2,9 +2,7 @@ syntax = "proto3";
 option go_package = "./router;router";
 
 message Comment {
-  oneof id_optional {
-    uint32 id = 1;
-  }
+  uint32 id = 1;
   uint32 presentationId = 2;
   string text = 3;
 }
