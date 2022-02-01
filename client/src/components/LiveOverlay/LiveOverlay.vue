@@ -1,11 +1,10 @@
 <template>
   <div :class="$style.container">
-    <top-controls :show="show" />
-    <live-overlay-view :show="show" />
+    <live-overlay-view :class="$style.overlay" :show="show" />
+    <stamp-controls :class="$style.stampControls" />
+    <comment-panel :class="$style.commentPanel" />
     <bottom-controls
       :class="$style.bottomControls"
-      :data-is-shown="show"
-      :show="show"
       @toggle="toggle"
       @toggle-desc="$emit('toggleDesc')"
     />
@@ -14,21 +13,27 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import TopControls from './TopControls.vue'
-import BottomControls from './BottomControls.vue'
-import LiveOverlayView from './LiveOverlayView.vue'
+import LiveOverlayView from '/@/components/LiveOverlay/LiveOverlayView.vue'
+import StampControls from '/@/components/LiveOverlay/StampControls.vue'
+import CommentPanel from '/@/components/LiveOverlay/CommentPanel.vue'
+import BottomControls from '/@/components/LiveOverlay/BottomControls.vue'
+import { useStore } from '/@/store'
 
 export default defineComponent({
   name: 'LiveOverlay',
   components: {
-    TopControls,
     LiveOverlayView,
+    StampControls,
+    CommentPanel,
     BottomControls
   },
   emits: {
     toggleDesc: () => true
   },
   setup() {
+    const store = useStore()
+    store.dispatch.fetchLive()
+
     const show = ref(true)
     const toggle = () => {
       show.value = !show.value
@@ -41,18 +46,26 @@ export default defineComponent({
 
 <style lang="scss" module>
 .container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  display: flex;
-  flex-direction: column;
-  pointer-events: none;
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template: 1fr min-content / 1fr min-content;
+}
+.overlay {
+  grid-row: 1;
+  grid-column: 1;
+}
+.stampControls {
+  grid-row: 2;
+  grid-column: 1;
+}
+.commentPanel {
+  grid-row: 1;
+  grid-column: 2;
+  min-height: 0;
 }
 .bottomControls {
-  &:not([data-is-shown='true']) {
-    align-self: flex-end;
-  }
+  grid-row: 2;
+  grid-column: 2;
 }
 </style>

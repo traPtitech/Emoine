@@ -27,17 +27,18 @@ li {
 .animation-comment {
   position: absolute;
   left: 0;
+  min-width: 100%;
   display: inline-block;
-  animation: comment 10s linear;
+  animation: comment 15s linear;
   opacity: 0.7;
   -webkit-text-stroke: 0.02em #333;
 }
 @keyframes comment {
   0% {
-    transform: translateX(100vw);
+    transform: translateX(100%);
   }
   100% {
-    transform: translateX(-200%);
+    transform: translateX(-100%);
   }
 }
 

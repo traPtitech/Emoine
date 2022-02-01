@@ -12,7 +12,7 @@
 import { defineComponent, PropType, computed } from 'vue'
 import { Stamp } from '/@/lib/pb'
 import { sendReaction } from '/@/lib/connect'
-import { stampToFileName } from './reactionRenderer'
+import { stampToFileName } from '/@/use/reactionRenderer'
 
 export default defineComponent({
   name: 'ReactionButton',
