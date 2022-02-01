@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.container">
-    <live-overlay-view :class="$style.overlay" show without-comment-panel />
+    <live-overlay-view hide-live show />
   </div>
 </template>
 
@@ -25,7 +25,6 @@ export default defineComponent({
 
 <style lang="scss" module>
 .container {
-  display: flex;
   height: 100%;
   width: 100%;
 }

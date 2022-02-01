@@ -1,4 +1,5 @@
 <template>
+  <!-- コメントの描画位置がリセットされないように visibility-hidden で表示を切り替え -->
   <div ref="baseEle" :class="$style.nico" :data-is-shown="show" />
 </template>
 
@@ -6,8 +7,8 @@
 import { defineComponent, ref } from 'vue'
 import { connectTarget } from '/@/lib/connect'
 import useElementSize from '/@/use/elementSize'
-import { useCommentRenderer } from './commentRenderer'
-import { addReaction } from './reactionRenderer'
+import { useCommentRenderer } from '/@/use/commentRenderer'
+import { addReaction } from '/@/use/reactionRenderer'
 
 export default defineComponent({
   name: 'Nico',
@@ -40,10 +41,13 @@ export default defineComponent({
 
 <style lang="scss" module>
 .nico {
-  position: relative;
   color: white;
-  pointer-events: auto;
-  overflow: hidden;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   &:not([data-is-shown='true']) {
     visibility: hidden;
     pointer-events: none;

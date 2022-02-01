@@ -1,34 +1,30 @@
 <template>
-  <div :class="$style.overlayWrapper">
-    <nico :show="show" :class="$style.overlay" />
-    <comment-panel
-      v-if="!withoutCommentPanel"
-      v-show="show"
-      :class="$style.commentPanel"
-    />
-    <viewer-counter :class="$style.viewerCounter" />
+  <div :class="$style.container">
+    <viewer-counter v-show="show" :class="$style.viewerCounter" />
+    <nico :show="show" :class="$style.nico" />
+    <live v-if="!hideLive" :class="$style.live" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Nico from './Nico.vue'
-import CommentPanel from './CommentPanel.vue'
-import ViewerCounter from './ViewerCounter.vue'
+import ViewerCounter from '/@/components/LiveOverlay/ViewerCounter.vue'
+import Nico from '/@/components/LiveOverlay/Nico.vue'
+import Live from '/@/components/Live.vue'
 
 export default defineComponent({
-  name: 'LiveOverlay',
+  name: 'LiveOverlayView',
   components: {
-    Nico,
     ViewerCounter,
-    CommentPanel
+    Nico,
+    Live
   },
   props: {
     show: {
       type: Boolean,
       required: true
     },
-    withoutCommentPanel: {
+    hideLive: {
       type: Boolean,
       default: false
     }
@@ -37,23 +33,20 @@ export default defineComponent({
 </script>
 
 <style lang="scss" module>
-.overlayWrapper {
+.container {
   position: relative;
-  width: 100%;
-  flex: 1;
-}
-.overlay {
-  height: 100%;
-  width: 100%;
-}
-.commentPanel {
-  position: absolute;
-  right: 0;
-  bottom: 0;
+  overflow: hidden;
 }
 .viewerCounter {
+  z-index: 3;
   position: absolute;
-  top: 0;
   right: 0;
+  top: 0;
+}
+.nico {
+  z-index: 2;
+}
+.live {
+  z-index: 1;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <transition-group name="transition" tag="ul" :class="$style.list">
-    <li v-for="c in comments" :key="c">{{ c }}</li>
+    <li v-for="c in comments" :key="c" :class="$style.comment">{{ c }}</li>
   </transition-group>
 </template>
 
@@ -39,6 +39,13 @@ export default defineComponent({
 <style lang="scss" module>
 .list {
   padding: 0.5rem;
+  text-align: center;
   word-break: break-all;
+}
+.comment {
+  background-color: white;
+  border-radius: 10px;
+  padding: 0.5rem 10px;
+  margin: 5px 0;
 }
 </style>

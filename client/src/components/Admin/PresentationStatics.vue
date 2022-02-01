@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.presentaionStatics">
+  <div :class="$style.presentationStatics">
     <h3>{{ presentation.name }}</h3>
     <p>{{ presentation.description }}</p>
     <p>{{ presentation.speakers }}</p>
@@ -45,7 +45,7 @@ import apis, {
   Comment,
   ReviewStatistics
 } from '/@/lib/apis'
-import { stampToFileName } from '/@/components/LiveOverlay/reactionRenderer'
+import { stampToFileName } from '/@/use/reactionRenderer'
 
 interface State {
   reactions: ReactionStatistics | null

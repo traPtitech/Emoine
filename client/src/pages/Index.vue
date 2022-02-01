@@ -1,7 +1,7 @@
 <template>
   <div :class="$style.container">
-    <live :class="$style.live" />
-    <live-overlay :class="$style.overlay" @toggle-desc="toggleDesc" />
+    <live-overlay :class="$style.main" @toggle-desc="toggleDesc" />
+
     <review v-if="isReview" :class="$style.review" />
     <descriptions v-if="showDesc" :class="$style.desc" @toggle="toggleDesc" />
   </div>
@@ -9,7 +9,6 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue'
-import Live from '/@/components/Live.vue'
 import LiveOverlay from '/@/components/LiveOverlay/LiveOverlay.vue'
 import Review from '/@/components/Review.vue'
 import Descriptions from '/@/components/Descriptions.vue'
@@ -19,7 +18,6 @@ import { Status } from '/@/lib/pb'
 export default defineComponent({
   name: 'Index',
   components: {
-    Live,
     LiveOverlay,
     Review,
     Descriptions
@@ -43,20 +41,18 @@ export default defineComponent({
 
 <style lang="scss" module>
 .container {
+  height: 100%;
+  width: 100%;
   position: relative;
+}
+.main {
   height: 100%;
   width: 100%;
 }
-.live {
+.review {
   z-index: 1;
 }
-.overlay {
-  z-index: 2;
-}
-.review {
-  z-index: 3;
-}
 .desc {
-  z-index: 4;
+  z-index: 2;
 }
 </style>

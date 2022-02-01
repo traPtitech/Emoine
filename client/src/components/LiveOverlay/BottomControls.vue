@@ -1,10 +1,21 @@
 <template>
   <div :class="$style.container">
-    <comment-sender v-show="show" />
-    <button v-show="show" :class="$style.button" @click="$emit('toggleDesc')">
-      説明
-    </button>
-    <button :class="$style.button" @click="$emit('toggle')">表示/非表示</button>
+    <input
+      ref="inputRef"
+      v-model="text"
+      :class="$style.input"
+      type="text"
+      placeholder="コメント"
+      @keydown.enter="comment"
+    />
+
+    <div :class="$style.bottomContents">
+      <button :class="$style.button" @click="$emit('toggle')">
+        表示/非表示
+      </button>
+      <button :class="$style.button" @click="$emit('toggleDesc')">説明</button>
+      <button :class="$style.button" @click="comment">送信</button>
+    </div>
   </div>
 </template>
 
@@ -12,19 +23,10 @@
 import { defineComponent, computed, ref } from 'vue'
 import { useStore } from '/@/store'
 import { sendComment } from '/@/lib/connect'
-import CommentSender from './CommentSender.vue'
+import useShortcut from '/@/use/shortcut'
 
 export default defineComponent({
   name: 'BottomControls',
-  components: {
-    CommentSender
-  },
-  props: {
-    show: {
-      type: Boolean,
-      required: true
-    }
-  },
   emits: {
     toggle: () => true,
     toggleDesc: () => true
@@ -35,23 +37,43 @@ export default defineComponent({
 
     const text = ref('')
     const comment = () => {
+      if (!text.value) return
       sendComment({ presentationId: presentationId.value, text: text.value })
       text.value = ''
     }
 
-    return { text, comment }
+    const inputRef = ref<HTMLInputElement>()
+    useShortcut({ key: ' ', ctrlKey: true }, () => {
+      inputRef.value?.focus()
+    })
+
+    return { text, inputRef, comment }
   }
 })
 </script>
 
 <style lang="scss" module>
 .container {
-  display: flex;
   pointer-events: auto;
-  background: rgba(255, 255, 255, 0.8);
+  background: white;
+  text-align: center;
+  padding: 10px 5%;
+}
+.input {
+  width: 100%;
+  height: 2rem;
+  border-radius: 20px;
+  border: 2px solid #c9c1b1;
+  &:focus {
+    border-color: #fff344;
+  }
+}
+.bottomContents {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 .button {
   margin: 0 8px;
-  padding: 0 8px;
 }
 </style>
