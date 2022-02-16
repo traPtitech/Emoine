@@ -1,7 +1,7 @@
 <template>
   <transition-group name="transition" tag="ul" :class="$style.list">
     <li v-for="c in comments" :key="c.id" :class="$style.comment">
-      {{ c.id }}
+      {{ c.text }}
     </li>
   </transition-group>
 </template>
