@@ -32,10 +32,6 @@ func (s *Streamer) logger(m *rawMessage) error {
 		if err := s.commentLogger(m.userID, msg.GetComment()); err != nil {
 			return err
 		}
-		var err error
-		if m.data, err = proto.Marshal(msg); err != nil {
-			return err
-		}
 	}
 	return nil
 }
@@ -63,6 +59,5 @@ func (s *Streamer) commentLogger(userID uuid.UUID, data *Comment) error {
 	if err := s.repo.CreateComment(&comment); err != nil {
 		return err
 	}
-	data.Id = uint32(comment.ID)
 	return nil
 }
