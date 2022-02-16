@@ -11,7 +11,7 @@ import {
 } from '/@/lib/pb'
 
 type ReactionSafe = Omit<IReaction, 'stamp'> & { stamp: Stamp }
-type CommentSafe = Omit<IComment, 'text'> & { text: string }
+export type CommentSafe = Omit<IComment, 'text'> & { id: number; text: string }
 type StateSafe = Omit<IState, 'status'> & { status: Status }
 type ViewerSafe = Omit<IViewer, 'count'> & { count: number }
 
@@ -54,11 +54,15 @@ const onReaction = (m: Message) => {
   )
 }
 
+let incrementId = 0
 const onComment = (m: Message) => {
   const comment = m.comment
   if (!comment) return
   if (!comment.text) return
   const commentSafe = comment as CommentSafe
+
+  commentSafe.id = incrementId
+  incrementId++
 
   connectTarget.dispatchEvent(
     new CustomEvent('comment', { detail: commentSafe })
@@ -121,6 +125,6 @@ export const sendReaction = (reaction: Required<IReaction>): void => {
   send({ reaction })
 }
 
-export const sendComment = (comment: IComment): void => {
+export const sendComment = (comment: Required<IComment>): void => {
   send({ comment })
 }
