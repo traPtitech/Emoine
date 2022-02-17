@@ -59,7 +59,7 @@ const onComment = (m: Message) => {
   const comment = m.comment
   if (!comment) return
   if (!comment.text) return
-  const commentSafe = comment as CommentSafe
+  const commentSafe = comment as CommentSafe // この時点では id が無い
 
   commentSafe.id = incrementId
   incrementId++
@@ -73,7 +73,7 @@ const onState = (m: Message) => {
   const state = m.state
   if (!state) return
   if (state.status === undefined || state.status === null) return
-  const stateSafe = state as CommentSafe
+  const stateSafe = state as StateSafe
 
   stateTarget.dispatchEvent(new CustomEvent('state', { detail: stateSafe }))
 }
