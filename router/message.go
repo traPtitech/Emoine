@@ -2,8 +2,8 @@ package router
 
 import (
 	"github.com/gofrs/uuid"
-	"google.golang.org/protobuf/proto"
 	"github.com/traPtitech/Emoine/repository"
+	"google.golang.org/protobuf/proto"
 )
 
 type rawMessage struct {

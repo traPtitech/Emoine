@@ -1,11 +1,6 @@
-PROTO_TARGETS = comment reaction state viewer message
-
 .PHONY: proto
 proto:
-	for t in $(PROTO_TARGETS); do \
-		echo "protobuf build ... $$t"; \
-		protoc -I=./docs --go_out=. ./docs/$$t.proto; \
-	done
+	@protoc -I=./docs --go_out=. ./docs/*.proto
 
 .PHONY: build
 build:
