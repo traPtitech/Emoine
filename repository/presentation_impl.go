@@ -51,7 +51,7 @@ func (repo *SqlxRepository) GetFirstPresentation() (*Presentation, error) {
 
 func (repo *SqlxRepository) GetPresentation(presentationID int) (*Presentation, error) {
 	presentation := Presentation{}
-	if err := repo.db.Get(&presentation, "SELECT * FROM `presentation` WHERE `presentationID` = ? LIMIT 1", presentationID); err != nil {
+	if err := repo.db.Get(&presentation, "SELECT * FROM `presentation` WHERE `id` = ? LIMIT 1", presentationID); err != nil {
 		return nil, err
 	}
 	return &presentation, nil
@@ -63,15 +63,15 @@ func (repo *SqlxRepository) DeletePresentation(presentationID int) error {
 		Next sql.NullInt32 `db:"next"`
 	}
 	order := Order{}
-	if err := repo.db.Get(&order, "SELECT `prev`, `next` FROM `presentation` WHERE `presentationID` = ? LIMIT 1", presentationID); err != nil {
+	if err := repo.db.Get(&order, "SELECT `prev`, `next` FROM `presentation` WHERE `id` = ? LIMIT 1", presentationID); err != nil {
 		return err
 	}
-	if _, err := repo.db.Exec("UPDATE `presentation` SET `next` = ? WHERE `presentationID` = ?", order.Next, order.Prev); err != nil {
+	if _, err := repo.db.Exec("UPDATE `presentation` SET `next` = ? WHERE `id` = ?", order.Next, order.Prev); err != nil {
 		return err
 	}
-	if _, err := repo.db.Exec("UPDATE `presentation` SET `prev` = ? WHERE `presentationID` = ?", order.Prev, order.Next); err != nil {
+	if _, err := repo.db.Exec("UPDATE `presentation` SET `prev` = ? WHERE `id` = ?", order.Prev, order.Next); err != nil {
 		return err
 	}
-	_, err := repo.db.Exec("DELETE FROM `presentation` WHERE `presentationID` = ?", presentationID)
+	_, err := repo.db.Exec("DELETE FROM `presentation` WHERE `id` = ?", presentationID)
 	return err
 }
