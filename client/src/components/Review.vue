@@ -40,14 +40,20 @@ export default defineComponent({
     const err = ref('')
 
     const send = async () => {
+      if (votes.value.length > 3) {
+        err.value = '3件までしか投票できません'
+        return
+      }
+
       sending.value = true
       try {
         // 選択したLT x 3の配列をput
-        await apis.putPresentationReview()
+        await apis.putPresentationReview(votes.value)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         // eslint-disable-next-line no-console
         console.error(e)
+        err.value = e.toString()
       } finally {
         sending.value = false
       }
