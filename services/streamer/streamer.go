@@ -3,10 +3,11 @@ package streamer
 import (
 	"context"
 	"errors"
-	"github.com/google/uuid"
-	"github.com/traPtitech/Emoine/repository"
 	"log"
 	"sync"
+
+	"github.com/google/uuid"
+	"github.com/traPtitech/Emoine/repository"
 
 	"github.com/gorilla/websocket"
 	"google.golang.org/protobuf/proto"
@@ -24,22 +25,25 @@ var (
 
 // Streamer WebSocketストリーマー
 type Streamer struct {
-	repo          repository.Repository
-	clients       map[string]*client
-	registry      chan *client
-	messageBuffer chan *rawMessage
-	active        bool
-	rwm           sync.RWMutex
+	repo           repository.Repository
+	clients        map[string]*client
+	registry       chan *client
+	messageBuffer  chan *rawMessage
+	active         bool
+	rwm            sync.RWMutex
+	commentChan    <-chan string
+	presentationId uint32
 }
 
 // NewStreamer WebSocketストリーマーを生成し起動します
-func NewStreamer(repo repository.Repository) *Streamer {
+func NewStreamer(repo repository.Repository, commentChan <-chan string) *Streamer {
 	s := &Streamer{
 		repo:          repo,
 		clients:       make(map[string]*client),
 		registry:      make(chan *client),
 		messageBuffer: make(chan *rawMessage),
 		active:        true,
+		commentChan:   commentChan,
 	}
 
 	go s.run()
@@ -69,8 +73,35 @@ func (s *Streamer) run() {
 			}
 
 			s.SendAll(m)
+		case comment := <-s.commentChan:
+			s.addComment(comment)
 		}
 	}
+}
+
+func (s *Streamer) addComment(comment string) {
+	msg := &pb.Message{
+		Payload: &pb.Message_Comment{
+			Comment: &pb.Comment{
+				PresentationId: s.presentationId,
+				Text:           comment,
+			},
+		},
+	}
+
+	data, err := proto.Marshal(msg)
+	if err != nil {
+		log.Printf("error: %v", err)
+		return
+	}
+
+	m := &rawMessage{uuid.Nil, websocket.BinaryMessage, data}
+	err = s.logger(m)
+	if err != nil {
+		log.Printf("error: %v", err)
+	}
+
+	s.SendAll(m)
 }
 
 // SendAll すべてのclientにメッセージを送る
@@ -98,6 +129,8 @@ func getViewerMessage(userID uuid.UUID, length int) (*rawMessage, error) {
 
 // SendState すべてのclientに新しいstateを送る
 func (s *Streamer) SendState(st *pb.State) {
+	s.presentationId = st.PresentationId
+
 	msg := &pb.Message{
 		Payload: &pb.Message_State{
 			State: st,

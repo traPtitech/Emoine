@@ -15,6 +15,7 @@ require (
 )
 
 require (
+	github.com/fallenstedt/twitter-stream v0.4.1
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect

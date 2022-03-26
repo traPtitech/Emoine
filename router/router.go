@@ -1,11 +1,13 @@
 package router
 
 import (
+	"log"
 	"net/http"
 	"os"
 	"strings"
 
 	"github.com/traPtitech/Emoine/services/streamer"
+	"github.com/traPtitech/Emoine/services/twitter"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
@@ -18,6 +20,7 @@ import (
 type Handlers struct {
 	repo          repository.Repository
 	streamer      *streamer.Streamer
+	twitter       *twitter.Twitter
 	SessionOption sessions.Options
 	clientID      string
 }
@@ -29,7 +32,26 @@ func Setup(repo repository.Repository) *echo.Echo {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv("SECRET")))))
-	s := streamer.NewStreamer(repo)
+	commentChan := make(chan string, 5)
+
+	s := streamer.NewStreamer(repo, commentChan)
+
+	twitter, err := twitter.NewTwitter(
+		commentChan,
+		os.Getenv("TWITTER_CLIENT_ID"),
+		os.Getenv("TWITTER_CLIENT_SECRET"),
+		os.Getenv("TWITTER_QUERY"),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	go func() {
+		err := twitter.Start()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
 
 	h := &Handlers{
 		repo: repo,
