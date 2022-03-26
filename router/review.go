@@ -30,7 +30,7 @@ func (h *Handlers) GetPresentationReview(c echo.Context) error {
 func (h *Handlers) PutPresentationReview(c echo.Context) error {
 	userID, err := getSession(c)
 	if err != nil {
-		return c.NoContent(http.StatusInternalServerError)
+		return err
 	}
 
 	posted := make([]int, 3)
@@ -46,12 +46,12 @@ func (h *Handlers) PutPresentationReview(c echo.Context) error {
 	}
 
 	if err := h.repo.DeleteReview(userID.String()); err != nil {
-		return c.NoContent(http.StatusInternalServerError)
+		return err
 	}
 
 	for _, presentationID := range posted {
 		if err := h.repo.CreateReview(userID.String(), presentationID); err != nil {
-			return c.NoContent(http.StatusInternalServerError)
+			return err
 		}
 	}
 
