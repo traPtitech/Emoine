@@ -42,7 +42,7 @@ func Setup(repo repository.Repository) *echo.Echo {
 		streamer: s,
 	}
 
-	api := e.Group("/api")
+	api := e.Group("/api", h.SessionMiddleware)
 	{
 		isAdmin := func(next echo.HandlerFunc) echo.HandlerFunc {
 			return next
