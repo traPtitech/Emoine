@@ -6,5 +6,4 @@ type Repository interface {
 	ReactionRepository
 	CommentRepository
 	ReviewRepository
-	TokenRepository
 }

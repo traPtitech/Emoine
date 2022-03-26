@@ -8,12 +8,12 @@ RUN npm ci --unsafe-perm
 COPY ./client .
 RUN npm run build
 
-FROM golang:1.17-alpine AS server-build
+FROM golang:1.18-alpine AS server-build
 RUN apk add --update --no-cache git curl make protoc
 WORKDIR /go/src/github.com/traPtitech/Emoine
 COPY ./go.* ./
 RUN go mod download
-RUN go install github.com/golang/protobuf/protoc-gen-go
+RUN go install github.com/golang/protobuf/protoc-gen-go@latest
 RUN mkdir -p ./router/handler
 COPY . .
 RUN make proto

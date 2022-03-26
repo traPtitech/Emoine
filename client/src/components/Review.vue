@@ -7,10 +7,8 @@
         <h3>{{ presentation.name }}</h3>
         <p>説明: {{ presentation.description }}</p>
         <div :class="$style.ranges">
-          <range v-model:value="state.skill" label="技術" />
-          <range v-model:value="state.artistry" label="芸術" />
-          <range v-model:value="state.idea" label="アイデア" />
-          <range v-model:value="state.presentation" label="プレゼン" />
+          <!-- ここにLTの一覧を持つ -->
+          <!-- 好きなときにレビュー画面を開いて変更できる -->
         </div>
         <button :class="$style.send" @click="send">送信</button>
       </template>
@@ -20,27 +18,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, reactive, ref } from 'vue'
+import { defineComponent, computed, ref } from 'vue'
 import { useStore } from '/@/store'
-import apis, { Review } from '/@/lib/apis'
-import Range from './Range.vue'
+import apis from '/@/lib/apis'
 
 export default defineComponent({
   name: 'Review',
-  components: {
-    Range
-  },
   setup() {
     const store = useStore()
     const presentation = computed(() => store.state.presentation)
-
-    const state = reactive<Review>({
-      userId: '', // 未使用だけど型定義が対応してないので記述
-      skill: 3,
-      artistry: 3,
-      idea: 3,
-      presentation: 3
-    })
 
     const done = ref(false)
     const err = ref('')
@@ -49,7 +35,8 @@ export default defineComponent({
       if (!presentation.value) return
 
       try {
-        await apis.postPresentationReview('' + presentation.value.id, state)
+        // 選択したLT x 3の配列をput
+        await apis.putPresentationReview()
         done.value = true
       } catch (e) {
         if (e.response.status === 409) {
@@ -62,7 +49,7 @@ export default defineComponent({
       }
     }
 
-    return { presentation, state, send, done, err }
+    return { presentation, send, done, err }
   }
 })
 </script>
@@ -75,6 +62,7 @@ export default defineComponent({
   bottom: 0;
   right: 0;
   backdrop-filter: blur(4px);
+  z-index: 4;
 }
 .review {
   height: 90%;

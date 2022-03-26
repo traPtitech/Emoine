@@ -1,17 +1,18 @@
-package router
+package streamer
 
 import (
 	"context"
 	"errors"
+	"github.com/google/uuid"
+	"github.com/traPtitech/Emoine/repository"
 	"log"
 	"sync"
 
-	"github.com/gofrs/uuid"
 	"github.com/gorilla/websocket"
-	"github.com/labstack/echo/v4"
-	"github.com/traPtitech/Emoine/repository"
-	"github.com/traPtitech/Emoine/utils"
 	"google.golang.org/protobuf/proto"
+
+	"github.com/traPtitech/Emoine/pb"
+	"github.com/traPtitech/Emoine/utils"
 )
 
 var (
@@ -28,7 +29,7 @@ type Streamer struct {
 	registry      chan *client
 	messageBuffer chan *rawMessage
 	active        bool
-	sync.RWMutex
+	rwm           sync.RWMutex
 }
 
 // NewStreamer WebSocketストリーマーを生成し起動します
@@ -55,7 +56,7 @@ func (s *Streamer) run() {
 				delete(s.clients, client.Key())
 			}
 
-			m, err := getViewerMessage(len(s.clients), client.UserID())
+			m, err := getViewerMessage(client.UserID(), len(s.clients))
 			if err != nil {
 				log.Printf("error: %v", err)
 				break
@@ -81,21 +82,10 @@ func (s *Streamer) SendAll(m *rawMessage) {
 	}
 }
 
-var stateData *State
-
-func setDefaultStateData() {
-	stateData = &State{
-		Status: Status_pause,
-		Info:   "準備中",
-		// nullと同義
-		PresentationId: 0,
-	}
-}
-
-func getViewerMessage(length int, userID uuid.UUID) (*rawMessage, error) {
-	msg := &Message{
-		Payload: &Message_Viewer{
-			&Viewer{Count: uint32(length)},
+func getViewerMessage(userID uuid.UUID, length int) (*rawMessage, error) {
+	msg := &pb.Message{
+		Payload: &pb.Message_Viewer{
+			Viewer: &pb.Viewer{Count: uint32(length)},
 		},
 	}
 	data, err := proto.Marshal(msg)
@@ -107,9 +97,9 @@ func getViewerMessage(length int, userID uuid.UUID) (*rawMessage, error) {
 }
 
 // SendState すべてのclientに新しいstateを送る
-func (s *Streamer) SendState(st *State) {
-	msg := &Message{
-		Payload: &Message_State{
+func (s *Streamer) SendState(st *pb.State) {
+	msg := &pb.Message{
+		Payload: &pb.Message_State{
 			State: st,
 		},
 	}
@@ -124,33 +114,17 @@ func (s *Streamer) SendState(st *State) {
 			log.Printf("error: %v", err)
 		}
 	}
-	stateData = st
 }
 
-// ServeHTTP GET /ws
-func (s *Streamer) ServeHTTP(c echo.Context) error {
-	if s.IsClosed() {
-		return echo.ErrServiceUnavailable
-	}
-	userID, err := getUserID(c)
-	if err != nil {
-		log.Printf("error: %v", err)
-		return echo.ErrInternalServerError
-	}
-
-	conn, err := upgrader.Upgrade(c.Response(), c.Request(), c.Response().Header())
-	if err != nil {
-		log.Printf("error: %v", err)
-		return echo.ErrInternalServerError
-	}
-
+// NewClient 新規クライアントを初期化・登録します
+func (s *Streamer) NewClient(conn *websocket.Conn, currentState *pb.State) error {
 	var wg sync.WaitGroup
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	client := &client{
 		key:      utils.RandAlphabetAndNumberString(20),
-		userID:   userID,
+		userID:   uuid.New(),
 		conn:     conn,
 		receiver: &s.messageBuffer,
 		sender:   make(chan *rawMessage, messageBufferSize),
@@ -172,19 +146,19 @@ func (s *Streamer) ServeHTTP(c echo.Context) error {
 	go client.ListenWrite(ctx)
 	go client.ListenRead(ctx)
 
-	msg := &Message{
-		Payload: &Message_State{
-			State: stateData,
+	msg := &pb.Message{
+		Payload: &pb.Message_State{
+			State: currentState,
 		},
 	}
 	data, err := proto.Marshal(msg)
 	if err != nil {
-		log.Printf("error: %v", err)
+		return err
 	}
 	m := &rawMessage{client.UserID(), websocket.BinaryMessage, data}
 
 	if err := client.PushMessage(m); err != nil {
-		log.Printf("error: %v", err)
+		return err
 	}
 
 	wg.Wait()
@@ -192,10 +166,14 @@ func (s *Streamer) ServeHTTP(c echo.Context) error {
 	return nil
 }
 
+func (s *Streamer) ClientsCount() int {
+	return len(s.clients)
+}
+
 // IsClosed ストリーマーが停止しているかどうか
 func (s *Streamer) IsClosed() bool {
-	s.RLock()
-	defer s.RUnlock()
+	s.rwm.RLock()
+	defer s.rwm.RUnlock()
 
 	return !s.active
 }
@@ -211,8 +189,8 @@ func (s *Streamer) Close() error {
 		return ErrAlreadyClosed
 	}
 
-	s.Lock()
-	defer s.Unlock()
+	s.rwm.Lock()
+	defer s.rwm.Unlock()
 
 	m := &rawMessage{
 		messageType: websocket.CloseMessage,

@@ -1,7 +1,12 @@
 <template>
   <div :class="$style.container">
+    <header :class="$style.header">
+      <h2>チャット</h2>
+      <button :class="$style.button" @click="popupCommentsList">
+        <ExternalLinkIcon :class="$style.icon" />
+      </button>
+    </header>
     <comment-list :class="$style.list" />
-    <button @click="popupCommentsList">コメントパネルポップアップ</button>
   </div>
 </template>
 
@@ -11,11 +16,13 @@ import { connectTarget } from '/@/lib/connect'
 import apis from '/@/lib/apis'
 import { useStore } from '/@/store'
 import CommentList from '/@/components/CommentList.vue'
+import { ExternalLinkIcon } from '@heroicons/vue/outline'
 
 export default defineComponent({
   name: 'CommentPanel',
   components: {
-    CommentList
+    CommentList,
+    ExternalLinkIcon
   },
   setup() {
     const store = useStore()
@@ -36,8 +43,8 @@ export default defineComponent({
     })
 
     const popupCommentsList = () => {
-      const width = 200
-      const height = 300
+      const width = 500
+      const height = 700
       const top = screen.height - height
       const left = screen.width - width
       window.open(
@@ -56,6 +63,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" module>
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .container {
   display: flex;
   flex-direction: column;
@@ -66,5 +78,15 @@ export default defineComponent({
 .list {
   flex: 1;
   overflow-y: scroll;
+}
+.button {
+  height: min-content;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+.icon {
+  height: 1.3rem;
+  margin: 0.5rem;
 }
 </style>

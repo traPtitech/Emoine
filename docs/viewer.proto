@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = "./router;router";
+option go_package = "./pb;pb";
 
 message Viewer {
   uint32 count = 1;

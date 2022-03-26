@@ -1,8 +1,6 @@
 package repository
 
-import (
-	"github.com/gofrs/uuid"
-)
+import "github.com/google/uuid"
 
 type Comment struct {
 	UserID         uuid.UUID `db:"userId" json:"userId"`
@@ -11,6 +9,6 @@ type Comment struct {
 }
 
 type CommentRepository interface {
-	CreateComment(comment *Comment) error
-	GetComments(id int) ([]*Comment, error)
+	CreateComment(userID string, presentationID int, comment string) error
+	GetComments(presentationID int) ([]*Comment, error)
 }

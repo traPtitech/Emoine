@@ -4,83 +4,97 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+
+	"github.com/traPtitech/Emoine/pb"
 )
+
+var currentState *pb.State
+
+func setDefaultStateData() {
+	currentState = &pb.State{
+		Status: pb.Status_pause,
+		Info:   "準備中",
+		// nullと同義
+		PresentationId: 0,
+	}
+}
 
 // PostState POST /state
 func (h *Handlers) PostState(c echo.Context) error {
-	var newState *State
+	var newState *pb.State
 
 	state := c.QueryParam("state")
 	if state == "next" {
-		switch stateData.GetStatus() {
-		case Status_pause:
-			if stateData.GetPresentationId() == 0 {
-				presentation, err := h.Repo.GetFirstPresentation()
+		switch currentState.GetStatus() {
+		case pb.Status_pause:
+			if currentState.GetPresentationId() == 0 {
+				presentation, err := h.repo.GetFirstPresentation()
 				if err != nil {
 					return err
 				}
 
-				newState = &State{
-					Status:         Status_speaking,
+				newState = &pb.State{
+					Status:         pb.Status_speaking,
 					Info:           "発表中",
 					PresentationId: uint32(presentation.ID),
 				}
 			} else {
-				newState = &State{
-					Status:         Status_speaking,
+				newState = &pb.State{
+					Status:         pb.Status_speaking,
 					Info:           "発表中",
-					PresentationId: stateData.GetPresentationId(),
+					PresentationId: currentState.GetPresentationId(),
 				}
 			}
-		case Status_speaking:
-			newState = &State{
-				Status:         Status_reviewing,
+		case pb.Status_speaking:
+			newState = &pb.State{
+				Status:         pb.Status_reviewing,
 				Info:           "レビュー中",
-				PresentationId: stateData.GetPresentationId(),
+				PresentationId: currentState.GetPresentationId(),
 			}
-		case Status_reviewing:
-			presentation, err := h.Repo.GetPresentation(int(stateData.GetPresentationId()))
+		case pb.Status_reviewing:
+			presentation, err := h.repo.GetPresentation(int(currentState.GetPresentationId()))
 			if err != nil {
 				return err
 			}
 
 			if presentation.Next.Valid {
-				newState = &State{
-					Status:         Status_pause,
+				newState = &pb.State{
+					Status:         pb.Status_pause,
 					Info:           "発表開始前",
 					PresentationId: uint32(presentation.Next.Int64), //次のID
 				}
 			} else {
-				newState = &State{
-					Status:         Status_pause,
+				newState = &pb.State{
+					Status:         pb.Status_pause,
 					Info:           "準備中",
 					PresentationId: 0, //空のID
 				}
 			}
 		}
 	} else if state == "pause" {
-		if stateData.GetStatus() != Status_speaking {
+		if currentState.GetStatus() != pb.Status_speaking {
 			return c.NoContent(http.StatusBadRequest)
 		}
-		newState = &State{
-			Status:         Status_pause,
+		newState = &pb.State{
+			Status:         pb.Status_pause,
 			Info:           "発表一時中断中",
-			PresentationId: stateData.GetPresentationId(),
+			PresentationId: currentState.GetPresentationId(),
 		}
 	} else if state == "resume" {
-		if stateData.GetStatus() != Status_pause {
+		if currentState.GetStatus() != pb.Status_pause {
 			return c.NoContent(http.StatusBadRequest)
 		}
-		newState = &State{
-			Status:         Status_speaking,
+		newState = &pb.State{
+			Status:         pb.Status_speaking,
 			Info:           "発表中",
-			PresentationId: stateData.GetPresentationId(),
+			PresentationId: currentState.GetPresentationId(),
 		}
 	} else {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	h.stream.SendState(newState)
+	h.streamer.SendState(newState)
+	currentState = newState
 
 	return c.NoContent(http.StatusOK)
 }

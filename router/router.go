@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/traPtitech/Emoine/services/streamer"
 	"net/http"
 	"os"
 	"strings"
@@ -9,14 +10,15 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+
 	"github.com/traPtitech/Emoine/repository"
 )
 
 type Handlers struct {
-	Repo          repository.Repository
-	stream        *Streamer
+	repo          repository.Repository
+	streamer      *streamer.Streamer
 	SessionOption sessions.Options
-	ClientID      string
+	clientID      string
 }
 
 func Setup(repo repository.Repository) *echo.Echo {
@@ -26,25 +28,25 @@ func Setup(repo repository.Repository) *echo.Echo {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv("SECRET")))))
-	s := NewStreamer(repo)
+	s := streamer.NewStreamer(repo)
 
 	h := &Handlers{
-		Repo: repo,
+		repo: repo,
 		SessionOption: sessions.Options{
 			Path:     "/",
 			MaxAge:   86400 * 30,
 			HttpOnly: true,
 			SameSite: http.SameSiteLaxMode,
 		},
-		ClientID: os.Getenv("CLIENT_ID"),
-		stream:   s,
+		clientID: os.Getenv("CLIENT_ID"),
+		streamer: s,
 	}
 
-	e.Use(h.TraQUserMiddleware)
-
-	api := e.Group("/api", h.IsTraQUserMiddleware)
+	api := e.Group("/api")
 	{
-		isAdmin := h.IsAdminUserMiddleware
+		isAdmin := func(next echo.HandlerFunc) echo.HandlerFunc {
+			return next
+		}
 
 		// TODO: グループだと動かない
 		api.GET("/live-id", h.GetLiveID)
@@ -64,19 +66,12 @@ func Setup(repo repository.Repository) *echo.Echo {
 				apiPresentationsID.DELETE("", h.DeletePresentation, isAdmin)
 				apiPresentationsID.GET("/reaction", h.GetPresentationReaction, isAdmin)
 				apiPresentationsID.GET("/review", h.GetPresentationReview, isAdmin)
-				apiPresentationsID.POST("/review", h.PostPresentationReview)
-				apiPresentationsID.PATCH("/review", h.PatchPresentationReview)
+				apiPresentationsID.PUT("/review", h.PutPresentationReview)
 				apiPresentationsID.GET("/comments", h.GetPresentationComments, isAdmin)
 			}
 		}
-
-		api.POST("/tokens", h.PostToken, isAdmin)
-
-		api.GET("/users/me", h.GetUserMe)
-		api.GET("/ws", s.ServeHTTP)
+		api.GET("/ws", h.ConnectWebSocket)
 	}
-	e.GET("/api/oauth2/code", h.GetGeneratedCode)
-	e.GET("/api/callback", h.CallbackHandler)
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Skipper: func(c echo.Context) bool {
 			return strings.HasPrefix(c.Request().URL.Path, "/api")

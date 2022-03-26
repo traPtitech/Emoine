@@ -6,6 +6,6 @@ type State struct {
 }
 
 type StateRepository interface {
-	UpdateState(*State) error
+	UpdateState(status, info string) error
 	GetState() (*State, error)
 }

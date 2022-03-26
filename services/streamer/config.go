@@ -1,10 +1,7 @@
-package router
+package streamer
 
 import (
-	"net/http"
 	"time"
-
-	"github.com/gorilla/websocket"
 )
 
 const (
@@ -22,12 +19,4 @@ const (
 
 	// Maximum buffered message length.
 	messageBufferSize = 256
-)
-
-var (
-	upgrader = &websocket.Upgrader{
-		ReadBufferSize:  1024,
-		WriteBufferSize: 1024,
-		CheckOrigin:     func(r *http.Request) bool { return true },
-	}
 )
