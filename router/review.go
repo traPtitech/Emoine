@@ -38,6 +38,10 @@ func (h *Handlers) PutPresentationReview(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
+	if len(posted) > 3 {
+		return echo.ErrBadRequest
+	}
+
 	for _, presentationID := range posted {
 		_, err := h.repo.GetPresentation(presentationID)
 		if err != nil {

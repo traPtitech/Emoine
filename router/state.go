@@ -52,22 +52,36 @@ func (h *Handlers) PostState(c echo.Context) error {
 				PresentationId: currentState.GetPresentationId(),
 			}
 		case pb.Status_reviewing:
-			presentation, err := h.repo.GetPresentation(int(currentState.GetPresentationId()))
-			if err != nil {
-				return err
-			}
+			// TODO: 発表開始前に取れるアクションを適切に制限する
+			if currentState.GetPresentationId() == 0 {
+				presentation, err := h.repo.GetFirstPresentation()
+				if err != nil {
+					return err
+				}
 
-			if presentation.Next.Valid {
 				newState = &pb.State{
-					Status:         pb.Status_pause,
-					Info:           "発表開始前",
-					PresentationId: uint32(presentation.Next.Int64), //次のID
+					Status:         pb.Status_speaking,
+					Info:           "発表中",
+					PresentationId: uint32(presentation.ID),
 				}
 			} else {
-				newState = &pb.State{
-					Status:         pb.Status_pause,
-					Info:           "準備中",
-					PresentationId: 0, //空のID
+				presentation, err := h.repo.GetPresentation(int(currentState.GetPresentationId()))
+				if err != nil {
+					return err
+				}
+
+				if presentation.Next.Valid {
+					newState = &pb.State{
+						Status:         pb.Status_pause,
+						Info:           "発表開始前",
+						PresentationId: uint32(presentation.Next.Int64), //次のID
+					}
+				} else {
+					newState = &pb.State{
+						Status:         pb.Status_pause,
+						Info:           "準備中",
+						PresentationId: 0, //空のID
+					}
 				}
 			}
 		}
