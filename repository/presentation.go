@@ -6,12 +6,6 @@ import (
 	"github.com/traPtitech/Emoine/utils"
 )
 
-type CreatePresentation struct {
-	Name        string `db:"name"`
-	Speakers    string `db:"speakers"`
-	Description string `db:"description"`
-}
-
 type Presentation struct {
 	ID          int          `db:"id" json:"id"`
 	Name        utils.String `db:"name" json:"name"`
@@ -24,10 +18,10 @@ type Presentation struct {
 }
 
 type PresentationRepository interface {
-	CreatePresentation(presentation *CreatePresentation) error
-	UpdatePresentation(presentation *Presentation) error
+	CreatePresentation(name, speakers, description string) error
+	UpdatePresentation(name, speakers, description string, prev, next, presentationID int) error
 	GetPresentations() ([]*Presentation, error)
 	GetFirstPresentation() (*Presentation, error)
-	GetPresentation(id int) (*Presentation, error)
-	DeletePresentation(id int) error
+	GetPresentation(presentationID int) (*Presentation, error)
+	DeletePresentation(presentationID int) error
 }

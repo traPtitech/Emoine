@@ -11,6 +11,7 @@
     "postinstall": "npm run gen-apis && npm run gen-pb"
   },
   "dependencies": {
+    "@heroicons/vue": "^1.0.6",
     "axios": "^0.24.0",
     "direct-vuex": "^0.12.1",
     "reconnecting-websocket": "^4.4.0",

@@ -14,7 +14,7 @@ func (h *Handlers) GetPresentationReaction(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	res, err := h.Repo.GetReactionStatistics(presentationID)
+	res, err := h.repo.GetReactionStatistics(presentationID)
 	if err != nil {
 		return err
 	}

@@ -6,17 +6,17 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func (repo *SqlxRepository) CreateReaction(reaction *Reaction) error {
-	_, err := repo.db.Exec("INSERT INTO `reaction` (userId, presentationId, stamp) VALUES ( ?, ?, ?)", reaction.UserID, reaction.PresentationID, reaction.Stamp)
+func (repo *SqlxRepository) CreateReaction(userID string, presentationID, stamp int) error {
+	_, err := repo.db.Exec("INSERT INTO `reaction` (userId, presentationId, stamp) VALUES (?, ?, ?)", userID, presentationID, stamp)
 	return err
 }
 
-func (repo *SqlxRepository) GetReactionStatistics(id int) (*ReactionStatistics, error) {
+func (repo *SqlxRepository) GetReactionStatistics(presentationID int) (*ReactionStatistics, error) {
 	var statistics ReactionStatistics
-	statistics.PresentationID = id
+	statistics.PresentationID = presentationID
 
 	var rows *sqlx.Rows
-	rows, err := repo.db.Queryx("SELECT `stamp`, COUNT(stamp) FROM `reaction` WHERE presentationId = ? GROUP BY `stamp`", id)
+	rows, err := repo.db.Queryx("SELECT `stamp`, COUNT(stamp) FROM `reaction` WHERE presentationId = ? GROUP BY `stamp`", presentationID)
 	if err != nil {
 		return nil, err
 	}

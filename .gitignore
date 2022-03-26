@@ -1,6 +1,7 @@
 .idea
 .DS_Store
 *.pb.go
+.env
 
 node_modules
 .DS_Store

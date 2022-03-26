@@ -1,22 +1,28 @@
 package router
 
 import (
+	"log"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/traPtitech/Emoine/services/streamer"
+	"github.com/traPtitech/Emoine/services/twitter"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+
 	"github.com/traPtitech/Emoine/repository"
 )
 
 type Handlers struct {
-	Repo          repository.Repository
-	stream        *Streamer
+	repo          repository.Repository
+	streamer      *streamer.Streamer
+	twitter       *twitter.Twitter
 	SessionOption sessions.Options
-	ClientID      string
+	clientID      string
 }
 
 func Setup(repo repository.Repository) *echo.Echo {
@@ -26,25 +32,44 @@ func Setup(repo repository.Repository) *echo.Echo {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv("SECRET")))))
-	s := NewStreamer(repo)
+	commentChan := make(chan string, 5)
+
+	s := streamer.NewStreamer(repo, commentChan)
+
+	twitter, err := twitter.NewTwitter(
+		commentChan,
+		os.Getenv("TWITTER_CLIENT_ID"),
+		os.Getenv("TWITTER_CLIENT_SECRET"),
+		os.Getenv("TWITTER_QUERY"),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	go func() {
+		err := twitter.Start()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
 
 	h := &Handlers{
-		Repo: repo,
+		repo: repo,
 		SessionOption: sessions.Options{
 			Path:     "/",
 			MaxAge:   86400 * 30,
 			HttpOnly: true,
 			SameSite: http.SameSiteLaxMode,
 		},
-		ClientID: os.Getenv("CLIENT_ID"),
-		stream:   s,
+		clientID: os.Getenv("CLIENT_ID"),
+		streamer: s,
 	}
 
-	e.Use(h.TraQUserMiddleware)
-
-	api := e.Group("/api", h.IsTraQUserMiddleware)
+	api := e.Group("/api", h.SessionMiddleware)
 	{
-		isAdmin := h.IsAdminUserMiddleware
+		isAdmin := func(next echo.HandlerFunc) echo.HandlerFunc {
+			return next
+		}
 
 		// TODO: グループだと動かない
 		api.GET("/live-id", h.GetLiveID)
@@ -57,6 +82,8 @@ func Setup(repo repository.Repository) *echo.Echo {
 		{
 			apiPresentations.GET("", h.GetPresentations)
 			apiPresentations.POST("", h.PostPresentations, isAdmin)
+			apiPresentations.PUT("/review", h.PutPresentationReview)
+			apiPresentations.GET("/review/me", h.GetMyPresentationReviews)
 			apiPresentationsID := apiPresentations.Group("/:presentationID")
 			{
 				apiPresentationsID.GET("", h.GetPresentation)
@@ -64,19 +91,11 @@ func Setup(repo repository.Repository) *echo.Echo {
 				apiPresentationsID.DELETE("", h.DeletePresentation, isAdmin)
 				apiPresentationsID.GET("/reaction", h.GetPresentationReaction, isAdmin)
 				apiPresentationsID.GET("/review", h.GetPresentationReview, isAdmin)
-				apiPresentationsID.POST("/review", h.PostPresentationReview)
-				apiPresentationsID.PATCH("/review", h.PatchPresentationReview)
 				apiPresentationsID.GET("/comments", h.GetPresentationComments, isAdmin)
 			}
 		}
-
-		api.POST("/tokens", h.PostToken, isAdmin)
-
-		api.GET("/users/me", h.GetUserMe)
-		api.GET("/ws", s.ServeHTTP)
+		api.GET("/ws", h.ConnectWebSocket)
 	}
-	e.GET("/api/oauth2/code", h.GetGeneratedCode)
-	e.GET("/api/callback", h.CallbackHandler)
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Skipper: func(c echo.Context) bool {
 			return strings.HasPrefix(c.Request().URL.Path, "/api")

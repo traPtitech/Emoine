@@ -1,4 +1,4 @@
-package router
+package streamer
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gofrs/uuid"
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
@@ -28,7 +28,7 @@ type client struct {
 	sender   chan *rawMessage
 	wg       *sync.WaitGroup
 	active   bool
-	sync.RWMutex
+	rwm      sync.RWMutex
 }
 
 // ListenRead クライアントからの受信待受
@@ -56,7 +56,7 @@ func (c *client) ListenRead(ctx context.Context) {
 			}
 			break
 		}
-		*c.receiver <- &rawMessage{c.userID, t, d}
+		*c.receiver <- &rawMessage{c.UserID(), t, d}
 		if ctx.Err() == context.Canceled {
 			return
 		}
@@ -118,8 +118,8 @@ func (c *client) writeMessage(messageType int, data []byte) error {
 
 // IsClosed コネクションの接続状態
 func (c *client) IsClosed() bool {
-	c.RLock()
-	defer c.RUnlock()
+	c.rwm.RLock()
+	defer c.rwm.RUnlock()
 
 	return !c.active
 }
@@ -131,8 +131,8 @@ func (c *client) IsClosedWithoutLock() bool {
 
 // Close WebSocketコネクションを切断
 func (c *client) Close() error {
-	c.Lock()
-	defer c.Unlock()
+	c.rwm.Lock()
+	defer c.rwm.Unlock()
 
 	if c.IsClosedWithoutLock() {
 		return ErrAlreadyClosed

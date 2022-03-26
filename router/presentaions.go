@@ -23,7 +23,7 @@ type PatchPresentationsStruct struct {
 
 // GetPresentations GET /presentations
 func (h *Handlers) GetPresentations(c echo.Context) error {
-	presentations, err := h.Repo.GetPresentations()
+	presentations, err := h.repo.GetPresentations()
 	if err != nil {
 		return err
 	}
@@ -35,18 +35,12 @@ func (h *Handlers) GetPresentations(c echo.Context) error {
 
 // PostPresentations POST /presentations
 func (h *Handlers) PostPresentations(c echo.Context) error {
-	posted := PostPresentationsStruct{}
-	if err := c.Bind(&posted); err != nil {
+	var req PostPresentationsStruct
+	if err := c.Bind(&req); err != nil {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	createStruct := repository.CreatePresentation{
-		Name:        posted.Name,
-		Speakers:    posted.Speakers,
-		Description: posted.Description,
-	}
-
-	err := h.Repo.CreatePresentation(&createStruct)
+	err := h.repo.CreatePresentation(req.Name, req.Speakers, req.Description)
 	if err != nil {
 		return err
 	}
@@ -60,7 +54,7 @@ func (h *Handlers) GetPresentation(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	presentation, err := h.Repo.GetPresentation(presentationID)
+	presentation, err := h.repo.GetPresentation(presentationID)
 	if err != nil {
 		return c.NoContent(http.StatusNotFound)
 	}
@@ -74,27 +68,27 @@ func (h *Handlers) PatchPresentation(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	presentation, err := h.Repo.GetPresentation(presentationID)
+	presentation, err := h.repo.GetPresentation(presentationID)
 	if err != nil {
 		return c.NoContent(http.StatusNotFound)
 	}
 
-	patchStruct := PatchPresentationsStruct{}
-	if err := c.Bind(&patchStruct); err != nil {
+	var req PatchPresentationsStruct
+	if err := c.Bind(&req); err != nil {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	if patchStruct.Name.Valid {
-		presentation.Name = patchStruct.Name
+	if req.Name.Valid {
+		presentation.Name = req.Name
 	}
-	if patchStruct.Description.Valid {
-		presentation.Description = patchStruct.Description
+	if req.Description.Valid {
+		presentation.Description = req.Description
 	}
-	if patchStruct.Speakers.Valid {
-		presentation.Speakers = patchStruct.Speakers
+	if req.Speakers.Valid {
+		presentation.Speakers = req.Speakers
 	}
 
-	if err = h.Repo.UpdatePresentation(presentation); err != nil {
+	if err = h.repo.UpdatePresentation(presentation.Name.String, presentation.Speakers.String, presentation.Description.String, int(presentation.Prev.Int64), int(presentation.Next.Int64), presentationID); err != nil {
 		return err
 	}
 	return c.JSON(http.StatusOK, presentation)
@@ -107,7 +101,7 @@ func (h *Handlers) DeletePresentation(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	err = h.Repo.DeletePresentation(presentationID)
+	err = h.repo.DeletePresentation(presentationID)
 	if err != nil {
 		return err
 	}

@@ -1,68 +1,75 @@
 <template>
   <div :class="$style.reviewContainer">
     <div :class="$style.review">
-      <div v-if="err !== ''">{{ err }}</div>
-      <div v-else-if="done">レビューを送信しました</div>
-      <template v-else-if="presentation">
-        <h3>{{ presentation.name }}</h3>
-        <p>説明: {{ presentation.description }}</p>
-        <div :class="$style.ranges">
-          <range v-model:value="state.skill" label="技術" />
-          <range v-model:value="state.artistry" label="芸術" />
-          <range v-model:value="state.idea" label="アイデア" />
-          <range v-model:value="state.presentation" label="プレゼン" />
+      <div :class="$style.ranges">
+        <div v-for="presentation in presentations" :key="presentation.id">
+          <label>
+            <input v-model="votes" type="checkbox" :value="presentation.id" />
+            {{ presentation.name }}
+          </label>
         </div>
-        <button :class="$style.send" @click="send">送信</button>
-      </template>
-      <div v-else>レビュー画面でエラーが発生しました</div>
+      </div>
+      <button
+        :class="$style.send"
+        :disabled="sending || presentations === undefined"
+        @click="send"
+      >
+        送信
+      </button>
+      <div v-if="err !== ''" :class="$style.error">{{ err }}</div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, reactive, ref } from 'vue'
-import { useStore } from '/@/store'
-import apis, { Review } from '/@/lib/apis'
-import Range from './Range.vue'
+import { defineComponent, ref } from 'vue'
+import apis, { Presentation } from '/@/lib/apis'
 
 export default defineComponent({
   name: 'Review',
-  components: {
-    Range
-  },
   setup() {
-    const store = useStore()
-    const presentation = computed(() => store.state.presentation)
+    const presentations = ref<Presentation[]>()
+    const fetchPresentations = async () => {
+      const res = await apis.getPresentations()
+      presentations.value = res.data
+    }
+    fetchPresentations()
 
-    const state = reactive<Review>({
-      userId: '', // 未使用だけど型定義が対応してないので記述
-      skill: 3,
-      artistry: 3,
-      idea: 3,
-      presentation: 3
-    })
-
-    const done = ref(false)
+    const votes = ref<number[]>([])
+    const sending = ref(false)
     const err = ref('')
 
-    const send = async () => {
-      if (!presentation.value) return
+    apis
+      .getMyPresentationReviews()
+      .then(res => {
+        votes.value = res.data
+      })
+      .catch(() => {
+        err.value = '前回の回答を取得できませんでした'
+        votes.value = []
+      })
 
+    const send = async () => {
+      if (votes.value.length > 3) {
+        err.value = '3件までしか投票できません'
+        return
+      }
+
+      sending.value = true
       try {
-        await apis.postPresentationReview('' + presentation.value.id, state)
-        done.value = true
-      } catch (e) {
-        if (e.response.status === 409) {
-          err.value = '既に回答済みです'
-          done.value = true
-        } else {
-          // eslint-disable-next-line no-console
-          console.error(e)
-        }
+        // 選択したLT x 3の配列をput
+        await apis.putPresentationReview(votes.value)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (e: any) {
+        // eslint-disable-next-line no-console
+        console.error(e)
+        err.value = e.toString()
+      } finally {
+        sending.value = false
       }
     }
 
-    return { presentation, state, send, done, err }
+    return { presentations, votes, send, sending, err }
   }
 })
 </script>
@@ -75,6 +82,7 @@ export default defineComponent({
   bottom: 0;
   right: 0;
   backdrop-filter: blur(4px);
+  z-index: 4;
 }
 .review {
   height: 90%;
@@ -90,5 +98,8 @@ export default defineComponent({
   padding: 4px 16px;
   background-color: #eee;
   border: solid 2px #333;
+}
+.error {
+  color: red;
 }
 </style>

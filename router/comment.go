@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/traPtitech/Emoine/repository"
 	"github.com/labstack/echo/v4"
+	"github.com/traPtitech/Emoine/repository"
 )
 
 // GetPresentationComments GET /presentations/:presentationID/comments
@@ -15,7 +15,7 @@ func (h *Handlers) GetPresentationComments(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	res, err := h.Repo.GetComments(presentationID)
+	res, err := h.repo.GetComments(presentationID)
 	if err != nil {
 		return err
 	}

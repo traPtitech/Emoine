@@ -1,13 +1,10 @@
 package repository
 
-import (
-	"github.com/gofrs/uuid"
-)
-
+// unused
 type Reaction struct {
-	UserID         uuid.UUID `db:"userId"`
-	PresentationID int       `db:"presentationId"`
-	Stamp          int       `db:"stamp"`
+	UserID         string `db:"userId"`
+	PresentationID int    `db:"presentationId"`
+	Stamp          int    `db:"stamp"`
 }
 
 type ReactionStatistics struct {
@@ -21,6 +18,6 @@ type Count struct {
 }
 
 type ReactionRepository interface {
-	CreateReaction(reaction *Reaction) error
+	CreateReaction(userID string, presentationID, stamp int) error
 	GetReactionStatistics(id int) (*ReactionStatistics, error)
 }

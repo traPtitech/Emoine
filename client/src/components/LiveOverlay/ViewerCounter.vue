@@ -31,5 +31,6 @@ export default defineComponent({
   color: rgba(255, 255, 255, 0.8);
   font-size: 3rem;
   -webkit-text-stroke: 0.02em #333;
+  margin: 0 1rem;
 }
 </style>
