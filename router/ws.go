@@ -28,13 +28,7 @@ func (h *Handlers) ConnectWebSocket(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
-	userID, err := getSession(c)
-	if err != nil {
-		log.Printf("error: %v", err)
-		return c.NoContent(http.StatusInternalServerError)
-	}
-
-	if err := h.streamer.NewClient(conn, currentState, userID); err != nil {
+	if err := h.streamer.NewClient(conn, currentState); err != nil {
 		log.Printf("error: %v", err)
 		return echo.ErrInternalServerError
 	}

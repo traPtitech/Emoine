@@ -117,14 +117,14 @@ func (s *Streamer) SendState(st *pb.State) {
 }
 
 // NewClient 新規クライアントを初期化・登録します
-func (s *Streamer) NewClient(conn *websocket.Conn, currentState *pb.State, userID uuid.UUID) error {
+func (s *Streamer) NewClient(conn *websocket.Conn, currentState *pb.State) error {
 	var wg sync.WaitGroup
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	client := &client{
 		key:      utils.RandAlphabetAndNumberString(20),
-		userID:   userID,
+		userID:   uuid.New(),
 		conn:     conn,
 		receiver: &s.messageBuffer,
 		sender:   make(chan *rawMessage, messageBufferSize),
