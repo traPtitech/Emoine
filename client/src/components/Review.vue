@@ -39,6 +39,16 @@ export default defineComponent({
     const sending = ref(false)
     const err = ref('')
 
+    apis
+      .getMyPresentationReviews()
+      .then(res => {
+        votes.value = res.data
+      })
+      .catch(() => {
+        err.value = '前回の回答を取得できませんでした'
+        votes.value = []
+      })
+
     const send = async () => {
       if (votes.value.length > 3) {
         err.value = '3件までしか投票できません'

@@ -1,10 +1,11 @@
 package router
 
 import (
-	"github.com/traPtitech/Emoine/services/streamer"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/traPtitech/Emoine/services/streamer"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
@@ -60,6 +61,7 @@ func Setup(repo repository.Repository) *echo.Echo {
 			apiPresentations.GET("", h.GetPresentations)
 			apiPresentations.POST("", h.PostPresentations, isAdmin)
 			apiPresentations.PUT("/review", h.PutPresentationReview)
+			apiPresentations.GET("/review/me", h.GetMyPresentationReviews)
 			apiPresentationsID := apiPresentations.Group("/:presentationID")
 			{
 				apiPresentationsID.GET("", h.GetPresentation)

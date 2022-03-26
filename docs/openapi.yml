@@ -210,6 +210,25 @@ paths:
         '404':
           description: Not Found
 
+  '/presentations/review/me':
+    get:
+      operationId: getMyPresentationReviews
+      summary: 自分の前回のプレゼンテーションのレビュー一覧を取得
+      tags:
+        - presentation
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  description: プレゼンテーションID
+        '500':
+          description: Internal Server Error
+
   '/presentations/{presentationId}/comments':
     parameters:
       - $ref: '#/components/parameters/presentationId'

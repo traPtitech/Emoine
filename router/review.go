@@ -1,11 +1,27 @@
 package router
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
+
+// GetMyPresentationReviews GET /presentations/review/me
+func (h *Handlers) GetMyPresentationReviews(c echo.Context) error {
+	userID, err := getSession(c)
+	if err != nil {
+		return err
+	}
+
+	res, err := h.repo.GetReviews(userID.String())
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("failed to get reviews: %s", err))
+	}
+
+	return c.JSON(http.StatusOK, res)
+}
 
 // GetPresentationReview GET /presentations/:presentationID/review
 func (h *Handlers) GetPresentationReview(c echo.Context) error {
