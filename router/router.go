@@ -59,6 +59,7 @@ func Setup(repo repository.Repository) *echo.Echo {
 		{
 			apiPresentations.GET("", h.GetPresentations)
 			apiPresentations.POST("", h.PostPresentations, isAdmin)
+			apiPresentations.PUT("/review", h.PutPresentationReview)
 			apiPresentationsID := apiPresentations.Group("/:presentationID")
 			{
 				apiPresentationsID.GET("", h.GetPresentation)
@@ -66,7 +67,6 @@ func Setup(repo repository.Repository) *echo.Echo {
 				apiPresentationsID.DELETE("", h.DeletePresentation, isAdmin)
 				apiPresentationsID.GET("/reaction", h.GetPresentationReaction, isAdmin)
 				apiPresentationsID.GET("/review", h.GetPresentationReview, isAdmin)
-				apiPresentationsID.PUT("/review", h.PutPresentationReview)
 				apiPresentationsID.GET("/comments", h.GetPresentationComments, isAdmin)
 			}
 		}
