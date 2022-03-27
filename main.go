@@ -24,21 +24,27 @@ var (
 func main() {
 	log.SetFlags(log.Llongfile)
 
+	dbHost := os.Getenv("MYSQL_HOST")
+	dbPort := os.Getenv("MYSQL_PORT")
+	dbUser := os.Getenv("MYSQL_USER")
+	dbPass := os.Getenv("MYSQL_PASSWORD")
+	dbDatabase := os.Getenv("MYSQL_DATABASE")
+
 	// connect to db
 	db := sqlx.MustConnect("mysql", fmt.Sprintf(
 		"%s:%s@tcp(%s)/%s?parseTime=true",
-		"root",
-		"password",
-		"mysql:3306",
-		"emoine",
+		dbUser,
+		dbPass,
+		dbHost+":"+dbPort,
+		dbDatabase,
 	))
 	// db connection for batch executing, allowing multi statements
 	dbForBatch := sqlx.MustConnect("mysql", fmt.Sprintf(
 		"%s:%s@tcp(%s)/%s?multiStatements=true&parseTime=true",
-		"root",
-		"password",
-		"mysql:3306",
-		"emoine",
+		dbUser,
+		dbPass,
+		dbHost+":"+dbPort,
+		dbDatabase,
 	))
 
 	// create schema
