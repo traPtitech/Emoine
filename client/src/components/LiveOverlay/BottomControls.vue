@@ -1,20 +1,20 @@
 <template>
   <div :class="$style.container">
-    <input
-      ref="inputRef"
-      v-model="text"
-      :class="$style.input"
-      type="text"
-      placeholder="コメント"
-      @keydown.enter="comment"
-    />
-
+    <div :class="$style.input_container">
+      <input
+        ref="inputRef"
+        v-model="text"
+        :class="$style.input"
+        type="text"
+        placeholder="コメント"
+        @keydown.enter="comment"
+      />
+    </div>
     <div :class="$style.bottomContents">
       <button :class="$style.button" @click="$emit('toggle')">
         表示/非表示
       </button>
       <button :class="$style.button" @click="$emit('toggleDesc')">説明</button>
-      <button :class="$style.button" @click="comment">送信</button>
     </div>
   </div>
 </template>
@@ -36,7 +36,8 @@ export default defineComponent({
     const presentationId = computed(() => store.state.presentation?.id ?? null)
 
     const text = ref('')
-    const comment = () => {
+    const comment = (e: KeyboardEvent) => {
+      if (!e.shiftKey) return
       if (!text.value) return
       sendComment({ presentationId: presentationId.value, text: text.value })
       text.value = ''
@@ -59,14 +60,19 @@ export default defineComponent({
   text-align: center;
   padding: 10px 5%;
 }
-.input {
+.input_container {
   width: 100%;
   height: 2rem;
   border-radius: 20px;
   border: 2px solid #c9c1b1;
-  &:focus {
-    border-color: #fff344;
+  &:focus-within {
+    border-color: #ffd904;
   }
+}
+.input {
+  width: 100%;
+  height: 100%;
+  margin-left: 1rem;
 }
 .bottomContents {
   display: flex;
@@ -74,6 +80,6 @@ export default defineComponent({
   justify-content: center;
 }
 .button {
-  margin: 0 8px;
+  margin: 0.5rem 1rem;
 }
 </style>

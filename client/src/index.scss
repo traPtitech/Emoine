@@ -32,6 +32,7 @@ li {
   animation: comment 15s linear;
   opacity: 0.7;
   -webkit-text-stroke: 0.02em #333;
+  white-space: nowrap;
 }
 @keyframes comment {
   0% {

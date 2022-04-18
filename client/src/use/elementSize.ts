@@ -15,10 +15,14 @@ const useElementSize = (
 
   window.addEventListener(
     'resize',
-    throttle(100, true, () => {
-      width.value = $element.value?.clientWidth ?? 0
-      height.value = $element.value?.clientHeight ?? 0
-    })
+    throttle(
+      100,
+      () => {
+        width.value = $element.value?.clientWidth ?? 0
+        height.value = $element.value?.clientHeight ?? 0
+      },
+      { noTrailing: true }
+    )
   )
 
   return { width, height }
