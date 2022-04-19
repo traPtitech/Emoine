@@ -13,6 +13,8 @@ RUN apk add --update --no-cache git curl make protoc
 WORKDIR /go/src/github.com/traPtitech/Emoine
 COPY ./go.* ./
 RUN go mod download
+RUN go mod tidy
+RUN go get github.com/golang/protobuf/protoc-gen-go
 RUN go install github.com/golang/protobuf/protoc-gen-go
 RUN mkdir -p ./router/handler
 COPY . .
