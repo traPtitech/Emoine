@@ -11,19 +11,20 @@
     "postinstall": "npm run gen-apis && npm run gen-pb"
   },
   "dependencies": {
+    "@heroicons/vue": "^1.0.6",
     "axios": "^0.26.1",
     "direct-vuex": "^0.12.1",
     "reconnecting-websocket": "^4.4.0",
     "ress": "^5.0.2",
-    "throttle-debounce": "^3.0.1",
-    "vue": "^3.2.13",
+    "throttle-debounce": "^4.0.1",
+    "vue": "^3.2.33",
     "vue-router": "^4.0.14",
     "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.4.26",
-    "@types/node": "^16.11.12",
-    "@types/throttle-debounce": "^2.1.0",
+    "@types/node": "^16.11.27",
+    "@types/throttle-debounce": "^4.0.0",
     "@typescript-eslint/eslint-plugin": "^5.19.0",
     "@typescript-eslint/parser": "^5.19.0",
     "@vitejs/plugin-vue": "^2.3.1",
