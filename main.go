@@ -57,7 +57,7 @@ func main() {
 	))
 	// db connection for batch executing, allowing multi statements
 	dbForBatch := sqlx.MustConnect("mysql", fmt.Sprintf(
-		"%s:%s@tcp(%s)/%s?multiStatements=true&parseTime=true",
+		"%s:%s@tcp(%s:%s)/%s?multiStatements=true&parseTime=true",
 		user,
 		pass,
 		host,
