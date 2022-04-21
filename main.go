@@ -24,24 +24,24 @@ var (
 func main() {
 	log.SetFlags(log.Llongfile)
 
-	user, ok := os.LookupEnv("MARIADB_USERNAME")
+	user, ok := os.LookupEnv("MYSQL_USERNAME")
 	if !ok {
 		user = "root"
 	}
-	pass, ok := os.LookupEnv("MARIADB_PASSWORD")
+	pass, ok := os.LookupEnv("MYSQL_PASSWORD")
 	if !ok {
 		pass = "password"
 	}
-	host, ok := os.LookupEnv("MARIADB_HOSTNAME")
+	host, ok := os.LookupEnv("MYSQL_HOSTNAME")
 	if !ok {
 		host = "mysql"
 	}
-	dbPort, ok := os.LookupEnv("MARIADB_PORT")
+	dbPort, ok := os.LookupEnv("MYSQL_PORT")
 	if !ok {
 		dbPort = "3306"
 	}
 
-	dbname, ok := os.LookupEnv("MARIADB_DATABASE")
+	dbname, ok := os.LookupEnv("MYSQL_DATABASE")
 	if !ok {
 		dbname = "emoine"
 	}
