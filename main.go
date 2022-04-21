@@ -24,21 +24,45 @@ var (
 func main() {
 	log.SetFlags(log.Llongfile)
 
+	user, ok := os.LookupEnv("MARIADB_USERNAME")
+	if !ok {
+		user = "root"
+	}
+	pass, ok := os.LookupEnv("MARIADB_PASSWORD")
+	if !ok {
+		pass = "password"
+	}
+	host, ok := os.LookupEnv("MARIADB_HOSTNAME")
+	if !ok {
+		host = "mysql"
+	}
+	dbPort, ok := os.LookupEnv("MARIADB_PORT")
+	if !ok {
+		dbPort = "3306"
+	}
+
+	dbname, ok := os.LookupEnv("MARIADB_DATABASE")
+	if !ok {
+		dbname = "emoine"
+	}
+
 	// connect to db
 	db := sqlx.MustConnect("mysql", fmt.Sprintf(
-		"%s:%s@tcp(%s)/%s?parseTime=true",
-		"root",
-		"password",
-		"mysql:3306",
-		"emoine",
+		"%s:%s@tcp(%s:%s)/%s?parseTime=true",
+		user,
+		pass,
+		host,
+		dbPort,
+		dbname,
 	))
 	// db connection for batch executing, allowing multi statements
 	dbForBatch := sqlx.MustConnect("mysql", fmt.Sprintf(
 		"%s:%s@tcp(%s)/%s?multiStatements=true&parseTime=true",
-		"root",
-		"password",
-		"mysql:3306",
-		"emoine",
+		user,
+		pass,
+		host,
+		dbPort,
+		dbname,
 	))
 
 	// create schema
