@@ -3,7 +3,7 @@ import VuePlugin from '@vitejs/plugin-vue'
 import path from 'path'
 
 const devHost = 'localhost:3050'
-const prodHost = 'emoine20.trap.jp'
+const prodHost = process.env.HOST
 
 export default defineConfig({
   resolve: {
