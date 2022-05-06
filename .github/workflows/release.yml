@@ -7,6 +7,7 @@ on:
 
 env:
   IMAGE_NAME: emoine
+  HOST: emoine.trap.jp
 
 jobs:
   image:
@@ -29,6 +30,7 @@ jobs:
         with:
           context: .
           push: true
+          build-args: HOST={{ env.HOST }}
           tags: |
             ghcr.io/traptitech/${{ env.IMAGE_NAME }}:latest
             ghcr.io/traptitech/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}

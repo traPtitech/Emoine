@@ -6,6 +6,8 @@ COPY ./client/scripts ./scripts
 COPY ./docs ../docs
 RUN npm ci --unsafe-perm
 COPY ./client .
+ARG HOST
+ENV HOST=HOST
 RUN npm run build
 
 FROM golang:1.17-alpine AS server-build
