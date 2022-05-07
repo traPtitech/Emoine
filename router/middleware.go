@@ -73,7 +73,7 @@ func (h *Handlers) IsAdminUserMiddleware(next echo.HandlerFunc) echo.HandlerFunc
 }
 
 func (h *Handlers) getRequestUserIDFromCookie(c echo.Context) (uuid.UUID, error) {
-	sess, err := session.Get("emoine_session", c)
+	sess, err := session.Get("emoine_session_v2", c)
 	if err != nil {
 		return uuid.Nil, err
 	}
