@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@heroicons/vue": "^1.0.6",
-    "axios": "^0.26.1",
+    "axios": "^1.1.2",
     "direct-vuex": "^0.12.1",
     "reconnecting-websocket": "^4.4.0",
     "ress": "^5.0.2",
