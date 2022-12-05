@@ -3,7 +3,7 @@ module github.com/traPtitech/Emoine
 go 1.17
 
 require (
-	github.com/go-sql-driver/mysql v1.6.0
+	github.com/go-sql-driver/mysql v1.7.0
 	github.com/gofrs/uuid v4.2.0+incompatible
 	github.com/gorilla/sessions v1.2.1
 	github.com/gorilla/websocket v1.5.0
