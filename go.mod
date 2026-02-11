@@ -1,9 +1,9 @@
 module github.com/traPtitech/Emoine
 
-go 1.17
+go 1.21.0
 
 require (
-	github.com/go-sql-driver/mysql v1.6.0
+	github.com/go-sql-driver/mysql v1.9.3
 	github.com/gofrs/uuid v4.2.0+incompatible
 	github.com/gorilla/sessions v1.2.1
 	github.com/gorilla/websocket v1.5.0
@@ -17,6 +17,7 @@ require (
 )
 
 require (
+	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
